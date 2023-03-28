@@ -64,6 +64,6 @@ class User extends Authenticatable
 
     public function familyMember()
     {
-        return $this->belongsTo(Family_Member::class, 'family_members_id');
+        return $this->hasMany(Family_Member::class, 'family_members_id');
     }
 }

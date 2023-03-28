@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <head>
     <script src="{{ asset('assets/js/familymembers.js') }}"></script>
@@ -23,7 +24,7 @@
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">MY PROFILE</h4>
                     </div>
                     <div class="d-flex align-items-center">
-                
+
                         <button class="btn" style="background: transparent; border: 2px solid #252b3b; color: #252b3b; padding: 10px 20px; font-size: 16px; cursor: pointer; display: inline-block;" onclick="window.location.href='/edit-profile';">
                             <i class="fa fa-edit"></i> Edit Profile Informations
                         </button>
@@ -136,7 +137,7 @@
                 <div class="card card-body flex-item" style="flex: 1;">
                     <h4 class="card-title" style="margin-bottom: 15px;">FAMILY DETAILS</h4>
 
-                  
+
 
                     <h5 class="card-title">Emergency Contact Name</h5>
                     <p class="card-text">{{ Auth::User()->emergency_contact_name }}</p>
@@ -186,11 +187,7 @@
                                 <td><button onclick="saveRow(this)">Save</button></td>
         
                             </tr>
-                            -->
-
-                                <tr>
-
-                                </tr>
+-->
                             </tbody>
 
                         </table>
@@ -201,9 +198,7 @@
                     <div class="modal-footer">
                         <!-- <button class="btn" style="background: transparent; border: 2px solid blue; color: blue; padding: 10px 20px; font-size: 14px; cursor: pointer" data-dismiss="modal">Close</button> -->
 
-                        <!--FORM-->
-
-                        <button class="btn" style="background: blue; border: 2px solid blue; color: white; padding: 10px 20px; font-size: 14px; cursor: pointer" onclick="showMembers()">Save changes</button>
+                        <button id="saveChangesBtn" class="btn" style="background: blue; border: 2px solid blue; color: white; padding: 10px 20px; font-size: 14px; cursor: pointer" onclick="showMembers()">Save changes</button>
 
                     </div>
                 </div>
@@ -214,6 +209,39 @@
     </div>
 
 </div>
+
+<script>
+    document.getElementById('saveChangesBtn').addEventListener('click', function() {
+
+        const familyMembers = [{
+                relationship: 'child',
+                jmbg: '1234567890123',
+                name: 'John Doe',
+                birth_date: '2000-01-01'
+            },
+            {
+                relationship: 'spouse',
+                jmbg: '9876543210987',
+                name: 'Jane Doe',
+                birth_date: '1980-01-01'
+            }
+        ];
+
+        // Send an HTTP POST request to the controller method
+        axios.post('/profile', {
+                familyMembers: familyMembers
+            })
+            .then(response => {
+                console.log(response.data);
+                // Do something with the response, like display a success message
+            })
+            .catch(error => {
+                console.log(error.response.data);
+                // Do something with the error, like display an error message
+            });
+    });
+</script>
+
 
 <!-- End Page-content -->
 @endsection

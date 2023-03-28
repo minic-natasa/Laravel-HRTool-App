@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Http;
 
 class ProfileController extends Controller
 {
+
+    var $familyMembers = [];
     /**
      * Display the user's profile form.
      */
@@ -117,24 +119,30 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
-/*
+
+
     public function addFamilyMembers(Request $request)
     {
-        $familyMembers = []; // define and initialize the array
+        //$familyMembers = []; // define and initialize the array
+        
         //$familyMembers = $request->input('familyMembers');
-        $familyMembers = json_decode($request->input('familyMembers'), true);
+        //$familyMembers = json_decode($request->input('familyMembers'), true);
         // The second argument `true` is passed to convert the JSON string to an associative array.
+
+
+        $familyMembers = $request->input('familyMembers');
+
 
         // Check if $familyMembers is not null
         if (!is_null($familyMembers)) {
-            $user = auth()->user();
+            $user = Auth::user();
 
             foreach ($familyMembers as $member) {
                 $familyMember = new Family_Member();
                 $familyMember->relationship = $member['relationship'];
                 $familyMember->jmbg = $member['jmbg'];
                 $familyMember->name = $member['name'];
-                $familyMember->birthdate = $member['birthdate'];
+                $familyMember->birth_date = $member['birth_date'];
                 $familyMember->user_id = $user->id;
                 $familyMember->save();
             }
@@ -144,5 +152,5 @@ class ProfileController extends Controller
             return redirect()->back()->with('error', 'No family members found in the request.');
         }
     }
-    */
+
 }
