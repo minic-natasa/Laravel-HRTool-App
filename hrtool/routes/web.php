@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContractController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -58,6 +59,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/{id}', 'update')->name('users.update');
     Route::delete('/users/{id}', 'destroy')->name('users.destroy');
     });
+
+    //Contract
+    Route::controller(ContractController::class)->group(function () {
+        Route::get('/users/{id}/contract', 'index')->name('contract.index');
+        Route::get('/users/{id}/contract/create', 'create')->name('contract.create');
+        Route::get('/contract/{id}/edit', 'edit')->name('contract.edit');
+        Route::post('/contract', 'store')->name('contract.store');
+        Route::put('/contract/{id}', 'update')->name('contract.update');
+        Route::delete('/contract/{id}', 'destroy')->name('users.destroy');
+        });
 
 });
 

@@ -23,8 +23,9 @@ return new class extends Migration
             $table->string('mobile');
             $table->string('bank_account_number');
             $table->string('emergency_contact_name');
-            $table->unsignedBigInteger('manager_id')->nullable();
-            $table->foreign('manager_id')->references('id')->on('users');
+            $table->string('emergency_contact_number');
+            //$table->unsignedBigInteger('manager_id')->nullable();
+            //$table->foreign('manager_id')->references('id')->on('users');
             $table->bigInteger('employee_number')->unique();
             $table->bigInteger('jmbg')->unique();
             $table->bigInteger('ID_number')->unique();
@@ -62,7 +63,8 @@ return new class extends Migration
             $table->dropColumn('mobile');
             $table->dropColumn('bank_account_number');
             $table->dropColumn('emergency_contact_name');
-            $table->dropColumn('manager_id');
+            $table->dropColumn('emergency_contact_number');
+            //$table->dropColumn('manager_id');
             $table->dropColumn('employee_number');
             $table->dropColumn('jmbg');
             $table->dropColumn('ID_number');
