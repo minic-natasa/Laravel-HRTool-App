@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{id}', 'destroy')->name('users.destroy');
     });
 
+    //Register
+
 });
 
 // useless routes
