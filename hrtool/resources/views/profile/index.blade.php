@@ -213,19 +213,25 @@
 <script>
     document.getElementById('saveChangesBtn').addEventListener('click', function() {
 
-        const familyMembers = [{
-                relationship: 'child',
-                jmbg: '1234567890123',
-                name: 'John Doe',
-                birth_date: '2000-01-01'
-            },
-            {
-                relationship: 'spouse',
-                jmbg: '9876543210987',
-                name: 'Jane Doe',
-                birth_date: '1980-01-01'
-            }
-        ];
+        // Collect data from the form
+        const familyMembersTable = document.getElementById('familyMembersTableBody');
+        const rows = familyMembersTable.querySelectorAll('tr');
+        const familyMembers = [];
+
+        rows.forEach(row => {
+            const relationship = row.querySelector('.relationship').value;
+            const name = row.querySelector('.name').value;
+            const birth_date = row.querySelector('.birth_date').value;
+            const jmbg = row.querySelector('.jmbg').value;
+
+        familyMembers.push({
+            relationship: relationship,
+            name: name,
+            birth_date: birth_date,
+            jmbg: jmbg
+        });
+
+    }); 
 
         // Send an HTTP POST request to the controller method
         axios.post('/profile', {
