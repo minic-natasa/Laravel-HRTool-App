@@ -10,13 +10,13 @@
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <a href="{{ route('users.profile-card', $user->id) }}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">Back</h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT USER</h4>
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">HRTool</a></li>
-                                <li class="breadcrumb-item active">Employees</li>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Employees</a>
                                 <li class="breadcrumb-item active">Edit Employee</li>
                             </ol>
                         </div>

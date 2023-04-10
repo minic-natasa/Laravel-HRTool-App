@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use PHPUnit\Framework\Constraint\RegularExpression;
 
 class ProfileController extends Controller
 {
@@ -56,24 +57,20 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-
-
             'name_of_one_parent' => 'required',
-            'bank_account_number' => 'required',
-            'emergency_contact_name' => 'required',
-            'emergency_contact_number' => 'required',
-            'employee_number' => 'required',
             'birth_date' => 'required',
             'address_in_ID' => 'required',
             'current_address' => 'required',
             'slava' => 'required',
             'private_email' => 'required|email',
             'mobile' => 'required',
+            'bank_account_number' => 'required',
+            'emergency_contact_name' => 'required',
+            'emergency_contact_number' => 'required',
             'jmbg' => 'required',
-            'ID_number' => 'required',
             'passport_number' => 'required',
-
-
+            'ID_number' => 'required',
+            'employee_number' => 'required',
         ]);
 
         $user = User::find(Auth::user()->id);
@@ -92,6 +89,13 @@ class ProfileController extends Controller
         $user->jmbg = $request->input('jmbg');
         $user->ID_number = $request->input('ID_number');
         $user->passport_number = $request->input('passport_number');
+
+        if($request->file('profile_picture')){
+                $file = $request->file('profile_picture');
+                $filename = date('YmdHi').$file->getClientOriginalName();
+                $file->move(public_path('upload/admin_images'), $filename);
+                $user['profile_picture'] = $filename;
+        }
 
         $user->save();
 

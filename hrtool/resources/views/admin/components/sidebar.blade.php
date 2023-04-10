@@ -9,7 +9,7 @@
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
-                <img src="{{asset('assets\images\users\Portrait_Placeholder.png')}}" alt="" class="avatar-md rounded-circle">
+                <img src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h4>
@@ -31,15 +31,31 @@
 
                 <li>
                     <a href="{{ route('users.index')}}" :isActive="request()->routeIs('users.index')" class=" waves-effect">
-                        <i class="fas fa-user" style="font-size: 15px;"></i>
+                        <i class="fas fa-users" style="font-size: 15px;"></i>
                         <span>Employees</span>
                     </a>
                 </li>
 
                 <li>
+                    <a href="{{ route('positions.index')}}" :isActive="request()->routeIs('positions.index')" class=" waves-effect">
+                        <i class="fas fa-user" title="Positions" style="font-size: 15px;"></i>
+                        <span>Positions</span>
+                    </a>
+                </li>
+
+
+                <li>
                     <a href="{{ route('organizations.index')}}" :isActive="request()->routeIs('organizations.index')" class=" waves-effect">
                         <i class="fas fa-sitemap" style="font-size: 13px;"></i>
                         <span>Organizations</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="{{ route('contracts.index')}}" :isActive="request()->routeIs('contracts.index')" class=" waves-effect">
+                        <i class="fas fa-file-contract" title="Contracts" style="font-size: 15px;"></i>
+                        <span>Contracts</span>
                     </a>
                 </li>
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Family_Member;
+use App\Models\Contract;
 
 class User extends Authenticatable
 {
@@ -64,6 +65,11 @@ class User extends Authenticatable
 
     public function familyMember()
     {
-        return $this->hasMany(Family_Member::class, 'family_members_id');
+        return $this->hasMany(Family_Member::class);
+    }
+
+    public function contract()
+    {
+        return $this->hasMany(Contract::class, 'employee_number');
     }
 }

@@ -1,3 +1,4 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <section>
 
     <div class="page-content">
@@ -26,16 +27,16 @@
                                 @csrf
                             </form>
                                 -->
-                            <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+                            <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
                                 @csrf
                                 @method('patch')
 
                                 <div class="form-group row">
                                     <label for="name_of_one_parent" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Name of the parent:</label>
-                                    
+
                                     <x-form.input id="name_of_one_parent" name="name_of_one_parent" type="text" class="col-md-6" style="margin-bottom:10px" :value="old('name_of_one_parent', $user->name_of_one_parent)" required autofocus autocomplete="name_of_one_parent" />
                                     <x-form.error :messages="$errors->get('name_of_one_parent')" />
-                                   
+
                                 </div>
 
                                 <div class="form-group row">
@@ -95,11 +96,19 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="emergency_contact_name" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Emergency Contact:</label>
+                                    <label for="emergency_contact_name" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Emergency Contact Name:</label>
 
                                     <x-form.input id="emergency_contact_name" name="emergency_contact_name" type="text" class="col-md-6" style="margin-bottom:10px" :value="old('emergency_contact_name', $user->emergency_contact_name)" required autocomplete="emergency_contact_name" />
 
                                     <x-form.error :messages="$errors->get('emergency_contact_name')" />
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="emergency_contact_number" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Emergency Contact Number:</label>
+
+                                    <x-form.input id="emergency_contact_number" name="emergency_contact_number" type="text" class="col-md-6" style="margin-bottom:10px" :value="old('emergency_contact_number', $user->emergency_contact_number)" required autocomplete="emergency_contact_number" />
+
+                                    <x-form.error :messages="$errors->get('emergency_contact_number')" />
                                 </div>
 
                                 <div class="form-group row">
@@ -163,11 +172,27 @@
                                 </div>
                                     -->
 
+
+
                                 <div class="form-group row">
-                                    <div class="col-md-6 offset-md-2">
-                                        <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">Save</button>
+                                    <label for="profile_picture" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Profile Image:</label>
+
+                                    <!-- 
+                                    <input name="profile_picture" class="col-md-6 form-control" type="file" id="picture-input"style="margin-bottom:10px">
+                                    -->
+
+                                    <input id="picture-input" name="profile_picture" type="file" class="col-md-6" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" required autocomplete="profile_picture" />
+                                    <div style="display: block; text-align: left; margin-left:12vw;">
+                                        <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Picture">
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-6 offset-md-2">
+                                        <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px; margin-left:-11px">Save</button>
+                                    </div>
+                                </div>
+
 
                                 @if (session('status') === 'profile-updated')
                                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">
@@ -183,4 +208,17 @@
 
         </div>
     </div>
-    </section>
+</section>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#picture-input').change(function(e) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#showImage').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(e.target.files['0']);
+        });
+    });
+</script>

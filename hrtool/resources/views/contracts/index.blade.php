@@ -1,6 +1,13 @@
 @extends('admin.master')
 @section('admin')
 
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
 <div class="page-content">
     <div class="container-fluid">
 
@@ -9,13 +16,13 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">ORGANIZATIONS</h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CONTRACTS</h4>
                     </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
-                            <li class="breadcrumb-item active">Organizations</li>
+                            <li class="breadcrumb-item active">Contracts</li>
                         </ol>
                     </div>
 
@@ -24,23 +31,13 @@
         </div>
         <!-- end page title -->
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="{{ route('organizations.create') }}" class="btn btn-primary mb-3">Create New Organization</a>
-                </div>
-
-            </div>
-        </div>
-
 
         <div class="row">
 
             <div class="card">
                 <div class="card-body">
 
-                    <p class="card-title-desc"> See all Pelican Cement departments </p>
+                    <p class="card-title-desc">See the contracts of all Pelican Cement employees</p>
 
                     <div id="datatable-buttons_wrapper" class="table-responsive dataTables_wrapper">
                         <!--
@@ -60,19 +57,27 @@
                                 <table id="datatable-buttons" class="table dt-responsive nowrap dataTable no-footer dtr-inline" style="border-collapse: collapse; border-spacing: 0px; width: 100%;" role="grid" aria-describedby="datatable-buttons_info">
                                     <thead>
                                         <tr role="row">
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="OrgID: activate to sort column ascending">ID</th>
-                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 139.2px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Department Name</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 139.2px;" aria-label="Manager: activate to sort column ascending">Manager</th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="ContractNumber: activate to sort column ascending">Contract Number</th>
+                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 139.2px;" aria-sort="ascending" aria-label="Employee: activate to sort column descending">Employee</th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="OrgUnit: activate to sort column ascending">Organization Unit</th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 131.2px;" aria-label="Position: activate to sort column ascending">Position</th>
                                             <th style="width: 100px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                        @foreach ($organizations as $organization)
+                                        @foreach ($contracts as $contract)
                                         <tr>
-                                            <th scope="row">{{ $organization->id }}</th>
-                                            <td class="sorting_1 dtr-control">{{ $organization->name }}</td>
-                                            <td>{{ $organization->manager->first_name }} {{ $organization->manager->last_name }}</td>
+                                            <th scope="row">{{ $contract->contract_number }}</th>
+                                            <td class="sorting_1 dtr-control">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</td> <!-- First and Last name of employee -->
+                                            <td>{{ $contract->organization->name }}</td>
+                                            <td>
+                                                @foreach($contract->organization->position as $pos)
+                                                @if($pos->id == $contract->position)
+                                                {{ $pos->name }}
+                                                @endif
+                                                @endforeach
+                                            </td>
 
                                             <td>
 
@@ -84,43 +89,43 @@
                                                         </button>
 
                                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                            <a href="{{ route('organizations.organization-card', $organization->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Organization"></i></a>
-                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                            <form action="{{ route('organizations.destroy', $organization->id) }}" method="POST" style="display: inline;">
+                                                            <a href="{{ route('contracts.profile', $contract->employee->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Contract"></i></a>
+                                                            <a href="{{ route('contracts.edit', $contract->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
+                                                            <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST" style="display: inline;">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this organization?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this contract?')"><i class="fa fa-trash" title="Delete"></i></button>
                                                             </form>
                                                         </div>
 
                                                     </div>
 
                                                 </div>
-
-
-                                            </td>
-                                        </tr>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
+
+                        </td>
+                        </tr>
+                        @endforeach
+
+                        </tbody>
+                        </table>
                     </div>
                 </div>
-
-            </div> <!-- end col -->
+            </div>
         </div>
 
+    </div> <!-- end col -->
+</div>
 
-        </table>
-    </div>
+
+</table>
+</div>
 </div>
 </div> <!-- end col -->
 </div> <!-- end row -->
 
-</div>
 
-</div>
 <!-- End Page-content -->
+
 @endsection

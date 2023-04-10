@@ -9,15 +9,15 @@
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('organizations.index') }}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT ORGANIZATION</h4>
+                        <a href="{{ route('positions.index') }}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT POSITION</h4>
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('organizations.index') }}">Organizations</a>
-                                <li class="breadcrumb-item active">Edit Organization</li>
+                                <li class="breadcrumb-item"><a href="{{ route('positions.index') }}">Positions</a>
+                                <li class="breadcrumb-item active">Edit Position</li>
                             </ol>
                         </div>
                     </div>
@@ -30,37 +30,32 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form action="{{ route('organizations.update', $organization->id) }}" method="POST">
+
+                    <form action="{{ route('positions.update', $position->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Name</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" id="name" name="name" value="{{ $organization->name }}" required>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ $position->name }}" required>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager</label>
+                            <label for="description" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Description</label>
                             <div class="col-md-6">
-                                <select class="form-control" id="manager_id" name="manager_id">
-                                    <option value="">-- None -- </option>
-                                    @foreach ($managers as $manager)
-                                    <option value="{{ $manager->id }}">{{ $manager->first_name }} {{ $manager->last_name }}</option>
-                                    @endforeach
-                                </select>
+                                <textarea class="form-control" id="description" name="description" rows="3" style="margin-bottom: 4px;" required>{{ $position->description }}</textarea>
                             </div>
                         </div>
 
 
                         <div class="form-group row">
-                            <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization</label>
+                            <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization</label>
                             <div class="col-md-6">
-                                <select class="form-control" id="parent_id" name="parent_id">
-                                    <option value="">-- None -- </option>
+                                <select class="form-control" id="organization_id" name="organization_id">
                                     @foreach ($organizations as $org)
-                                    <option value="{{ $org->id }}" {{ $org->id == $organization->parent_id ? 'selected' : '' }}>{{ $org->name }}</option>
+                                    <option value="{{ $org->id }}" @if ($org->id == $position->organization_id) selected @endif>{{ $org->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -1,6 +1,6 @@
 <html>
    <head>
-      <title>DemoLaravel - @yield('title')</title>
+      <title>Laravel - @yield('title')</title>
    </head>
    <body>
       @yield('content')

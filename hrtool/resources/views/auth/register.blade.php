@@ -7,11 +7,11 @@
             @csrf
 
             <div class="grid gap-6">
-                <!-- Name -->
+                <!-- First Name -->
                 <div class="space-y-2">
                     <x-form.label
                         for="first_name"
-                        :value="__('Name')"
+                        :value="__('First Name')"
                     />
 
                     <x-form.input-with-icon-wrapper>
@@ -28,7 +28,33 @@
                             :value="old('first_name')"
                             required
                             autofocus
-                            placeholder="{{ __('Name') }}"
+                            placeholder="{{ __('First Name') }}"
+                        />
+                    </x-form.input-with-icon-wrapper>
+                </div>
+
+                <!-- Last Name -->
+                <div class="space-y-2">
+                    <x-form.label
+                        for="last_name"
+                        :value="__('Last Name')"
+                    />
+
+                    <x-form.input-with-icon-wrapper>
+                        <x-slot name="icon">
+                            <x-heroicon-o-user aria-hidden="true" class="w-5 h-5" />
+                        </x-slot>
+
+                        <x-form.input
+                            withicon
+                            id="last_name"
+                            class="block w-full"
+                            type="text"
+                            name="last_name"
+                            :value="old('last_name')"
+                            required
+                            autofocus
+                            placeholder="{{ __('Last Name') }}"
                         />
                     </x-form.input-with-icon-wrapper>
                 </div>

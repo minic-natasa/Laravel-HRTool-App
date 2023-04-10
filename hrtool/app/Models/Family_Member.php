@@ -21,7 +21,7 @@ class Family_Member extends Model
 
         public function user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(User::class);
     }
         
 }

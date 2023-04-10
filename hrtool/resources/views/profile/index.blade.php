@@ -24,17 +24,12 @@
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">MY PROFILE</h4>
                     </div>
                     <div class="d-flex align-items-center">
-
-                        <button class="btn" style="background: transparent; border: 2px solid #252b3b; color: #252b3b; padding: 10px 20px; font-size: 16px; cursor: pointer; display: inline-block;" onclick="window.location.href='/edit-profile';">
-                            <i class="fa fa-edit"></i> Edit Profile Informations
-                        </button>
-
+                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Edit"></i> Edit Profile Informations</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- end page title -->
-
 
         <!-- PROFILE CARD -->
 
@@ -44,8 +39,7 @@
                 <div class="card card-body flex-item" style="flex: 1;">
 
                     <h4 class="card-title" style="margin-bottom: 15px;">PROFILE IMAGE</h4>
-                    <img src="{{asset('assets\images\users\Portrait_Placeholder.png')}}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Image">
-                    <!-- <a href="#" class="btn btn-primary waves-effect waves-light">Change Profile Image</a> -->
+                    <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Image">
 
                     <h5 class="card-title" style="margin-top: 20px;">First Name</h5>
                     <p class="card-text">{{ Auth::User()->first_name }}</p>
@@ -66,7 +60,14 @@
                     <p class="card-text" id="phone">{{ Auth::User()->mobile }}</p>
 
                     <h5 class="card-title">Position</h5>
-                    <p class="card-text">Position</p>
+                    <p class="card-text">@foreach(Auth::User()->contract as $contr)
+                        @foreach($contr->organization->position as $pos)
+                        @if($pos->id == $contr->position) <!-- add && status active. only one active contract at the time -->
+                        {{ $pos->name }}
+                        @endif
+                        @endforeach
+                        @endforeach
+                    </p>
                 </div>
             </div>
 
@@ -111,8 +112,8 @@
 
 
                 <div class="card card-body flex-item" style="flex: 1;">
-                    <h4 class="card-title" style="margin-bottom: 15px;">CONTRACT</h4>
-                    <p class="card-text">Pop-up</p>
+                    <h4 class="card-title" style="margin-bottom: 15px;">SEE CONTRACTS</h4>
+                    <a href="{{ route('contracts.profile', Auth::User()->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contract"></i> Contracts</a>
                 </div>
 
 
@@ -145,7 +146,7 @@
                     <h5 class="card-title">Emergency Contact Number</h5>
                     <p class="card-text">{{ Auth::User()->emergency_contact_number }}</p>
 
-                    <button class="btn" style="background: transparent; border: 2px solid #252b3b; color: #252b3b; padding: 10px 20px; font-size: 16px; cursor: pointer; display: inline-block; margin-right:10px" onclick="openAddFamilyMembersPopup()">
+                    <button class="btn" style="background: transparent; border: 1px solid #002EFF; color: #002EFF; padding: 10px 20px; font-size: 16px; cursor: pointer; display: inline-block; margin-right:10px" onclick="openAddFamilyMembersPopup()">
                         <i class="fa fa-plus"></i> Add Family Members
                     </button>
 
@@ -224,14 +225,14 @@
             const birth_date = row.querySelector('.birth_date').value;
             const jmbg = row.querySelector('.jmbg').value;
 
-        familyMembers.push({
-            relationship: relationship,
-            name: name,
-            birth_date: birth_date,
-            jmbg: jmbg
-        });
+            familyMembers.push({
+                relationship: relationship,
+                name: name,
+                birth_date: birth_date,
+                jmbg: jmbg
+            });
 
-    }); 
+        });
 
         // Send an HTTP POST request to the controller method
         axios.post('/profile', {
@@ -250,4 +251,5 @@
 
 
 <!-- End Page-content -->
+
 @endsection
