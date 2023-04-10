@@ -123,33 +123,23 @@ class ProfileController extends Controller
 
     public function addFamilyMembers(Request $request)
     {
-        //$familyMembers = []; // define and initialize the array
-        
-        //$familyMembers = $request->input('familyMembers');
-        //$familyMembers = json_decode($request->input('familyMembers'), true);
-        // The second argument `true` is passed to convert the JSON string to an associative array.
+        $member = $request->input('familyMember');
 
-
-        $familyMembers = $request->input('familyMembers');
-
-
-        // Check if $familyMembers is not null
-        if (!is_null($familyMembers)) {
+        // Check if $member is not null
+        if (!is_null($member)) {
             $user = Auth::user();
-
-            foreach ($familyMembers as $member) {
-                $familyMember = new Family_Member();
-                $familyMember->relationship = $member['relationship'];
-                $familyMember->jmbg = $member['jmbg'];
-                $familyMember->name = $member['name'];
-                $familyMember->birth_date = $member['birth_date'];
-                $familyMember->user_id = $user->id;
-                $familyMember->save();
-            }
-
-            return redirect()->back()->with('success', 'Family members added successfully.');
+    
+            $familyMember = new Family_Member();
+            $familyMember->relationship = $member['relationship'];
+            $familyMember->jmbg = $member['jmbg'];
+            $familyMember->name = $member['name'];
+            $familyMember->birth_date = $member['birth_date'];
+            $familyMember->user_id = $user->id;
+            $familyMember->save();
+    
+            return response()->json(['success' => true, 'id' => $familyMember->id]);
         } else {
-            return redirect()->back()->with('error', 'No family members found in the request.');
+            return response()->json(['error' => 'No family member found in the request.'], 400);
         }
     }
 

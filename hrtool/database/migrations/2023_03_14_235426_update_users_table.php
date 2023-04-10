@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('name_of_one_parent');
-            $table->date('birth_date');
+            $table->date('birth_date')->default('1900-01-01');
             $table->string('address_in_ID');
             $table->string('current_address');
             $table->string('slava');
@@ -39,6 +39,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (Schema::hasTable('users')) {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('first_name');
             $table->dropColumn('last_name');
@@ -58,5 +59,6 @@ return new class extends Migration
             $table->dropColumn('passport_number');
             $table->dropColumn('family_member_id');
         });
+    }
     }
 };

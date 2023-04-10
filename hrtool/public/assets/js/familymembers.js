@@ -97,6 +97,8 @@ function addNewMember() {
     // Add the new row to the table
     table.appendChild(newRow);
 
+    return newRow; 
+
 }
 
 function editRow(button) {
@@ -147,19 +149,45 @@ function saveRow(button) {
         familyMembers[rowIndex].jmbg = jmbg;
     } else {
         // Add a new row to the familyMembers array
-        var newMember = {
+        var familyMember = {
             relationship: relationship,
             name: name,
             birth_date: birth_date,
             jmbg: jmbg
         };
-        familyMembers.push(newMember);
+        familyMembers.push(familyMember);
     }
 
+    // Send the family member data to the Laravel controller
+    
+    // Send the family member data to the Laravel controller
+    const sendData = async () => {
+        try {
+            const response = await axios.post('/profile', {familyMember: familyMember});
+            console.log(response.data);
+
+            // If the row is new, add the new member to the familyMembers array and set the id returned from the server
+            if (!isEdited) {
+                const newRow = addNewMember();
+                rowIndex = Array.from(newRow.parentNode.children).indexOf(newRow) - 1;
+                familyMembers.push(familyMember);
+                familyMembers[rowIndex].id = response.data.id;
+            }
+
+        } catch (error) {
+            console.log(error.response.data);
+        }
+    };
+
+    sendData();
+   
 
     //Hide save button
     const saveBtn = row.querySelector('.save-btn');
     saveBtn.style.display = 'none';
+
+    // Disable the save button after saving
+    //saveBtn.disabled = true;
 
     //Show edit button
     const editBtn = row.querySelector('.edit-btn');

@@ -51,6 +51,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (Schema::hasTable('users')) {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('first_name');
             $table->dropColumn('last_name');
@@ -70,6 +71,9 @@ return new class extends Migration
             $table->dropColumn('ID_number');
             $table->dropColumn('passport_number');
             $table->dropColumn('family_member_id');
-        });
+
+
+            });
+        }
     }
 };
