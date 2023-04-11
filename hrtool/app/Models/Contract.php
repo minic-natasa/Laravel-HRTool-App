@@ -22,8 +22,6 @@ class Contract extends Model
         'gross_salary_2',
         'location_of_work',
         'transportation',
-        'professional_qualifications_level',
-        'professional_requirements_per_job_systematisation',
         'status',
         'annex_id',
     ];

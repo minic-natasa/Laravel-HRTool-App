@@ -158,6 +158,31 @@
                             </div>
                         </div>
 -->
+
+                        <div class="form-group row">
+                            <label for="professional_qualifications_level" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Qualifications Level:</label>
+                            <div class="col-md-6">
+                                <select name="professional_qualifications_level" class="form-control">
+                                    <option value="I" {{ $user->professional_qualifications_level == 'I' ? 'selected' : '' }}>I</option>
+                                    <option value="II" {{ $user->professional_qualifications_level == 'II' ? 'selected' : '' }}>II</option>
+                                    <option value="III" {{ $user->professional_qualifications_level == 'III' ? 'selected' : '' }}>III</option>
+                                    <option value="IV" {{ $user->professional_qualifications_level == 'IV' ? 'selected' : '' }}>IV</option>
+                                    <option value="V" {{ $user->professional_qualifications_level == 'V' ? 'selected' : '' }}>V</option>
+                                    <option value="VI" {{ $user->professional_qualifications_level == 'VI' ? 'selected' : '' }}>VI</option>
+                                    <option value="VII" {{ $user->professional_qualifications_level == 'VII' ? 'selected' : '' }}>VII</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="profession" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Profession:</label>
+                            <div class="col-md-6">
+                                <input type="text" name="profession" class="form-control" value="{{ old('profession', $user->profession) }}">
+                            </div>
+                        </div>
+
+
+
                         <div class="form-group row">
                             <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager:</label>
                             <div class="col-md-6">

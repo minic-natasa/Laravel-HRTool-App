@@ -113,6 +113,12 @@
                     <h5 class="card-title">Slava</h5>
                     <p class="card-text">{{ Auth::User()->slava }}</p>
 
+                    <h5 class="card-title">Professional Qualifications Level</h5>
+                    <p class="card-text">{{ Auth::User()->professional_qualifications_level }}</p>
+
+                    <h5 class="card-title">Profession</h5>
+                    <p class="card-text">{{ Auth::User()->profession }}</p>
+
                 </div>
 
             </div>

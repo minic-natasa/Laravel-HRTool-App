@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('organization_id');
+            $table->string('professional_qualifications_level');
+            $table->string('professional_requirements_per_job_systematisation');
             $table->timestamps();
 
             $table->foreign('organization_id')->references('id')->on('organizations');

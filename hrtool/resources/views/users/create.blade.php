@@ -287,6 +287,39 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                                <select id="professional_qualifications_level" class="form-control @error('professional_qualifications_level') is-invalid @enderror" name="professional_qualifications_level" required>
+                                    <option value=""> -- Select professional qualifications level -- </option>
+                                    <option value="I" {{ old('professional_qualifications_level') == 'I' ? 'selected' : '' }}>I</option>
+                                    <option value="II" {{ old('professional_qualifications_level') == 'II' ? 'selected' : '' }}>II</option>
+                                    <option value="III" {{ old('professional_qualifications_level') == 'III' ? 'selected' : '' }}>III</option>
+                                    <option value="IV" {{ old('professional_qualifications_level') == 'IV' ? 'selected' : '' }}>IV</option>
+                                    <option value="V" {{ old('professional_qualifications_level') == 'V' ? 'selected' : '' }}>V</option>
+                                    <option value="VI" {{ old('professional_qualifications_level') == 'VI' ? 'selected' : '' }}>VI</option>
+                                    <option value="VII" {{ old('professional_qualifications_level') == 'VII' ? 'selected' : '' }}>VII</option>
+                                </select>
+                                @error('type_of_contract')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="profession" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Profession') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="profession" type="text" class="form-control @error('profession') is-invalid @enderror" name="profession" value="{{ old('profession') }}" required autocomplete="profession" autofocus>
+
+                                @error('profession')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
 
                         <div class="form-group row">
                             <label class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Manager') }}</label>

@@ -146,6 +146,8 @@
                     <h5 class="card-title">Slava</h5>
                     <p class="card-text">{{ $user->slava }}</p>
 
+
+
                 </div>
 
             </div>
@@ -158,8 +160,17 @@
                     <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
                 </div>
 
+                <div class="card card-body flex-item" style="flex: 1;">
+                    <h4 class="card-title" style="margin-bottom: 15px;">EDUCATION</h4>
+                    <h5 class="card-title">Professional Qualifications Level</h5>
+                    <p class="card-text">{{ $user->professional_qualifications_level }}</p>
+
+                    <h5 class="card-title">Profession</h5>
+                    <p class="card-text">{{ $user->profession }}</p>
+                </div>
 
 
+                <!--
                 <div class="card card-body flex-item" style="flex: 1;">
 
                     <h4 class="card-title" style="margin-bottom: 15px;">TEAM</h4>
@@ -176,7 +187,7 @@
                     @endif
 
                 </div>
-
+                    -->
                 <div class="card card-body flex-item" style="flex: 1;">
                     <h4 class="card-title" style="margin-bottom: 15px;">FAMILY DETAILS</h4>
 

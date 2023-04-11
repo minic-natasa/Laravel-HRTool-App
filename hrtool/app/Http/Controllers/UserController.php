@@ -50,9 +50,11 @@ class UserController extends Controller
             'ID_number' => 'required|integer|unique:users,ID_number',
             'passport_number' => 'required|integer|unique:users,passport_number',
             'family_member_id' => 'nullable|exists:family_members,id',
+            'professional_qualifications_level'  => 'required|string',
+            'profession'  => 'required|string',
         ]);
 
-     
+
 
         $user = new User([
             'email' => $request->input('email'),
@@ -75,7 +77,10 @@ class UserController extends Controller
             'jmbg' => $request->input('jmbg'),
             'ID_number' => $request->input('ID_number'),
             'passport_number' => $request->input('passport_number'),
-           
+            'professional_qualifications_level' => $request->input('professional_qualifications_level'),
+            'profession' => $request->input('profession'),
+
+
         ]);
 
         $user->save();
@@ -96,7 +101,7 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-           
+
             'first_name' => 'required',
             'last_name' => 'required',
             'name_of_one_parent' => 'required',
@@ -115,8 +120,10 @@ class UserController extends Controller
             'jmbg' => 'required',
             'ID_number' => 'required',
             'passport_number' => 'required',
-            
-            
+            'professional_qualifications_level'  => 'required',
+            'profession'  => 'required',
+
+
         ]);
 
         $user = User::find($id);
@@ -140,6 +147,8 @@ class UserController extends Controller
         $user->jmbg = $request->input('jmbg');
         $user->ID_number = $request->input('ID_number');
         $user->passport_number = $request->input('passport_number');
+        $user->professional_qualifications_level = $request->input('professional_qualifications_level');
+        $user->profession = $request->input('profession');
 
         $user->save();
 

@@ -61,6 +61,28 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="professional_qualifications_level" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Qualifications Level:</label>
+                            <div class="col-md-6">
+                                <select name="professional_qualifications_level" class="form-control">
+                                    <option value="I" {{ $position->professional_qualifications_level == 'I' ? 'selected' : '' }}>I</option>
+                                    <option value="II" {{ $position->professional_qualifications_level == 'II' ? 'selected' : '' }}>II</option>
+                                    <option value="III" {{ $position->professional_qualifications_level == 'III' ? 'selected' : '' }}>III</option>
+                                    <option value="IV" {{ $position->professional_qualifications_level == 'IV' ? 'selected' : '' }}>IV</option>
+                                    <option value="V" {{ $position->professional_qualifications_level == 'V' ? 'selected' : '' }}>V</option>
+                                    <option value="VI" {{ $position->professional_qualifications_level == 'VI' ? 'selected' : '' }}>VI</option>
+                                    <option value="VII" {{ $position->professional_qualifications_level == 'VII' ? 'selected' : '' }}>VII</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
+                            <div class="col-md-6">
+                                <input type="text" name="professional_requirements_per_job_systematisation" class="form-control" value="{{ old('professional_requirements_per_job_systematisation', $position->professional_requirements_per_job_systematisation) }}">
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">{{ __('Save') }}</button>

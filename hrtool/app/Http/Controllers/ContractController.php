@@ -59,8 +59,6 @@ class ContractController extends Controller
             'gross_salary_2' => 'required|integer',
             'location_of_work' => 'required|string',
             'transportation'  => 'required|string',
-            'professional_qualifications_level'  => 'required|string',
-            'professional_requirements_per_job_systematisation'  => 'required|string',
             'status' => 'required|string',
             'annex_id' => 'nullable|exists:annexes,id',
             'employee_number' => 'required|integer',
@@ -79,8 +77,6 @@ class ContractController extends Controller
             'gross_salary_2' => $request->input('gross_salary_2'),
             'location_of_work' => $request->input('location_of_work'),
             'transportation' => $request->input('transportation'),
-            'professional_qualifications_level' => $request->input('professional_qualifications_level'),
-            'professional_requirements_per_job_systematisation' => $request->input('professional_requirements_per_job_systematisation'),
             'status' => $request->input('status'),
             'annex_id' => $request->input('annex_id'),
             'employee_number' => $request->input('employee_number'),
@@ -129,8 +125,6 @@ class ContractController extends Controller
             'gross_salary_2' => 'required',
             'location_of_work' => 'required',
             'transportation'  => 'required',
-            'professional_qualifications_level'  => 'required',
-            'professional_requirements_per_job_systematisation'  => 'required',
         ]);
 
 
@@ -146,8 +140,6 @@ class ContractController extends Controller
         $contract->gross_salary_2 = $request->input('gross_salary_2');
         $contract->location_of_work = $request->input('location_of_work');
         $contract->transportation = $request->input('transportation');
-        $contract->professional_qualifications_level = $request->input('professional_qualifications_level');
-        $contract->professional_requirements_per_job_systematisation = $request->input('professional_requirements_per_job_systematisation');
 
         $contract->save();
 

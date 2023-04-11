@@ -27,8 +27,6 @@ return new class extends Migration
             $table->float('gross_salary_2');
             $table->string('location_of_work');
             $table->string('transportation');
-            $table->string('professional_qualifications_level');
-            $table->string('professional_requirements_per_job_systematisation');
             $table->string('status');
             $table->unsignedBigInteger('annex_id')->nullable();
 

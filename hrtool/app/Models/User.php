@@ -41,6 +41,8 @@ class User extends Authenticatable
         'emergency_contact_number',
         'family_members_id',
         'manager',
+        'professional_qualifications_level',
+        'profession',
 
     ];
 

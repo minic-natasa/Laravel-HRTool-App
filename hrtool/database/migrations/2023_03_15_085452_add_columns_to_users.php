@@ -31,6 +31,8 @@ return new class extends Migration
             $table->bigInteger('ID_number')->unique();
             $table->bigInteger('passport_number')->unique();
             $table->unsignedBigInteger('family_member_id')->nullable();
+            $table->string('professional_qualifications_level');
+            $table->string('profession');
             $table->foreign('family_member_id')->references('id')->on('family_members')->onDelete('set null');
 
             /*
@@ -65,6 +67,8 @@ return new class extends Migration
             $table->dropColumn('bank_account_number');
             $table->dropColumn('emergency_contact_name');
             $table->dropColumn('emergency_contact_number');
+            $table->dropColumn('professional_qualifications_level');
+            $table->dropColumn('profession');
             //$table->dropColumn('manager_id');
             $table->dropColumn('employee_number');
             $table->dropColumn('jmbg');

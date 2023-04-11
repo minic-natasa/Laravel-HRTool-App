@@ -133,6 +133,7 @@
                                 <div>
                                     <div class="p-2">
                                         <h3 class="font-size-16"><strong> Employee: {{$employee->first_name}} {{$employee->last_name}}</strong></h3>
+                                        <p>Professional Qualifications Level: {{$employee->professional_qualifications_level}} </p>
                                     </div>
                                     <div class="">
                                         <div class="table-responsive">
@@ -194,7 +195,7 @@
         @endif
         @endforeach
 
-        
+
     </div>
 </div>
 
