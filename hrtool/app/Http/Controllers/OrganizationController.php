@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Organization;
 use App\Models\User;
@@ -15,8 +16,13 @@ class OrganizationController extends Controller
     {
         //displays a list of all organizations
         $organizations = Organization::all();
-
         return view('organizations.index', compact('organizations'));
+    }
+
+    public function organization_card(string $id)
+    {
+        $organization = Organization::find($id);
+        return view('organizations.organization-card', compact('organization'));
     }
 
     /**
@@ -44,7 +50,7 @@ class OrganizationController extends Controller
             'parent_id' => 'nullable|exists:organizations,id',
             'manager_id' => 'nullable|exists:users,id',
         ]);
-    
+
         // Create the new organization
         $organization = new Organization([
             'name' => $request->input('name'),
@@ -52,12 +58,12 @@ class OrganizationController extends Controller
             'manager_id' => $request->input('manager_id'),
         ]);
         $organization->save();
-    
+
         // Redirect to the index page with a success message
         return redirect()->route('organizations.index')
             ->with('success', 'Organization created successfully.');
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -69,10 +75,16 @@ class OrganizationController extends Controller
         //displays a form for editing an existing organization
         $organizations = Organization::all();
 
-         // Retrieve all users who are managers
-         $managers = User::where('manager', 1)->get();
+        // Retrieve all users who are managers
+        $managers = User::where('manager', 1)->get();
 
-        return view('organizations.edit', compact('organization', 'organizations', 'managers'));
+        // Retrieve all contracts from managers
+        //$contracts = Contract::whereIn('user_id', $managers->pluck('id'))->get();
+
+        //Retrieve all contracts from DB
+        $contracts = Contract::all();
+
+        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts'));
     }
 
     /**

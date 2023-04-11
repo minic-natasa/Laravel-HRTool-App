@@ -119,7 +119,7 @@
                     <i class="ri-fullscreen-line"></i>
                 </button>
             </div>
-<!--
+            <!--
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="ri-notification-3-line"></i>
@@ -207,7 +207,7 @@
 -->
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{asset('assets\images\users\Portrait_Placeholder.png')}}" alt="Header Avatar">
+                    <img class="rounded-circle header-profile-user" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
@@ -223,7 +223,7 @@
                         @csrf
 
                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                        <i class="ri-logout-circle-r-line"></i> {{ __(' Log Out') }}
+                            <i class="ri-logout-circle-r-line"></i> {{ __(' Log Out') }}
                         </x-dropdown-link>
                     </form>
                 </div>

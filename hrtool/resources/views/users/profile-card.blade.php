@@ -31,7 +31,7 @@
                 <div class="card card-body flex-item" style="flex: 1;">
 
                     <h4 class="card-title" style="margin-bottom: 15px;">PROFILE IMAGE</h4>
-                    <img src="{{asset('assets\images\users\Portrait_Placeholder.png')}}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Image">
+                    <img src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Image">
                     <!-- <a href="#" class="btn btn-primary waves-effect waves-light">Change Profile Image</a> -->
 
                     <h5 class="card-title" style="margin-top: 20px;">First Name</h5>
@@ -92,11 +92,27 @@
                         }
                     </script>
 
+
                     <h5 class="card-title">Position</h5>
-                    <p class="card-text">Position</p>
+                    <p class="card-text">
+                        @php
+                        $positions = [];
+                        @endphp
+                        @foreach($user->contract as $contr)
+                        @foreach($contr->organization->position as $pos)
+                        @if($pos->id == $contr->position)
+                        @php
+                        $positions[] = $pos->name;
+                        @endphp
+                        @endif
+                        @endforeach
+                        @endforeach
+                        @if(count($positions) > 0)
+                        {{ $positions[0] }}
+                        @if(count($positions) > 1)
+                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </p>
                 </div>
             </div>
-
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
 
@@ -138,8 +154,8 @@
 
 
                 <div class="card card-body flex-item" style="flex: 1;">
-                    <h4 class="card-title" style="margin-bottom: 15px;">CONTRACT</h4>
-                    <p class="card-text">Pop-up</p>
+                    <h4 class="card-title" style="margin-bottom: 15px;">SEE CONTRACTS</h4>
+                    <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
                 </div>
 
 

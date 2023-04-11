@@ -33,4 +33,15 @@ class Organization extends Model
         //return $this->belongsTo(User::class, 'manager_id')->value('name') ?? null;
     }
 
+    public function contract()
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function position()
+    {
+        return $this->hasMany(Position::class);
+    }
+
+
 }

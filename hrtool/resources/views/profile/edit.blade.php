@@ -15,8 +15,8 @@
                       <div class="d-flex align-items-center">
                           <div class="page-title-right">
                               <ol class="breadcrumb m-0">
-                                  <li class="breadcrumb-item"><a href="javascript: void(0);">HRTool</a></li>
-                                  <li class="breadcrumb-item active">Profile</li>
+                                  <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                                  <li class="breadcrumb-item"><a href="{{ route('profile.show') }}">Profile</a>
                                   <li class="breadcrumb-item active">Edit Profile</li>
                               </ol>
                           </div>
@@ -25,7 +25,6 @@
               </div>
           </div>
           <!-- end page title -->
-
 
 
           <div class="space-y-6">

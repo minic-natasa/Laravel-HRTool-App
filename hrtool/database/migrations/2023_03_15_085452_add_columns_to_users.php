@@ -12,25 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //$table->string('first_name');
-            //$table->string('last_name');
-            //$table->string('name_of_one_parent');
-            //$table->date('birth_date')->nullable();
-            //$table->string('address_in_ID');
-            //$table->string('current_address');
-            //$table->string('slava');
-            //$table->string('private_email');
-            //$table->string('mobile');
-            //$table->string('bank_account_number');
-            //$table->string('emergency_contact_name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('name_of_one_parent');
+            $table->date('birth_date')->nullable();
+            $table->string('address_in_ID');
+            $table->string('current_address');
+            $table->string('slava');
+            $table->string('private_email');
+            $table->string('mobile');
+            $table->string('bank_account_number');
+            $table->string('emergency_contact_name');
+            $table->string('emergency_contact_number');
             //$table->unsignedBigInteger('manager_id')->nullable();
             //$table->foreign('manager_id')->references('id')->on('users');
-            //$table->bigInteger('employee_number')->unique();
-            //$table->bigInteger('jmbg')->unique();
-            //$table->bigInteger('ID_number')->unique();
-            //$table->bigInteger('passport_number')->unique();
-            //$table->unsignedBigInteger('family_member_id')->nullable();
-            //$table->foreign('family_member_id')->references('id')->on('family_members')->onDelete('set null');
+            $table->bigInteger('employee_number')->unique();
+            $table->bigInteger('jmbg')->unique();
+            $table->bigInteger('ID_number')->unique();
+            $table->bigInteger('passport_number')->unique();
+            $table->unsignedBigInteger('family_member_id')->nullable();
+            $table->foreign('family_member_id')->references('id')->on('family_members')->onDelete('set null');
 
             /*
             DB::table('users')
@@ -63,9 +64,8 @@ return new class extends Migration
             $table->dropColumn('mobile');
             $table->dropColumn('bank_account_number');
             $table->dropColumn('emergency_contact_name');
-            // Drop the foreign key constraint
-            $table->dropForeign('users_manager_id_foreign');
-            $table->dropColumn('manager_id');
+            $table->dropColumn('emergency_contact_number');
+            //$table->dropColumn('manager_id');
             $table->dropColumn('employee_number');
             $table->dropColumn('jmbg');
             $table->dropColumn('ID_number');

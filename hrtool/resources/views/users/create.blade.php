@@ -8,12 +8,15 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">CREATE NEW EMPLOYEE</h4>
+                <div class="d-flex align-items-center">
+                        <a href="{{ route('users.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
+                       <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW EMPLOYEE</h4>
+                    </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">HRTool</a></li>
-                            <li class="breadcrumb-item active">Employees</li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Employees</a>
                             <li class="breadcrumb-item active">Create New Employee</li>
                         </ol>
                     </div>
@@ -21,16 +24,6 @@
             </div>
         </div>
         <!-- end page title -->
-
-        <div class="py-2">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="{{ route('users.index') }}" class="btn btn-primary mb-3">All Employees</a>
-                </div>
-            </div>
-
-        </div>
-
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
