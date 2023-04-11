@@ -22,8 +22,10 @@ class ContractController extends Controller
 
     public function profile($id)
     {
+
         $employee = User::find($id);
-        return view('contracts.profile', ['user_id' => $id], compact('employee'));
+        $contracts = Contract::where('employee_number', $id)->get();
+        return view('contracts.profile', ['user_id' => $id], compact('employee', 'contracts'));
     }
 
     /**
@@ -50,7 +52,7 @@ class ContractController extends Controller
             'position' => 'required|string',
             'organization_id' => 'required|string',
             'type_of_contract' => 'required|string',
-            'contract_number' => 'required|integer',
+            'contract_number' => 'required|string',
             'contract_duration' => 'required|string',
             'net_salary' => 'required|integer',
             'gross_salary_1' => 'required|integer',
@@ -86,7 +88,7 @@ class ContractController extends Controller
 
         $contract->save();
 
-        return redirect('/dashboard')->with('success', 'Contract created successfully!');
+        return redirect('/contracts')->with('success', 'Contract created successfully!');
     }
 
     /**

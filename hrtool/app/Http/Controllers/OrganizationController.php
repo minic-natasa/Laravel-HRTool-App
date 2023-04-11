@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Organization;
 use App\Models\User;
@@ -77,7 +78,13 @@ class OrganizationController extends Controller
         // Retrieve all users who are managers
         $managers = User::where('manager', 1)->get();
 
-        return view('organizations.edit', compact('organization', 'organizations', 'managers'));
+        // Retrieve all contracts from managers
+        //$contracts = Contract::whereIn('user_id', $managers->pluck('id'))->get();
+
+        //Retrieve all contracts from DB
+        $contracts = Contract::all();
+
+        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts'));
     }
 
     /**

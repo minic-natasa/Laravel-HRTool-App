@@ -59,15 +59,24 @@
                     <h5 class="card-title">Phone Number</h5>
                     <p class="card-text" id="phone">{{ Auth::User()->mobile }}</p>
 
-                    <h5 class="card-title">Position</h5>
-                    <p class="card-text">@foreach(Auth::User()->contract as $contr)
+                    <h5 class="card-title">Position</h5> <!-- link to position overview -->
+                    <p class="card-text">
+                        @php
+                        $positions = [];
+                        @endphp
+                        @foreach(Auth::User()->contract as $contr)
                         @foreach($contr->organization->position as $pos)
-                        @if($pos->id == $contr->position) <!-- add && status active. only one active contract at the time -->
-                        {{ $pos->name }}
+                        @if($pos->id == $contr->position)
+                        @php
+                        $positions[] = $pos->name;
+                        @endphp
                         @endif
                         @endforeach
                         @endforeach
-                    </p>
+                        @if(count($positions) > 0)
+                        {{ $positions[0] }}
+                        @if(count($positions) > 1)
+                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </p>
                 </div>
             </div>
 

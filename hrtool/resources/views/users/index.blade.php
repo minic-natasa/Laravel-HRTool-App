@@ -84,14 +84,23 @@
                                             <td>{{ $user->email }}</td>
                                             <!--  <td>Team</td> -->
                                             <td>
+                                                @php
+                                                $positions = [];
+                                                @endphp
                                                 @foreach($user->contract as $contr)
                                                 @foreach($contr->organization->position as $pos)
                                                 @if($pos->id == $contr->position)
-                                                {{ $pos->name }}
+                                                @php
+                                                $positions[] = $pos->name;
+                                                @endphp
                                                 @endif
                                                 @endforeach
                                                 @endforeach
-                                            </td>
+                                                @if(count($positions) > 0)
+                                                {{ $positions[0] }}
+                                                @if(count($positions) > 1)
+                                                @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </td>
+
                                             <td>{{ $user->mobile }}</td>
                                             <td>
 

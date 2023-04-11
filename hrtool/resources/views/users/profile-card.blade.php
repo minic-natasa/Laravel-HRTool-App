@@ -92,104 +92,114 @@
                         }
                     </script>
 
-                    
+
                     <h5 class="card-title">Position</h5>
-                    <p class="card-text">@foreach($user->contract as $contr)
-                                                    @foreach($contr->organization->position as $pos)
-                                                        @if($pos->id == $contr->position) <!-- add && status active. only one active contract at the time -->
-                                                            {{ $pos->name }}
-                                                @endif
-                                                    @endforeach
-                                                @endforeach</p>
+                    <p class="card-text">
+                        @php
+                        $positions = [];
+                        @endphp
+                        @foreach($user->contract as $contr)
+                        @foreach($contr->organization->position as $pos)
+                        @if($pos->id == $contr->position)
+                        @php
+                        $positions[] = $pos->name;
+                        @endphp
+                        @endif
+                        @endforeach
+                        @endforeach
+                        @if(count($positions) > 0)
+                        {{ $positions[0] }}
+                        @if(count($positions) > 1)
+                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </p>
                 </div>
             </div>
-                    <div class="col-lg-4 flex-item" style="flex: 1;">
+            <div class="col-lg-4 flex-item" style="flex: 1;">
 
 
-                        <div class="card card-body flex-item" style="flex: 1;">
-                            <h4 class="card-title" style="margin-bottom: 37px;">EMPLOYEE DETAILS</h4>
+                <div class="card card-body flex-item" style="flex: 1;">
+                    <h4 class="card-title" style="margin-bottom: 37px;">EMPLOYEE DETAILS</h4>
 
-                            <h5 class="card-title">Employee Number</h5>
-                            <p class="card-text">{{ $user->employee_number }}</p>
+                    <h5 class="card-title">Employee Number</h5>
+                    <p class="card-text">{{ $user->employee_number }}</p>
 
-                            <h5 class="card-title">JMBG</h5>
-                            <p class="card-text">{{ $user->jmbg }}</p>
+                    <h5 class="card-title">JMBG</h5>
+                    <p class="card-text">{{ $user->jmbg }}</p>
 
-                            <h5 class="card-title">ID number</h5>
-                            <p class="card-text">{{ $user->ID_number }}</p>
+                    <h5 class="card-title">ID number</h5>
+                    <p class="card-text">{{ $user->ID_number }}</p>
 
-                            <h5 class="card-title">Passport number</h5>
-                            <p class="card-text">{{ $user->passport_number }}</p>
+                    <h5 class="card-title">Passport number</h5>
+                    <p class="card-text">{{ $user->passport_number }}</p>
 
-                            <h5 class="card-title">Bank Account</h5>
-                            <p class="card-text">{{ $user->bank_account_number }}</p>
+                    <h5 class="card-title">Bank Account</h5>
+                    <p class="card-text">{{ $user->bank_account_number }}</p>
 
-                            <h5 class="card-title">Private Email</h5>
-                            <p class="card-text">{{ $user->private_email }}</p>
+                    <h5 class="card-title">Private Email</h5>
+                    <p class="card-text">{{ $user->private_email }}</p>
 
-                            <h5 class="card-title">Address in ID</h5>
-                            <p class="card-text">{{ $user->address_in_ID }}</p>
+                    <h5 class="card-title">Address in ID</h5>
+                    <p class="card-text">{{ $user->address_in_ID }}</p>
 
-                            <h5 class="card-title">Current Address</h5>
-                            <p class="card-text">{{ $user->current_address }}</p>
+                    <h5 class="card-title">Current Address</h5>
+                    <p class="card-text">{{ $user->current_address }}</p>
 
-                            <h5 class="card-title">Slava</h5>
-                            <p class="card-text">{{ $user->slava }}</p>
-
-                        </div>
-
-                    </div>
-                    <div class="col-lg-4 flex-item" style="flex: 1;">
-
-
-
-                        <div class="card card-body flex-item" style="flex: 1;">
-                            <h4 class="card-title" style="margin-bottom: 15px;">SEE CONTRACTS</h4>
-                            <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
-                        </div>
-
-
-
-                        <div class="card card-body flex-item" style="flex: 1;">
-
-                            <h4 class="card-title" style="margin-bottom: 15px;">TEAM</h4>
-                            <h5 class="card-title">Lead</h5>
-                            <p class="card-text">Ime Prezime</p>
-
-                            <h5 class="card-title">Manager</h5>
-                            @if(!($user->manager))
-                            <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: No </div>
-                            @endif
-
-                            @if($user->manager)
-                            <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: Yes</div>
-                            @endif
-
-                        </div>
-
-                        <div class="card card-body flex-item" style="flex: 1;">
-                            <h4 class="card-title" style="margin-bottom: 15px;">FAMILY DETAILS</h4>
-
-                            <h5 class="card-title">Emergency Contact Name</h5>
-                            <p class="card-text">{{ $user->emergency_contact_name }}</p>
-
-                            <h5 class="card-title">Emergency Contact Number</h5>
-                            <p class="card-text">{{ $user->emergency_contact_number }}</p>
-
-                            <h5 class="card-title">See Family Members</h5>
-                            <p class="card-text">Pop-Up</p>
-
-                        </div>
-
-
-
-                    </div>
+                    <h5 class="card-title">Slava</h5>
+                    <p class="card-text">{{ $user->slava }}</p>
 
                 </div>
-                <!-- end row -->
+
+            </div>
+            <div class="col-lg-4 flex-item" style="flex: 1;">
+
+
+
+                <div class="card card-body flex-item" style="flex: 1;">
+                    <h4 class="card-title" style="margin-bottom: 15px;">SEE CONTRACTS</h4>
+                    <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
+                </div>
+
+
+
+                <div class="card card-body flex-item" style="flex: 1;">
+
+                    <h4 class="card-title" style="margin-bottom: 15px;">TEAM</h4>
+                    <h5 class="card-title">Lead</h5>
+                    <p class="card-text">Ime Prezime</p>
+
+                    <h5 class="card-title">Manager</h5>
+                    @if(!($user->manager))
+                    <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: No </div>
+                    @endif
+
+                    @if($user->manager)
+                    <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: Yes</div>
+                    @endif
+
+                </div>
+
+                <div class="card card-body flex-item" style="flex: 1;">
+                    <h4 class="card-title" style="margin-bottom: 15px;">FAMILY DETAILS</h4>
+
+                    <h5 class="card-title">Emergency Contact Name</h5>
+                    <p class="card-text">{{ $user->emergency_contact_name }}</p>
+
+                    <h5 class="card-title">Emergency Contact Number</h5>
+                    <p class="card-text">{{ $user->emergency_contact_number }}</p>
+
+                    <h5 class="card-title">See Family Members</h5>
+                    <p class="card-text">Pop-Up</p>
+
+                </div>
+
+
 
             </div>
 
         </div>
-        <!-- End Page-content -->
-        @endsection
+        <!-- end row -->
+
+    </div>
+
+</div>
+<!-- End Page-content -->
+@endsection
