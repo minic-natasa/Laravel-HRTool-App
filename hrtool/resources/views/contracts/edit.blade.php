@@ -43,6 +43,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="first_day_on_job" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">First Day On Job:</label>
+                            <div class="col-md-6">
+                                <input type="date" name="first_day_on_job" class="form-control" value="{{ old('first_day_on_job', $contract->first_day_on_job) }}">
+                            </div>
+                        </div>
+
                         @php
                         $selectedOrganizationId = $contract->organization_id;
                         @endphp
@@ -122,12 +129,40 @@
                             </div>
                         </div>
 
+
                         <div class="form-group row">
                             <label for="contract_duration" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Contract Duration:</label>
                             <div class="col-md-6">
-                                <input type="text" name="contract_duration" class="form-control" value="{{ old('contract_duration', $contract->contract_duration) }}">
+                                <input id="contract_duration" type="text" name="contract_duration" class="form-control" value="{{ old('contract_duration', $contract->contract_duration) }}" placeholder="-- Enter unlimited or number of months --" required autocomplete="contract_duration">
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label for="probationary_period" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Probationary Period:</label>
+                            <div class="col-md-6">
+                                <input id="probationary_period" type="text" name="probationary_period" class="form-control" value="{{ old('probationary_period', $contract->probationary_period) }}" placeholder="-- Enter number of months--">
+                            </div>
+                        </div>
+
+
+
+                        <script>
+                            const contractDuration = document.querySelector('#contract_duration');
+                            const probationaryPeriod = document.querySelector('#probationary_period');
+
+                            // listen for changes to the contract duration input field
+                            contractDuration.addEventListener('change', function() {
+                                if (contractDuration.value !== 'unlimited') {
+                                    // set the value of the probationary period input field to 0 and disable it
+                                    probationaryPeriod.disabled = true;
+                                    probationaryPeriod.placeholder = '-- Select contract duration as unlimited in order to enable this field-- ';
+                                } else {
+                                    // enable the probationary period input field
+                                    probationaryPeriod.disabled = false;
+                                    probationaryPeriod.placeholder = '-- Enter number of months-- ';
+                                }
+                            });
+                        </script>
 
                         <div class="form-group row">
                             <label for="net_salary" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>

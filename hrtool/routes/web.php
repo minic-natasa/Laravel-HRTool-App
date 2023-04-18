@@ -69,10 +69,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{id}/contracts', 'profile')->name('contracts.profile');
         Route::get('/users/{id}/contracts/create', 'create')->name('contracts.create');
         Route::post('/contracts', 'store')->name('contracts.store');
-
         Route::get('/contracts/{id}/edit', 'edit')->name('contracts.edit');
         Route::put('/contracts/{id}', 'update')->name('contracts.update');
         Route::delete('/contracts/{id}', 'destroy')->name('contracts.destroy');
+        Route::get('/contracts/{id}/pdf', 'pdf')->name('contracts.pdf');
     });
 
     //Position

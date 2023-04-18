@@ -16,12 +16,14 @@ return new class extends Migration
             $table->timestamps();
 
             $table->date('start_date');
+            $table->date('first_day_on_job');
             $table->string('position');
             $table->unsignedBigInteger('organization_id');
             $table->unsignedBigInteger('employee_number');
             $table->string('type_of_contract');
             $table->string('contract_number');
             $table->string('contract_duration');
+            $table->tinyInteger('probationary_period');
             $table->float('net_salary');
             $table->float('gross_salary_1');
             $table->float('gross_salary_2');

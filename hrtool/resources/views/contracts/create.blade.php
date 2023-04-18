@@ -40,7 +40,7 @@
                     <input type="hidden" name="status" value="active">
                     <input type="hidden" name="employee_number" value="{{ $employee->id }}">
 
-                    Employee: {{$employee->first_name}} {{$employee->last_name}}
+                    Employee: {{$employee->first_name}} {{$employee->last_name}} <br><br>
 
                     <div class="form-group row">
                         <label for="start_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date') }}</label>
@@ -49,6 +49,20 @@
                             <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" value="{{ old('start_date') }}" required autocomplete="start_date">
 
                             @error('start_date')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="first_day_on_job" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('First Day On Job') }}</label>
+
+                        <div class="col-md-6">
+                            <input id="first_day_on_job" type="date" class="form-control @error('first_day_on_job') is-invalid @enderror" name="first_day_on_job" value="{{ old('first_day_on_job') }}" required autocomplete="first_day_on_job">
+
+                            @error('first_day_on_job')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -152,10 +166,8 @@
 
                     <div class="form-group row">
                         <label for="contract_duration" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Duration') }}</label>
-
                         <div class="col-md-6">
-                            <input id="contract_duration" type="text" class="form-control @error('contract_duration') is-invalid @enderror" name="contract_duration" value="{{ old('contract_duration') }}" required autocomplete="contract_duration">
-
+                            <input id="contract_duration" type="text" class="form-control @error('contract_duration') is-invalid @enderror" name="contract_duration" value="{{ old('contract_duration') }}" placeholder="-- Enter unlimited or number of months --" required autocomplete="contract_duration">
                             @error('contract_duration')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -163,6 +175,40 @@
                             @enderror
                         </div>
                     </div>
+
+
+                    <div class="form-group row" id="probationary_period_container">
+                        <label for="probationary_period" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Probationary Period') }}</label>
+                        <div class="col-md-6">
+                            <input id="probationary_period" type="text" class="form-control @error('probationary_period') is-invalid @enderror" name="probationary_period" placeholder="-- Select contract duration as unlimited in order to enable this field --" disabled>
+
+                            @error('probationary_period')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                    <script>
+                        const contractDuration = document.querySelector('#contract_duration');
+                        const probationaryPeriod = document.querySelector('#probationary_period');
+
+                        // listen for changes to the contract duration input field
+                        contractDuration.addEventListener('change', function() {
+                            if (contractDuration.value !== 'unlimited') {
+                                // set the value of the probationary period input field to 0 and disable it
+                                probationaryPeriod.disabled = true;
+                                probationaryPeriod.placeholder = '-- Select contract duration as unlimited in order to enable this field-- ';
+                            } else {
+                                // enable the probationary period input field
+                                probationaryPeriod.disabled = false;
+                                probationaryPeriod.placeholder = '-- Enter number of months-- ';
+                            }
+                        });
+                    </script>
+
 
                     <div class="form-group row">
                         <label for="net_salary" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Net Salary') }}</label>
@@ -242,7 +288,37 @@
                         </div>
                     </div>
 
-                   
+                    <script>
+                        // Get the Location of Work and Transportation select elements
+                        const locationSelect = document.getElementById('location_of_work');
+                        const transportationSelect = document.getElementById('transportation');
+
+                        // Add an event listener to the Location of Work select element
+                        locationSelect.addEventListener('change', function() {
+                            // If Hybrid is selected, show Private Car and Public Transportation options
+                            if (locationSelect.value === 'Hybrid') {
+                                transportationSelect.innerHTML = `
+                                <option value="">-- Select transportation type --</option>
+                                <option value="Public Transportation">Public Transportation</option>
+                                <option value="Private Car">Private Car</option>
+                                `;
+                            }
+                            // If Remote is selected, show Remote Allowance option
+                            else if (locationSelect.value === 'Remote') {
+                                transportationSelect.innerHTML = `
+                                <option value="Remote allowance">Remote allowance</option>
+                                `;
+                            }
+                            // If no option is selected, show the default option
+                            else {
+                                transportationSelect.innerHTML = `
+                                <option value=""> -- Select transportation type -- </option>
+                                `;
+                            }
+                        });
+                    </script>
+
+
                     <div class="form-group row mb-0">
                         <div class="col-md-6 offset-md-4">
                             <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">

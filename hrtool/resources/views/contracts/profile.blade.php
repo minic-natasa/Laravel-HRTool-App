@@ -8,38 +8,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-    <script>
-        function printContract(id) {
-            // hide the buttons
-            var buttons = document.getElementsByClassName('d-print-none');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].style.display = 'none';
-            }
-
-            // get the content to print
-            var content = document.getElementById('contract-' + id).innerHTML;
-
-            // open a new window and write the content to it
-            var printWindow = window.open('', '', 'height=500,width=800');
-            printWindow.document.write('<html><head><title>Contract</title>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(content);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-
-            // focus and print the window
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-
-            // show the buttons again
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].style.display = 'block';
-            }
-        }
-    </script>
-
 </head>
 
 <div class="page-content">
@@ -60,7 +28,6 @@
                     </div>
 
                     <div class="d-flex align-items-center">
-                        <a href="javascript:window.print()" class="btn btn-primary waves-effect waves-light" style="margin-right:5px"><i class="fa fa-print"></i></a>
                         <a href="{{route('contracts.create', ['id' => $user_id])}}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Create"></i> Create New Contract</a>
                     </div>
 
@@ -106,11 +73,29 @@
                                     <strong>Start Date:</strong><br>
                                     {{ date('d.m.Y.', strtotime($contract->start_date)) }}<br><br>
 
-                                    <strong>Contract Duration:</strong><br>
-                                    {{ $contract->contract_duration }} months<br><br>
+                                    <strong>First Day On Job:</strong><br>
+                                    {{ date('d.m.Y.', strtotime($contract->first_day_on_job)) }}<br><br>
 
+                                    <strong>Contract Duration:</strong><br>
+                                    @if($contract->contract_duration == 'unlimited')
+                                    Unlimited<br><br>
+                                    @else
+                                    {{ $contract->contract_duration }} {{ $contract->contract_duration == 1 ? 'month' : 'months' }}<br><br>
                                     <strong>End Date:</strong><br>
                                     {{ date('d.m.Y.', strtotime('+' . $contract->contract_duration . ' months', strtotime($contract->start_date))) }}
+                                    @endif
+
+
+                                    @if($contract->contract_duration === 'unlimited' && $contract->probationary_period !== null && $contract->probationary_period !== 0)
+                                    <strong>Probationary Period:</strong><br>
+                                    {{ $contract->probationary_period }} {{ $contract->probationary_period == 1 ? 'month' : 'months' }}<br><br>
+                                    <strong>End Date For Probationary Period:</strong><br>
+                                    {{ date('d.m.Y.', strtotime('+' . $contract->probationary_period . ' months', strtotime($contract->start_date))) }}
+                                    @endif
+
+
+
+
                                 </address>
                             </div>
 
@@ -133,7 +118,7 @@
                                 <div>
                                     <div class="p-2">
                                         <h3 class="font-size-16"><strong> Employee: {{$employee->first_name}} {{$employee->last_name}}</strong></h3>
-                                        <p>Professional Qualifications Level: {{$employee->professional_qualifications_level}} </p>
+                                        <p>Professional Qualifications Level: {{$employee->professional_qualifications_level}} - {{$employee->profession}} </p>
                                     </div>
                                     <div class="">
                                         <div class="table-responsive">
@@ -157,9 +142,10 @@
                                                             @endif
                                                             @endforeach
                                                         </td>
-                                                        <td class="text-center">{{$contract->net_salary}}</td>
-                                                        <td class="text-center">{{$contract->gross_salary_1}}</td>
-                                                        <td class="text-center">{{$contract->gross_salary_2}}</td>
+                                                        <td class="text-center">{{ number_format($contract->net_salary, 2, ',', '.') }} RSD</td>
+                                                        <td class="text-center">{{ number_format($contract->gross_salary_1, 2, ',', '.') }} RSD</td>
+                                                        <td class="text-center">{{ number_format($contract->gross_salary_2, 2, ',', '.') }} RSD</td>
+
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -168,7 +154,7 @@
                                         <!-- Print button -->
                                         <div class="d-print-none">
                                             <div class="float-end">
-                                                <a href="javascript:void(0)" class="btn btn-primary waves-effect waves-light" onclick="printContract('{{ $contract->id }}')" style="margin-right:10px"><i class="fa fa-print"></i> Print</a>
+                                                <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print</a>
                                             </div>
                                         </div>
 

@@ -13,7 +13,7 @@
                                 <h4 class="mb-sm-0">Profile Information</h4>
                             </div>
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {{ __("Update your account's profile information and email address.") }}
+                                {{ __("Update your account's profile information.") }}
                             </p>
                         </div>
                     </div>

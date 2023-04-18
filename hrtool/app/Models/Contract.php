@@ -11,12 +11,14 @@ class Contract extends Model
 
     protected $fillable = [
         'start_date',
+        'first_day_on_job',
         'position',
         'organization_id',
         'employee_number',
         'type_of_contract',
         'contract_number',
         'contract_duration',
+        'probationary_period',
         'net_salary',
         'gross_salary_1',
         'gross_salary_2',
