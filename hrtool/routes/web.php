@@ -72,7 +72,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/contracts/{id}/edit', 'edit')->name('contracts.edit');
         Route::put('/contracts/{id}', 'update')->name('contracts.update');
         Route::delete('/contracts/{id}', 'destroy')->name('contracts.destroy');
+
+        //Printing
         Route::get('/contracts/{id}/pdf', 'pdf')->name('contracts.pdf');
+        Route::get('/contracts/{id}/obaveštenje-o-mobingu', 'mob')->name('contracts.mob');
+        Route::get('/contracts/{id}/obaveštenje-o-zakonu-o-uzbunjivačima', 'uzb')->name('contracts.uzb');
+        Route::get('/contracts/{id}/zahtev-za-korišćenje-godišnjeg-odmora', 'odm')->name('contracts.odm');
+        Route::get('/contracts/{id}/sporazum-o-poverljivosti', 'nda')->name('contracts.nda');
+        Route::get('/contracts/{id}/revers', 'rev')->name('contracts.rev');
     });
 
     //Position
@@ -84,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/positions/{id}', 'update')->name('positions.update');
         Route::delete('/positions/{id}', 'destroy')->name('positions.destroy');
         Route::get('/positions/get-by-organization', [PositionController::class, 'getByOrganization'])->name('positions.get-by-organization');
+        Route::get('/positions/{id}/position-card', 'position_card')->name('positions.position-card');
     });
 });
 

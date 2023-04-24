@@ -25,7 +25,6 @@ class Contract extends Model
         'location_of_work',
         'transportation',
         'status',
-        'annex_id',
     ];
 
     public function employee()
@@ -38,8 +37,8 @@ class Contract extends Model
         return $this->belongsTo(Organization::class, 'organization_id');
     }
 
-    public function annex() //Contract has many annexes
+    public function annexes() //Contract has many annexes
     {
-        return $this->hasMany(Annex::class, 'annex_id');
+        return $this->hasMany(Annex::class);
     }
 }

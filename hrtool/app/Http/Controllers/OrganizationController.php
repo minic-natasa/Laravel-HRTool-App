@@ -21,8 +21,9 @@ class OrganizationController extends Controller
 
     public function organization_card(string $id)
     {
+        $contracts = Contract::all();
         $organization = Organization::find($id);
-        return view('organizations.organization-card', compact('organization'));
+        return view('organizations.organization-card', compact('organization', 'contracts'));
     }
 
     /**

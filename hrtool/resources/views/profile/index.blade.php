@@ -10,11 +10,31 @@
 
 <head>
     <script src="{{ asset('assets/js/familymembers.js') }}"></script>
+
+    <style>
+        .page-content {
+            background-color: #eff3f6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .card {
+            margin-bottom: 3.9vh;
+        }
+
+        h5 {
+            margin-bottom: 3px !important;
+            font-size: 13px !important;
+        }
+    </style>
+
 </head>
 
 <div class="page-content">
     <div class="container-fluid">
-
 
         <!-- start page title -->
         <div class="row">
@@ -24,7 +44,7 @@
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">MY PROFILE</h4>
                     </div>
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Edit"></i> Edit Profile Informations</a>
+                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;"><i class="fas fa-pencil-alt" title="Edit"></i> Edit Profile Informations</a>
                     </div>
                 </div>
             </div>
@@ -36,12 +56,10 @@
         <div class="row flex-container" style="display: flex;">
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
-                <div class="card card-body flex-item" style="flex: 1;">
+                <div class="card card-body flex-item" style="flex: 1;  margin-bottom: 1vh; height: 67vh; overflow-y: auto;">
+                    <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 130px; margin-bottom:10px" alt="Profile Image">
 
-                    <h4 class="card-title" style="margin-bottom: 15px;">PROFILE IMAGE</h4>
-                    <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Image">
-
-                    <h5 class="card-title" style="margin-top: 20px;">First Name</h5>
+                    <h5 class="card-title" style="margin-top: 10px;">First Name</h5>
                     <p class="card-text">{{ Auth::User()->first_name }}</p>
 
                     <h5 class="card-title">Name of One Parent</h5>
@@ -57,34 +75,14 @@
                     <p class="card-text" id="email">{{ Auth::User()->email }}</p>
 
                     <h5 class="card-title">Phone Number</h5>
-                    <p class="card-text" id="phone">{{ Auth::User()->mobile }}</p>
-
-                    <h5 class="card-title">Position</h5> <!-- link to position overview -->
-                    <p class="card-text">
-                        @php
-                        $positions = [];
-                        @endphp
-                        @foreach(Auth::User()->contract as $contr)
-                        @foreach($contr->organization->position as $pos)
-                        @if($pos->id == $contr->position)
-                        @php
-                        $positions[] = $pos->name;
-                        @endphp
-                        @endif
-                        @endforeach
-                        @endforeach
-                        @if(count($positions) > 0)
-                        {{ $positions[0] }}
-                        @if(count($positions) > 1)
-                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </p>
+                    <p class="card-text" style="margin-bottom:0px;" id="phone">{{ Auth::User()->mobile }}</p>
                 </div>
             </div>
 
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
 
-                <div class="card card-body flex-item" style="flex: 1;">
-                    <h4 class="card-title" style="margin-bottom: 37px;">EMPLOYEE DETAILS</h4>
+                <div class="card card-body flex-item" style="flex: 1;  margin-bottom: 1vh; height: 67vh; overflow-y: auto;">
 
                     <h5 class="card-title">Employee Number</h5>
                     <p class="card-text">{{ Auth::User()->employee_number }}</p>
@@ -111,28 +109,52 @@
                     <p class="card-text">{{ Auth::User()->current_address }}</p>
 
                     <h5 class="card-title">Slava</h5>
-                    <p class="card-text">{{ Auth::User()->slava }}</p>
-
-                    <h5 class="card-title">Professional Qualifications Level</h5>
-                    <p class="card-text">{{ Auth::User()->professional_qualifications_level }}</p>
-
-                    <h5 class="card-title">Profession</h5>
-                    <p class="card-text">{{ Auth::User()->profession }}</p>
+                    <p class="card-text" style="margin-bottom:0px;">{{ Auth::User()->slava }}</p>
 
                 </div>
 
             </div>
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
+                <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
+                    <!-- <h4 class="card-title" style="margin-bottom: 10px; font-size: 15px">SEE CONTRACTS</h4> -->
+                    <h5 class="card-title">Position</h5>
+                    <p class="card-text" style="font-size: 13px;">
+                        @php
+                        $positions = [];
+                        @endphp
+                        @foreach(Auth::User()->contract as $contr)
+                        @foreach($contr->organization->position as $pos)
+                        @if($pos->id == $contr->position)
+                        @php
+                        $positions[] = $pos;
+                        @endphp
+                        @endif
+                        @endforeach
+                        @endforeach
+                        @if(count($positions) > 0)
+                        <a href="{{ route('positions.position-card', $positions[0]->id) }}">{{ $positions[0]->name }}</a>
+                        @if(count($positions) > 1)
+                        @for($i = 1; $i < count($positions); $i++) ; <a href="{{ route('positions.position-card', $positions[$i]->id) }}">{{ $positions[$i]->name }}</a>
+                            @endfor
+                            @endif
+                            @endif
+                    </p>
 
 
-                <div class="card card-body flex-item" style="flex: 1;">
-                    <h4 class="card-title" style="margin-bottom: 15px;">SEE CONTRACTS</h4>
-                    <a href="{{ route('contracts.profile', Auth::User()->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contract"></i> Contracts</a>
+                    <a href="{{ route('contracts.profile', Auth::User()->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;"><i class="fas fa-file-contract" title="Contract"></i> Contracts</a>
+                </div>
+
+                <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
+                    <h5 class="card-title" style="margin-bottom: 3px; font-size: 13px;">Professional Qualifications Level</h5>
+                    <p class="card-text" style="margin-bottom: 11px; font-size: 13px;">{{ Auth::User()->professional_qualifications_level }}</p>
+
+                    <h5 class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Profession</h5>
+                    <p class="card-text" style="font-size: 13px;">{{ Auth::User()->profession }}</p>
                 </div>
 
 
-
+                <!--
                 <div class="card card-body flex-item" style="flex: 1;">
 
                     <h4 class="card-title" style="margin-bottom: 15px;">TEAM</h4>
@@ -149,21 +171,25 @@
                     @endif
 
                 </div>
+            -->
 
-                <div class="card card-body flex-item" style="flex: 1;">
-                    <h4 class="card-title" style="margin-bottom: 15px;">FAMILY DETAILS</h4>
-
-
-
+                <div class="card card-body flex-item" style="flex: 1;  margin-bottom: 1vh; height: 25vh; overflow-y: auto;">
                     <h5 class="card-title">Emergency Contact Name</h5>
-                    <p class="card-text">{{ Auth::User()->emergency_contact_name }}</p>
+                    <p class="card-text" style="font-size: 13px;">{{ Auth::User()->emergency_contact_name }}</p>
 
-                    <h5 class="card-title">Emergency Contact Number</h5>
-                    <p class="card-text">{{ Auth::User()->emergency_contact_number }}</p>
+                    <h5 class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Emergency Contact Number</h5>
+                    <p class="card-text" style="font-size: 13px;">{{ Auth::User()->emergency_contact_number }}</p>
 
-                    <button class="btn" style="background: transparent; border: 1px solid #002EFF; color: #002EFF; padding: 10px 20px; font-size: 16px; cursor: pointer; display: inline-block; margin-right:10px" onclick="openAddFamilyMembersPopup()">
+                    <!--
+                    <button class="btn" style="background: transparent; border: 1px solid #002EFF; color: #002EFF; padding: 7px 13px; font-size: 14px; cursor: pointer; display: inline-block;" onclick="openAddFamilyMembersPopup()">
                         <i class="fa fa-plus"></i> Add Family Members
                     </button>
+                    -->
+
+                    <a href="javascript:void(0)" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="openAddFamilyMembersPopup()">
+                        <i class="fas fa-user-plus"></i> Add Family Members
+                    </a>
+
 
                 </div>
             </div>

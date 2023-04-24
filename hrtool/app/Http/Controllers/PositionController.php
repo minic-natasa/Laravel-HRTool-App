@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Models\Position;
 use Illuminate\Http\Request;
+use App\Models\Contract;
 
 class PositionController extends Controller
 {
@@ -15,6 +16,13 @@ class PositionController extends Controller
     {
         $positions = Position::all();
         return view('positions.index', ['positions' => $positions]);
+    }
+
+    public function position_card(string $id)
+    {
+        $contracts = Contract::all();
+        $position = Position::find($id);
+        return view('positions.position-card', compact('position', 'contracts'));
     }
 
     /**
@@ -83,7 +91,7 @@ class PositionController extends Controller
             'description' => 'nullable|string',
             'organization_id' => 'required|exists:organizations,id',
             'professional_qualifications_level'  => 'required',
-            'professional_requirements_per_job_systematisation'  => 'required',
+            'professional_requirements_per_job_systematisation'  => 'required|string',
         ]);
 
         $position = Position::find($id);

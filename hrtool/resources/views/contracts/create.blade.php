@@ -12,7 +12,7 @@
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <a href="{{route('contracts.profile', ['id' => $employee->id])}}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW CONTRACT </h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW CONTRACT FOR {{$employee->first_name}} {{$employee->last_name}} </h4>
                     </div>
 
                     <div class="page-title-right">
@@ -39,8 +39,6 @@
 
                     <input type="hidden" name="status" value="active">
                     <input type="hidden" name="employee_number" value="{{ $employee->id }}">
-
-                    Employee: {{$employee->first_name}} {{$employee->last_name}} <br><br>
 
                     <div class="form-group row">
                         <label for="start_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date') }}</label>
@@ -229,15 +227,22 @@
                         <label for="gross_salary_1" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 1') }}</label>
 
                         <div class="col-md-6">
-                            <input id="gross_salary_1" type="text" class="form-control @error('gross_salary_1') is-invalid @enderror" name="gross_salary_1" value="{{ old('gross_salary_1') }}" required autocomplete="gross_salary_1">
-
-                            @error('gross_salary_1')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                            <input id="gross_salary_1" type="text" class="form-control" name="gross_salary_1" value="" readonly>
                         </div>
                     </div>
+
+                    <script>
+                        const netSalaryInput = document.getElementById('net_salary');
+                        const grossSalary1Input = document.getElementById('gross_salary_1');
+
+                        netSalaryInput.addEventListener('input', function() {
+                            const netSalary = parseFloat(netSalaryInput.value);
+                            const grossSalary1 = (netSalary - 2171.2) / 0.701;
+
+                            grossSalary1Input.value = grossSalary1.toFixed(2);
+                        });
+                    </script>
+
 
                     <div class="form-group row">
                         <label for="gross_salary_2" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 2') }}</label>
@@ -321,7 +326,7 @@
 
                     <div class="form-group row mb-0">
                         <div class="col-md-6 offset-md-4">
-                            <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
+                            <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:2px">
                                 {{ __('Create') }}
                             </button>
                         </div>

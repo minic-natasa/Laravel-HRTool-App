@@ -45,133 +45,139 @@
 
             <div class="card">
                 <div class="card-body">
+                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer table-responsive">
 
-                    <p class="card-title-desc"> See all Pelican Cement employees </p>
-
-                    <div id="datatable-buttons_wrapper" class="table-responsive dataTables_wrapper">
                         <!--
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="dt-buttons btn-group flex-wrap"> <button class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>Copy</span></button> <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>Excel</span></button> <button class="btn btn-secondary buttons-pdf buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>PDF</span></button>
+                        <div class="btn-group"><button class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis" tabindex="0" aria-controls="datatable-buttons" type="button" aria-haspopup="true" aria-expanded="false"><span>Column visibility</span></button></div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div id="datatable-buttons_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="datatable-buttons"></label></div>
+                </div>
+            </div>
+                -->
+
                         <div class="row">
+                            <div class="col-sm-12 col-md-6"></div>
                             <div class="col-sm-12 col-md-6">
-                                <div class="dt-buttons btn-group flex-wrap"> <button class="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>Copy</span></button> <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>Excel</span></button> <button class="btn btn-secondary buttons-pdf buttons-html5" tabindex="0" aria-controls="datatable-buttons" type="button"><span>PDF</span></button>
-                                    <div class="btn-group"><button class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis" tabindex="0" aria-controls="datatable-buttons" type="button" aria-haspopup="true" aria-expanded="false"><span>Column visibility</span></button></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-6">
-                                <div id="datatable-buttons_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="datatable-buttons"></label></div>
+                                <div id="scroll-vertical-datatable_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" style="margin-top: 10px;" placeholder="" aria-controls="scroll-vertical-datatable"></label></div>
                             </div>
                         </div>
--->
+
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="datatable-buttons" class="table dt-responsive nowrap dataTable no-footer dtr-inline" style="border-collapse: collapse; border-spacing: 0px; width: 100%;" role="grid" aria-describedby="datatable-buttons_info">
-                                    <thead>
-                                        <tr role="row">
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="EmployeeNumber: activate to sort column ascending">Employee Number</th>
-                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 139.2px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Name</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 139.2px;" aria-label="Email: activate to sort column ascending">Email</th>
-                                            <!-- <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="Team: activate to sort column ascending">Team</th> -->
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 69.2px;" aria-label="Position: activate to sort column ascending">Position</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 131.2px;" aria-label="Mobile: activate to sort column ascending">Mobile</th>
-                                            <th style="width: 100px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <div class="dataTables_scroll">
+                                    <div class="dataTables_scrollHead" style="overflow: hidden; position: relative; border: 0px; width: 100%;">
+                                        <div class="dataTables_scrollHeadInner" style="box-sizing: content-box;">
 
-                                        @foreach ($users as $user)
-                                        <tr>
-                                            <th scope="row">{{ $user->employee_number }}</th>
-                                            <td class="sorting_1 dtr-control">{{ $user->first_name }} {{ $user->last_name }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <!--  <td>Team</td> -->
-                                            <td>
-                                                @php
-                                                $positions = [];
-                                                @endphp
-                                                @foreach($user->contract as $contr)
-                                                @foreach($contr->organization->position as $pos)
-                                                @if($pos->id == $contr->position)
-                                                @php
-                                                $positions[] = $pos->name;
-                                                @endphp
-                                                @endif
-                                                @endforeach
-                                                @endforeach
-                                                @if(count($positions) > 0)
-                                                {{ $positions[0] }}
-                                                @if(count($positions) > 1)
-                                                @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </td>
+                                            <table class="table dt-responsive nowrap w-100 dataTable no-footer" role="grid">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 13%;" aria-label="EmployeeID: activate to sort column ascending">Employee Number</th>
+                                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 16%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Name</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 22%;" aria-label="Email: activate to sort column ascending">Email</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 21%;" aria-label="Position: activate to sort column ascending">Position</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 15%;" aria-label="Mobile: activate to sort column ascending">Mobile</th>
+                                                        <th style="width: 100px;"></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 300px; width: 100%;">
+                                        <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
+                                            <thead>
+                                                <tr role="row" style="height: 0px;">
+                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 121px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Name</div>
+                                                    </th>
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 147px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
+                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Email</div>
+                                                    </th>
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 226px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
+                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Position</div>
+                                                    </th>
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 210px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
+                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Mobile</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                            <td>{{ $user->mobile }}</td>
-                                            <td>
 
-                                                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                            <tbody>
 
-                                                    <div class="btn-group" role="group">
-                                                        <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <i class="ri-more-line"></i>
-                                                        </button>
+                                                @foreach ($users as $user)
+                                                <tr>
+                                                    <th scope="row">{{ $user->employee_number }}</th>
+                                                    <td class="sorting_1 dtr-control">{{ $user->first_name }} {{ $user->last_name }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <!--  <td>Team</td> -->
+                                                    <td>
+                                                        @php
+                                                        $positions = [];
+                                                        @endphp
+                                                        @foreach($user->contract as $contr)
+                                                        @foreach($contr->organization->position as $pos)
+                                                        @if($pos->id == $contr->position)
+                                                        @php
+                                                        $positions[] = $pos->name;
+                                                        @endphp
+                                                        @endif
+                                                        @endforeach
+                                                        @endforeach
+                                                        @if(count($positions) > 0)
+                                                        {{ $positions[0] }}
+                                                        @if(count($positions) > 1)
+                                                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </td>
 
-                                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                            <a href="{{ $user->id === Auth()->user()->id ? route('profile.show') : route('users.profile-card', $user->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Profile"></i></a>
-                                                            <a href="{{ $user->id === Auth()->user()->id ? route('profile.edit') : route('users.edit', $user->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                                            </form>
+                                                    <td>{{ $user->mobile }}</td>
+                                                    <td>
+
+                                                        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+
+                                                            <div class="btn-group" role="group">
+                                                                <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ri-more-line"></i>
+                                                                </button>
+
+                                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                                    <a href="{{ $user->id === Auth()->user()->id ? route('profile.show') : route('users.profile-card', $user->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Profile"></i></a>
+                                                                    <a href="{{ $user->id === Auth()->user()->id ? route('profile.edit') : route('users.edit', $user->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
+                                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                                    </form>
+                                                                </div>
+
+                                                            </div>
+
                                                         </div>
 
-                                                    </div>
 
-                                                </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
 
-
-                                            </td>
-                                        </tr>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!--
-                <div class="row">
-                    <div class="col-sm-12 col-md-5">
-                        <div class="dataTables_info" id="datatable-buttons_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
-                    </div>
-                    <div class="col-sm-12 col-md-7">
-                        <div class="dataTables_paginate paging_simple_numbers" id="datatable-buttons_paginate">
-                            <ul class="pagination pagination-rounded">
-                                <li class="paginate_button page-item previous disabled" id="datatable-buttons_previous"><a href="#" aria-controls="datatable-buttons" data-dt-idx="0" tabindex="0" class="page-link"><i class="mdi mdi-chevron-left"></i></a></li>
-                                <li class="paginate_button page-item active"><a href="#" aria-controls="datatable-buttons" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="datatable-buttons" data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="datatable-buttons" data-dt-idx="3" tabindex="0" class="page-link">3</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="datatable-buttons" data-dt-idx="4" tabindex="0" class="page-link">4</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="datatable-buttons" data-dt-idx="5" tabindex="0" class="page-link">5</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="datatable-buttons" data-dt-idx="6" tabindex="0" class="page-link">6</a></li>
-                                <li class="paginate_button page-item next" id="datatable-buttons_next"><a href="#" aria-controls="datatable-buttons" data-dt-idx="7" tabindex="0" class="page-link"><i class="mdi mdi-chevron-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
--->
                     </div>
-                </div>
 
-            </div> <!-- end col -->
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+
         </div>
 
-
-        </table>
     </div>
-</div>
-</div> <!-- end col -->
-</div> <!-- end row -->
-
-
-</div>
 
 </div>
 <!-- End Page-content -->

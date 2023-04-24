@@ -30,11 +30,9 @@ return new class extends Migration
             $table->string('location_of_work');
             $table->string('transportation');
             $table->string('status');
-            $table->unsignedBigInteger('annex_id')->nullable();
 
             $table->foreign('employee_number')->references('id')->on('users');
             $table->foreign('organization_id')->references('id')->on('organizations');
-            $table->foreign('annex_id')->references('id')->on('annexes');
         });
     }
 

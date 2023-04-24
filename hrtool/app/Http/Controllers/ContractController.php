@@ -58,14 +58,20 @@ class ContractController extends Controller
             'type_of_contract' => 'required|string',
             'contract_number' => 'required|string',
             'contract_duration' => 'required|string',
-            'net_salary' => 'required|integer',
-            'gross_salary_1' => 'required|integer',
-            'gross_salary_2' => 'required|integer',
+            'net_salary' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'gross_salary_1' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'gross_salary_2' => ['required', 'numeric', 'regex:/^\d+(\.\d{1,2})?$/'],
             'location_of_work' => 'required|string',
             'transportation'  => 'required|string',
             'status' => 'required|string',
-            'annex_id' => 'nullable|exists:annexes,id',
             'employee_number' => 'required|integer',
+        ]);
+
+        // Replace commas with dots in the net_salary and gross_salary fields
+        $request->merge([
+            'net_salary' => str_replace(',', '.', $request->input('net_salary')),
+            'gross_salary_1' => str_replace(',', '.', $request->input('gross_salary_1')),
+            'gross_salary_2' => str_replace(',', '.', $request->input('gross_salary_2')),
         ]);
 
         $probationary_period = ($request->input('contract_duration') === 'unlimited' && $request->input('probationary_period') !== null) ? $request->input('probationary_period') : 0;
@@ -85,7 +91,6 @@ class ContractController extends Controller
             'location_of_work' => $request->input('location_of_work'),
             'transportation' => $request->input('transportation'),
             'status' => $request->input('status'),
-            'annex_id' => $request->input('annex_id'),
             'employee_number' => $request->input('employee_number'),
         ]);
 
@@ -135,6 +140,7 @@ class ContractController extends Controller
             'transportation'  => 'required',
         ]);
 
+
         $probationary_period = ($request->input('contract_duration') === 'unlimited' && $request->input('probationary_period') !== null) ? $request->input('probationary_period') : 0;
 
         $contract = Contract::find($id);
@@ -151,6 +157,7 @@ class ContractController extends Controller
         $contract->gross_salary_2 = $request->input('gross_salary_2');
         $contract->location_of_work = $request->input('location_of_work');
         $contract->transportation = $request->input('transportation');
+
 
         $contract->save();
 
@@ -169,6 +176,53 @@ class ContractController extends Controller
         return redirect('/contracts')->with('success', 'Contract deleted successfully!');
     }
 
+    public function changeTownDisplay($t)
+    {
+        $changed = '';
+
+        //Non-ordinary
+        if ($t == "Novi Sad") {
+            $changed = "Novog Sada";
+            return $changed;
+        }
+
+        if ($t == "Novi Pazar") {
+            $changed = "Novog Pazara";
+            return $changed;
+        }
+
+        if ($t == "Sremska Mitrovica") {
+            $changed = "Sremske Mitrovice";
+            return $changed;
+        }
+
+        if ($t == "Čačak") {
+            $changed = "Čačka";
+            return $changed;
+        }
+
+        if ($t == "Šabac") {
+            $changed = "Šapca";
+            return $changed;
+        }
+
+        $lastLetter = $t[strlen($t) - 1];
+        if ($lastLetter === "a") {
+            $changed = substr($t, 0, -1) . "e";
+        } else if ($lastLetter === "e") {
+            $changed = substr($t, 0, -1) . "a";
+        } else if ($lastLetter === "i") {
+            $changed = substr($t, 0, -1) . "a";
+        } else if ($lastLetter === "o") {
+            $changed = substr($t, 0, -1) . "a";
+        } else if ($lastLetter === "c") {
+            $changed = substr($t, 0, -2) . "ca";
+        } else {
+            $changed = $t . "a";
+        }
+        return $changed;
+    }
+
     public function pdf(string $id) //contractID
     {
         $contract = Contract::find($id); // retrieve the contract data from the database
@@ -176,7 +230,13 @@ class ContractController extends Controller
         $street = trim($address_parts[0]);
         $town = trim($address_parts[1]);
 
+
+        $town = $this->changeTownDisplay($town);
         $start_date = new DateTime($contract->start_date);
+
+        $net_salary = number_format($contract->net_salary, 2, ',', '.');
+        $gross_salary_1 = number_format($contract->gross_salary_1, 2, ',', '.');
+        $gross_salary_2 = number_format($contract->gross_salary_2, 2, ',', '.');
 
         $position_description = '';
         foreach (explode("\n", $contract->organization->position->where('id', $contract->position)->first()->description) as $line) {
@@ -194,9 +254,9 @@ class ContractController extends Controller
             'contract_duration'  => $contract->contract_duration,
             'probationary_period'  => $contract->probationary_period,
             'probationary_period_text' => '',
-            'net_salary'  => $contract->net_salary,
-            'gross_salary_1' => number_format($contract->gross_salary_1, 2, ',', '.'),
-            'gross_salary_2'  => $contract->gross_salary_2,
+            'net_salary'  => $net_salary,
+            'gross_salary_1' => $gross_salary_1,
+            'gross_salary_2'  => $gross_salary_2,
             'location_of_work'  => $contract->location_of_work,
             'transportation'  => $contract->transportation,
             'first_name' => $contract->employee->first_name,
@@ -262,5 +322,101 @@ class ContractController extends Controller
             $pdf->loadView('contracts.pdf.no-r', $data);
             return $pdf->stream('contract.pdf');
         }
+    }
+
+
+    public function mob(string $id)
+    {
+        $contract = Contract::find($id); // retrieve the contract data from the database
+        $address_parts = explode(',', $contract->employee->address_in_ID);
+        $street = trim($address_parts[0]);
+        $town = trim($address_parts[1]);
+
+        $data = [
+            'first_name' => $contract->employee->first_name,
+            'name_of_one_parent' => $contract->employee->name_of_one_parent,
+            'last_name' => $contract->employee->last_name,
+            'address_in_id' => $contract->employee->address_in_ID,
+            'street' => $street,
+            'town' => $town,
+        ];
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.mob', $data);
+        return $pdf->stream('obaveštenje-o-mobingu.pdf');
+    }
+
+    public function uzb(string $id)
+    {
+        $contract = Contract::find($id); // retrieve the contract data from the database
+        $address_parts = explode(',', $contract->employee->address_in_ID);
+        $street = trim($address_parts[0]);
+        $town = trim($address_parts[1]);
+
+        $data = [
+            'first_name' => $contract->employee->first_name,
+            'name_of_one_parent' => $contract->employee->name_of_one_parent,
+            'last_name' => $contract->employee->last_name,
+            'address_in_id' => $contract->employee->address_in_ID,
+            'street' => $street,
+            'town' => $town,
+        ];
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.uzb', $data);
+        return $pdf->stream('obaveštenje-o-zakonu-o-uzbunjivačima.pdf');
+    }
+
+    public function odm(string $id)
+    {
+        $contract = Contract::find($id); // retrieve the contract data from the database
+        $address_parts = explode(',', $contract->employee->address_in_ID);
+        $street = trim($address_parts[0]);
+        $town = trim($address_parts[1]);
+        $current_year = date('Y');
+
+        $town = $this->changeTownDisplay($town);
+
+        $data = [
+            'first_name' => $contract->employee->first_name,
+            'name_of_one_parent' => $contract->employee->name_of_one_parent,
+            'last_name' => $contract->employee->last_name,
+            'address_in_id' => $contract->employee->address_in_ID,
+            'street' => $street,
+            'town' => $town,
+            'current_year' => $current_year,
+        ];
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.odm', $data);
+        return $pdf->stream('zahtev-za-korišćenje-godišnjeg-odmora.pdf');
+    }
+
+    public function nda(string $id)
+    {
+        $contract = Contract::find($id); // retrieve the contract data from the database
+        $address_parts = explode(',', $contract->employee->address_in_ID);
+        $street = trim($address_parts[0]);
+        $town = trim($address_parts[1]);
+        $current_year = date('Y');
+        $start_date = new DateTime($contract->start_date);
+
+        $town = $this->changeTownDisplay($town);
+
+        $data = [
+            'first_name' => $contract->employee->first_name,
+            'name_of_one_parent' => $contract->employee->name_of_one_parent,
+            'last_name' => $contract->employee->last_name,
+            'address_in_id' => $contract->employee->address_in_ID,
+            'jmbg' => $contract->employee->jmbg,
+            'start_date' => date('d.m.Y.', strtotime($contract->start_date)),
+            'street' => $street,
+            'town' => $town,
+            'current_year' => $current_year,
+        ];
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.nda', $data);
+        return $pdf->stream('sporazum-o-poverljivosti.pdf');
     }
 }

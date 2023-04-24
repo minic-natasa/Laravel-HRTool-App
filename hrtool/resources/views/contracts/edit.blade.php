@@ -167,16 +167,32 @@
                         <div class="form-group row">
                             <label for="net_salary" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>
                             <div class="col-md-6">
-                                <input type="text" name="net_salary" class="form-control" value="{{ old('net_salary', $contract->net_salary) }}">
+                                <input type="text" name="net_salary" class="form-control" id="net_salary" value="{{ old('net_salary', $contract->net_salary) }}">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="gross_salary_1" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Gross Salary 1:</label>
                             <div class="col-md-6">
-                                <input type="text" name="gross_salary_1" class="form-control" value="{{ old('gross_salary_1', $contract->gross_salary_1) }}">
+                                <input type="text" name="gross_salary_1" class="form-control" value="{{ old('gross_salary_1', $contract->gross_salary_1) }}" readonly>
                             </div>
                         </div>
+
+                        <script>
+                            const netSalaryInput = document.getElementById('net_salary');
+                            const grossSalary1Input = document.querySelector('input[name="gross_salary_1"]');
+
+                            function calculateGrossSalary() {
+                                const netSalary = parseFloat(netSalaryInput.value);
+                                const grossSalary1 = (netSalary - 2171.2) / 0.701;
+
+                                grossSalary1Input.value = grossSalary1.toFixed(2);
+                            }
+
+                            calculateGrossSalary();
+
+                            netSalaryInput.addEventListener('input', calculateGrossSalary);
+                        </script>
 
                         <div class="form-group row">
                             <label for="gross_salary_2" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Gross Salary 2:</label>

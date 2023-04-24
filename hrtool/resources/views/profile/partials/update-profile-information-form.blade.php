@@ -1,4 +1,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+
 <section>
 
     <div class="page-content">
@@ -177,16 +180,12 @@
                                 <div class="form-group row">
                                     <label for="profile_picture" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Profile Image:</label>
 
-                                    <!-- 
-                                    <input name="profile_picture" class="col-md-6 form-control" type="file" id="picture-input"style="margin-bottom:10px">
-                                    -->
+                                    <input id="picture-input" name="profile_picture" type="file" class="col-md-6" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" autocomplete="profile_picture" />
 
-                                    <input id="picture-input" name="profile_picture" type="file" class="col-md-6" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" required autocomplete="profile_picture" />
                                     <div style="display: block; text-align: left; margin-left:12vw;">
-                                        <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 200px;" alt="Profile Picture">
+                                        <img id="showImage" src="{{ (!empty(Auth::User()->profile_picture) ? url('upload/admin_images/'.Auth::User()->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 135px;" alt="Profile Picture">
                                     </div>
                                 </div>
-
                                 <div class="form-group row">
                                     <div class="col-md-6 offset-md-2">
                                         <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px; margin-left:-11px">Save</button>
@@ -210,13 +209,38 @@
     </div>
 </section>
 
-
-<script type="text/javascript">
+<script>
     $(document).ready(function() {
+        // Function to update the image with the cropped data
+        function updateImage(imageData) {
+            var image = document.getElementById('showImage');
+            image.src = imageData;
+        }
+
         $('#picture-input').change(function(e) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                $('#showImage').attr('src', e.target.result);
+                // Create a new image object
+                var image = new Image();
+                // Set the source of the image to the uploaded file data
+                image.src = e.target.result;
+                // Once the image is loaded, crop it to a square and get the new data
+                image.onload = function() {
+                    // Calculate the size of the square to crop
+                    var size = Math.min(image.width, image.height);
+                    // Create a new canvas element with the square size
+                    var canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    // Get the context of the canvas
+                    var context = canvas.getContext('2d');
+                    // Draw the cropped image onto the canvas
+                    context.drawImage(image, (image.width - size) / 2, (image.height - size) / 2, size, size, 0, 0, size, size);
+                    // Get the new data URL of the cropped image
+                    var newDataUrl = canvas.toDataURL('image/png');
+                    // Call the function to update the image with the new data
+                    updateImage(newDataUrl);
+                };
             }
             reader.readAsDataURL(e.target.files['0']);
         });

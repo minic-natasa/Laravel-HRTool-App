@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('comment');
             $table->timestamps();
+
+            $table->unsignedBigInteger('contract_id');
+            $table->foreign('contract_id')->references('id')->on('contracts');
         });
     }
 

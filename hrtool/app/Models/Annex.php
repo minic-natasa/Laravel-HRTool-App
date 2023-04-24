@@ -11,9 +11,10 @@ class Annex extends Model
 
     protected $fillable = [
         'comment',
+        'contract_id'
     ];
 
-    public function contracts() //One annex belongs to one contract
+    public function contract() //One annex belongs to one contract
     {
         return $this->belongsTo(Contract::class);
     }

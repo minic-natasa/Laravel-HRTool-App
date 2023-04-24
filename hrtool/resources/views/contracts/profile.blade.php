@@ -54,60 +54,62 @@
                 <div class="card">
                     <div class="card-body" id="contract-{{$contract->id}}">
 
-                        <!-- Contract Details -->
+
                         <div class="row">
-                            <!-- Contract title and logo -->
-                            <div class="col-12">
-                                <div class="invoice-title">
-                                    <h4 class="float-end font-size-16"><strong>Contract # {{$contract->contract_number}}</strong></h4>
-                                    <h3>
-                                        <img src="{{ asset('logo.png') }}" alt="Logo" height="24">
-                                    </h3>
+                            <!-- Contract Details -->
+                            <div class="row align-items-center" style="margin-bottom: 10px; margin-left:3px">
+                                <!-- Logo -->
+                                <div class="col-auto">
+                                    <img src="{{ asset('logo.png') }}" alt="Logo" height="30">
                                 </div>
-                                <hr>
+                                <!-- Employee Details -->
+                                <div class="col">
+                                    <h2 class="font-size-14" style="margin-bottom: 3px; letter-spacing: 0.6px; color: black;"><strong><a href="{{ route('users.profile-card', $employee->id) }}" style="color: black;">{{$employee->first_name}} {{$employee->last_name}}</a></strong></h2>
+                                    <p class="mb-0"><small>Professional Qualifications Level: {{$employee->professional_qualifications_level}} - {{$employee->profession}}</small></p>
+                                </div>
+
+                                <!-- Contract Number -->
+                                <div class="col-auto text-end">
+                                    <h4 class="font-size-14"><strong>Contract # {{$contract->contract_number}}</strong></h4>
+                                </div>
                             </div>
+                            <hr>
 
                             <!-- Contract information -->
                             <div class="col-6">
-                                <address>
-                                    <strong>Start Date:</strong><br>
-                                    {{ date('d.m.Y.', strtotime($contract->start_date)) }}<br><br>
-
-                                    <strong>First Day On Job:</strong><br>
-                                    {{ date('d.m.Y.', strtotime($contract->first_day_on_job)) }}<br><br>
-
-                                    <strong>Contract Duration:</strong><br>
+                                <address style="font-size: 13px; padding-left:3px;">
+                                    <strong>Start Date:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime($contract->start_date)) }}</span>
+                                    <strong>First Day On Job:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime($contract->first_day_on_job)) }}</span>
+                                    <strong>Contract Duration:</strong>
                                     @if($contract->contract_duration == 'unlimited')
-                                    Unlimited<br><br>
+                                    <span style="display: block; margin-bottom: 8px;">Unlimited</span>
                                     @else
-                                    {{ $contract->contract_duration }} {{ $contract->contract_duration == 1 ? 'month' : 'months' }}<br><br>
-                                    <strong>End Date:</strong><br>
-                                    {{ date('d.m.Y.', strtotime('+' . $contract->contract_duration . ' months', strtotime($contract->start_date))) }}
+                                    <span style="display: block; margin-bottom: 8px;">{{ $contract->contract_duration }} {{ $contract->contract_duration == 1 ? 'month' : 'months' }}</span>
+                                    <strong>End Date:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime('+' . $contract->contract_duration . ' months', strtotime($contract->start_date))) }}</span>
                                     @endif
-
 
                                     @if($contract->contract_duration === 'unlimited' && $contract->probationary_period !== null && $contract->probationary_period !== 0)
-                                    <strong>Probationary Period:</strong><br>
-                                    {{ $contract->probationary_period }} {{ $contract->probationary_period == 1 ? 'month' : 'months' }}<br><br>
-                                    <strong>End Date For Probationary Period:</strong><br>
-                                    {{ date('d.m.Y.', strtotime('+' . $contract->probationary_period . ' months', strtotime($contract->start_date))) }}
+                                    <strong>Probationary Period:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{ $contract->probationary_period }} {{ $contract->probationary_period == 1 ? 'month' : 'months' }}</span>
+                                    <strong>End Date For Probationary Period:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime('+' . $contract->probationary_period . ' months', strtotime($contract->start_date))) }}</span>
                                     @endif
-
-
-
-
                                 </address>
+
                             </div>
 
                             <!-- Employee information -->
                             <div class="col-6 text-end">
-                                <address>
-                                    <strong>Type of Contract:</strong><br>
-                                    {{$contract->type_of_contract}}<br><br>
-                                    <strong>Location of Work:</strong><br>
-                                    {{$contract->location_of_work}}<br><br>
-                                    <strong>Transportation:</strong><br>
-                                    {{$contract->transportation}}<br><br>
+                                <address style="font-size: 13px; padding-right:3px;">
+                                    <strong>Type of Contract:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{$contract->type_of_contract}}</span>
+                                    <strong>Location of Work:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{$contract->location_of_work}}</span>
+                                    <strong>Transportation:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">{{$contract->transportation}}</span>
                                 </address>
                             </div>
                         </div>
@@ -116,13 +118,10 @@
                         <div class="row">
                             <div class="col-12">
                                 <div>
-                                    <div class="p-2">
-                                        <h3 class="font-size-16"><strong> Employee: {{$employee->first_name}} {{$employee->last_name}}</strong></h3>
-                                        <p>Professional Qualifications Level: {{$employee->professional_qualifications_level}} - {{$employee->profession}} </p>
-                                    </div>
+
                                     <div class="">
                                         <div class="table-responsive">
-                                            <table class="table">
+                                            <table class="table" style="font-size: 13px;">
                                                 <thead>
                                                     <tr>
                                                         <td class="text-center"><strong>Organization Unit</strong></td>
@@ -134,21 +133,44 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td class="text-center">{{$contract->organization->name}}</td>
+                                                        <td class="text-center"><a href="{{ route('organizations.organization-card', $contract->organization->id) }}">{{ $contract->organization->name }}</a></td>
                                                         <td class="text-center">
                                                             @foreach($contract->organization->position as $pos)
                                                             @if($pos->id == $contract->position)
-                                                            {{ $pos->name }}
+                                                            <a href="{{ route('positions.position-card', $pos->id) }}">{{ $pos->name }}</a>
                                                             @endif
                                                             @endforeach
                                                         </td>
                                                         <td class="text-center">{{ number_format($contract->net_salary, 2, ',', '.') }} RSD</td>
                                                         <td class="text-center">{{ number_format($contract->gross_salary_1, 2, ',', '.') }} RSD</td>
                                                         <td class="text-center">{{ number_format($contract->gross_salary_2, 2, ',', '.') }} RSD</td>
-
                                                     </tr>
+
                                                 </tbody>
                                             </table>
+                                        </div>
+
+                                        <!-- Documents button -->
+                                        <div class="float-end">
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-file"></i> Documents
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1" style="">
+                                                    <li><a class="dropdown-item" href="{{ route('contracts.mob', $contract->id) }}" target="_blank">Obaveštenje o mobingu</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('contracts.uzb', $contract->id)}}" target="_blank">Obaveštenje o Zakonu o uzbunjivačima</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('contracts.nda', $contract->id)}}" target="_blank">Sporazum o poverljivosti</a></li>
+                                                    <!--<li><a class="dropdown-item" href="{{ route('contracts.odm', $contract->id)}}" target="_blank">Zahtev za korišćenje godišnjeg odmora</a></li>
+                                                     <li><a class="dropdown-item" href="{{ route('contracts.rev', $contract->id)}}">Revers</a></li> -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Annex button -->
+                                        <div class="d-print-none">
+                                            <div class="float-end">
+                                                <a href="javascript:void(0)" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" onclick="openAnnexPopup()"><i class="fas fa-file-alt"></i> Annexes</a>
+                                            </div>
                                         </div>
 
                                         <!-- Print button -->
@@ -158,18 +180,14 @@
                                             </div>
                                         </div>
 
-                                        <!-- Edit and upload buttons -->
+                                        <!-- Edit button -->
                                         <div class="d-print-none">
                                             <div class="float-end">
                                                 <a href="{{ route('contracts.edit', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px"><i class="fas fa-pencil-alt"></i> Edit</a>
-                                                <!-- <a href="" class="btn btn-primary waves-effect waves-light"><i class="fa fa-upload"></i> Upload Document</a> -->
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
-
                             </div>
                         </div> <!-- end row -->
 
@@ -182,7 +200,76 @@
         @endforeach
 
 
+        <div class="modal fade" id="annexModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Contract Annexes</h5>
+                        <button type="btn" class="close" style="color:black; border: none; background: transparent; cursor: pointer" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body"style="height: 55vh;">
+                        <label for="dropdownMenu">Reason:</label>
+                        <select id="dropdownMenu" name="dropdownMenu">
+                            <option value="">Select reason for creating new annex</option>
+                            <option value="Povećanja bruto 1 zarade">Povećanje bruto 1 zarade</option>
+                            <option value="Promene adrese obavljanja posla">Promena adrese obavljanja posla</option>
+                            <option value="Promene adrese poslodavca">Promena adrese poslodavca</option>
+                            <option value="Promene pozicije">Promena pozicije</option>
+                            <option value="Promene radnih sati">Promena radnih sati</option>
+                        </select>
+
+                        <div id="pdfButtons" style="display:none">
+                            <div class="d-print-none">
+                                <div class="float-end">
+                                    <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print Annex</a>
+                                </div>
+                            </div>
+
+                            <div class="d-print-none">
+                                <div class="float-end">
+                                    <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print Notice</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#annexModal">Create New Annex</button>
+
+                      
+
+                            {{$contract->annexes}}
+
+                    </div>
+                    <div class="modal-footer">
+                        <!-- 
+                <button class="btn" style="background: transparent; border: 2px solid blue; color: blue; padding: 10px 20px; font-size: 14px; cursor: pointer" data-dismiss="modal">Close</button>
+                <button id="saveChangesBtn" class="btn" style="background: blue; border: 2px solid blue; color: white; padding: 10px 20px; font-size: 14px; cursor: pointer" onclick="showMembers()">Save changes</button> -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
 </div>
+
+<script>
+    function openAnnexPopup() {
+        $('#annexModal').modal('show');
+    }
+
+    document.getElementById("dropdownMenu").addEventListener("change", function() {
+        // Get the selected option
+        var selectedOption = document.getElementById("dropdownMenu").value;
+        // Show the PDF buttons if a reason has been selected
+        if (selectedOption !== "") {
+            document.getElementById("pdfButtons").style.display = "block";
+        }
+    });
+</script>
 
 @endsection

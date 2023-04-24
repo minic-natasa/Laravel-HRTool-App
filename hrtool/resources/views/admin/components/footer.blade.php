@@ -11,3 +11,18 @@
         </div>
     </div>
 </footer>
+
+<style>
+    .footer {
+  height: 6vh;
+  font-size: 12px;
+  padding-top: 13px;
+  
+}
+
+.footer .row {
+  display: flex;
+  align-items: center;
+}
+
+</style>
