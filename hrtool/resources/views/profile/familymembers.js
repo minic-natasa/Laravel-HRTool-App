@@ -1,9 +1,27 @@
 var familyMembers = [];
 
 function openAddFamilyMembersPopup() {
+    loadFamilyMembers();
     $('#addFamilyMembersModal').modal('show');
 }
 
+function loadFamilyMembers() {
+    // Empty the table body first
+    var table = document.getElementById('familyMembersTableBody');
+    table.innerHTML = '';
+
+    // Add each family member to the table
+    familyMembers.forEach((member) => {
+        var newRow = addNewMember();
+        newRow.querySelectorAll(".relationship")[0].value = member.relationship;
+        newRow.querySelectorAll(".name")[0].value = member.name;
+        newRow.querySelectorAll(".birth_date")[0].value = member.birth_date;
+        newRow.querySelectorAll(".jmbg")[0].value = member.jmbg;
+        newRow.querySelector('.save-btn').style.display = 'none';
+        newRow.querySelector('.edit-btn').style.display = 'inline-block';
+        disableInputs(newRow);
+    });
+}
 
 function addNewMember() {
     console.log("Adding...");

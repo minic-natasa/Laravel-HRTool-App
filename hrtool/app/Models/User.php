@@ -70,8 +70,15 @@ class User extends Authenticatable
         return $this->hasMany(Family_Member::class);
     }
 
+    public function familyMembers()
+    {
+        return $this->hasMany(Family_Member::class);
+    }
+
     public function contract()
     {
         return $this->hasMany(Contract::class, 'employee_number');
     }
+
+
 }

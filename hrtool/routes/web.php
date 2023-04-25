@@ -6,7 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
-
+use App\Http\Controllers\FamilyMemberController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -93,6 +93,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/positions/get-by-organization', [PositionController::class, 'getByOrganization'])->name('positions.get-by-organization');
         Route::get('/positions/{id}/position-card', 'position_card')->name('positions.position-card');
     });
+
+    //Family members
+    
+    Route::get('/family-members/{profileId}', [FamilyMemberController::class, 'getFamilyMembers']);
 });
 
 

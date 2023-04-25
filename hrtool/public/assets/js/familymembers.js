@@ -1,9 +1,36 @@
 var familyMembers = [];
 
 function openAddFamilyMembersPopup() {
+    loadFamilyMembers();
     $('#addFamilyMembersModal').modal('show');
 }
 
+async function loadFamilyMembers() {
+    
+    // Empty the table body first
+    var table = document.getElementById('familyMembersTableBody');
+    table.innerHTML = '';
+    try {
+        const profileIdElement = document.getElementById('addFamilyMembersModal');
+        const profileId = profileIdElement.getAttribute('data-id');
+        console.log('Profile ID:', profileId);
+        const response = await axios.get(`/family-members/${profileId}`);
+        familyMembers = response.data;
+
+        familyMembers.forEach((member) => {
+            var newRow = addNewMember();
+            newRow.querySelectorAll(".relationship")[0].value = member.relationship;
+            newRow.querySelectorAll(".name")[0].value = member.name;
+            newRow.querySelectorAll(".birth_date")[0].value = member.birth_date;
+            newRow.querySelectorAll(".jmbg")[0].value = member.jmbg;
+            newRow.querySelector('.save-btn').style.display = 'none';
+            newRow.querySelector('.edit-btn').style.display = 'inline-block';
+            disableInputs(newRow);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 function addNewMember() {
     console.log("Adding...");
@@ -106,12 +133,15 @@ function editRow(button) {
 
     var row = button.parentNode.parentNode;
     var rowIndex = Array.from(row.parentNode.children).indexOf(row);
+    console.log("rowIndex:", rowIndex); // Add this line
+    console.log("familyMembers:", familyMembers); // Add this line
     var existingRow = familyMembers[rowIndex];
+    console.log("existingRow:", existingRow); // Add this line
 
     // Populate the input fields with the values from the existing row
     row.querySelectorAll(".relationship")[0].value = existingRow.relationship;
     row.querySelectorAll(".name")[0].value = existingRow.name;
-    row.querySelectorAll(".birth_date")[0].value = existingRow.birthdate;
+    row.querySelectorAll(".birth_date")[0].value = existingRow.birth_date;
     row.querySelectorAll(".jmbg")[0].value = existingRow.jmbg;
 
     //Hide the edit button
@@ -156,14 +186,14 @@ function saveRow(button) {
             jmbg: jmbg
         };
         familyMembers.push(familyMember);
-    }
-
-    // Send the family member data to the Laravel controller
-    
+    }    
     // Send the family member data to the Laravel controller
     const sendData = async () => {
         try {
-            const response = await axios.post('/profile', {familyMember: familyMember});
+            const headers = {
+                'Content-Type': 'application/json'
+              };
+              const response = await axios.post('/profile', JSON.stringify({familyMembers}), {headers});
             console.log(response.data);
 
             // If the row is new, add the new member to the familyMembers array and set the id returned from the server

@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Constraint\RegularExpression;
 
+
 class ProfileController extends Controller
 {
 
@@ -30,9 +31,13 @@ class ProfileController extends Controller
 
     public function show(Request $request): View
     {
-        return view('profile.index', [
-            'user' => $request->user(),
-        ]);
+            $user = $request->user();
+            $familyMembers = $user->familyMembers()->get();
+
+            return view('profile.index', [
+                'user' => $user,
+                'familyMembers' => $familyMembers,
+            ]);
     }
 
     /**
@@ -127,6 +132,11 @@ class ProfileController extends Controller
 
     public function addFamilyMembers(Request $request)
     {
+
+        // Log the request data
+        error_log('Request Data: ' . print_r($request->all(), true));
+
+   
         $member = $request->input('familyMember');
 
         // Check if $member is not null
@@ -146,5 +156,7 @@ class ProfileController extends Controller
             return response()->json(['error' => 'No family member found in the request.'], 400);
         }
     }
+
+
 
 }
