@@ -184,20 +184,31 @@
                     <button class="btn" style="background: transparent; border: 1px solid #002EFF; color: #002EFF; padding: 7px 13px; font-size: 14px; cursor: pointer; display: inline-block;" onclick="openAddFamilyMembersPopup()">
                         <i class="fa fa-plus"></i> Add Family Members
                     </button>
-                    -->
-
+    -->
+                    
+                   
+                        <!-- Display family members -->
+                        @if(count($familyMembers) > 0)
+                        <span class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Family Members:
+                            
+                                @foreach($familyMembers as $familyMember)
+                                    {{ $familyMember->name }}, 
+                                @endforeach
+                            
+                        @else
+                            <p>No family members found.</p>
+                        @endif
+                        </span>
                     <a href="javascript:void(0)" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="openAddFamilyMembersPopup()">
                         <i class="fas fa-user-plus"></i> Add Family Members
                     </a>
-
-
                 </div>
             </div>
         </div>
         <!-- END BODY CARD -->
 
 
-        <div class="modal fade" id="addFamilyMembersModal" tabindex="-1" role="dialog">
+        <div class="modal fade" id="addFamilyMembersModal" tabindex="-1" role="dialog" data-id="{{ Auth::user()->id }}">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -219,17 +230,7 @@
                             </thead>
 
                             <tbody id="familyMembersTableBody">
-                                <!--    
-                        <tr>
-                                
-                                <td><input type="text" name="relationship" placeholder="Enter relationship" value=""></td>
-                                <td><input type="text" name="name" placeholder="Enter name" value=""></td>
-                                <td><input type="date" name="birthdate" placeholder="Enter birth date" value=""></td>
-                                <td><input type="text" name="jmbg" placeholder="Enter JMBG" value=""></td>
-                                <td><button onclick="saveRow(this)">Save</button></td>
-        
-                            </tr>
--->
+                               
                             </tbody>
 
                         </table>
