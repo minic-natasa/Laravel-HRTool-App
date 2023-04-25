@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\AnnexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +81,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/contracts/{id}/zahtev-za-korišćenje-godišnjeg-odmora', 'odm')->name('contracts.odm');
         Route::get('/contracts/{id}/sporazum-o-poverljivosti', 'nda')->name('contracts.nda');
         Route::get('/contracts/{id}/revers', 'rev')->name('contracts.rev');
+    });
+
+    //Annexes
+    Route::controller(AnnexController::class)->group(function () {
+        Route::get('/annexes/{id}', 'create')->name('annexes.create');
+        Route::post('/annexes', 'store')->name('annexes.store');
+        Route::get('/annexes/{id}/edit', 'edit')->name('annexes.edit');
+        Route::put('/annexes/{id}', 'update')->name('annexes.update');
+        Route::delete('/annexes/{id}', 'destroy')->name('annexes.destroy');
+
+        //Printing
+        Route::get('/annexes/{id}/annex-pdf', 'annex_pdf')->name('annexes.annex-pdf');
+        Route::get('/annexes/{id}/notice-pdf', 'notice_pdf')->name('annexes.notice-pdf');
     });
 
     //Position

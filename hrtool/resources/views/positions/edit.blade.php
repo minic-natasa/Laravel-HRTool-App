@@ -79,7 +79,7 @@
                         <div class="form-group row">
                             <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
                             <div class="col-md-6">
-                                <input type="text" name="professional_requirements_per_job_systematisation" class="form-control" value="{{ old('professional_requirements_per_job_systematisation', $position->professional_requirements_per_job_systematisation) }}">
+                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="2" style="margin-bottom: 4px;" required>{{ $position->professional_requirements_per_job_systematisation }}</textarea>
                             </div>
                         </div>
 

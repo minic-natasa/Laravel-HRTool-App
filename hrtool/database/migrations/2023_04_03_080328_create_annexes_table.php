@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('annexes', function (Blueprint $table) {
             $table->id();
-            $table->string('comment');
+            $table->string('reason');
+            $table->string('old_value');
+            $table->string('new_value');
+            $table->date('annex_date');
+            $table->date('annex_created_date');
             $table->timestamps();
 
             $table->unsignedBigInteger('contract_id');

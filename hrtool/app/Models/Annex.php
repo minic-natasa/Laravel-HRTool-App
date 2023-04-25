@@ -10,8 +10,13 @@ class Annex extends Model
     use HasFactory;
 
     protected $fillable = [
-        'comment',
-        'contract_id'
+
+        'reason',
+        'old_value',
+        'new_value',
+        'annex_date',
+        'annex_created_date',
+        'contract_id',
     ];
 
     public function contract() //One annex belongs to one contract

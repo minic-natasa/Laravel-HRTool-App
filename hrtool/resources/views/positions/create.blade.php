@@ -47,7 +47,6 @@
                             <div class="col-md-6">
                                 <textarea class="form-control" id="description" name="description" rows="3" style="margin-bottom: 4px;"></textarea>
                             </div>
-
                         </div>
 
 
@@ -56,7 +55,7 @@
                             <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Organization:</label>
                             <div class="col-md-6">
                                 <select class="form-control" id="organization_id" name="organization_id">
-                                    <option value="">None</option>
+                                    <option value="">-- Select organization --</option>
                                     @foreach ($organizations as $org)
                                     <option value="{{ $org->id }}">{{ $org->name }}</option>
                                     @endforeach
@@ -87,16 +86,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Professional Requirements per Job Systematisation') }}</label>
+                            <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
 
                             <div class="col-md-6">
-                                <input id="professional_requirements_per_job_systematisation" type="text" class="form-control @error('professional_requirements_per_job_systematisation') is-invalid @enderror" name="professional_requirements_per_job_systematisation" value="{{ old('professional_requirements_per_job_systematisation') }}" required autocomplete="professional_requirements_per_job_systematisation">
-
-                                @error('professional_requirements_per_job_systematisation')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
+                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="2" style="margin-bottom: 4px;"></textarea>
                             </div>
                         </div>
 
