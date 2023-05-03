@@ -600,13 +600,14 @@
         if (reason_for_annex == 'Promene adrese obavljanja posla') {
             locDiv.style.display = 'flex';
             location_value.required = true;
-            addrDiv.style.display = 'none';
+            addrDiv.style.display = 'flex';
+            address_value.required = true;
             newValueDiv.style.display = 'none';
         } else {
             locDiv.style.display = 'none';
-            addrDiv.style.display = 'none';
             location_value.required = false;
             location_value.value = "";
+            addrDiv.style.display = 'none';
             address_value.required = false;
             address_value.value = "";
         }
@@ -674,19 +675,33 @@
             oldValInput.value = document.getElementById('old_value').getAttribute('current-address');
             newValInput.readOnly = false;
             newValInput.value = "";
+            var address = "";
 
-            location_value.addEventListener('change', (event) => {
-                const selectedOption = event.target.value;
+            $(document).ready(function() {
 
-                if (selectedOption === 'Hybrid') {
-                    newValInput.value = 'Makedonska 12, Beograd';
-                    newValInput.readOnly = true;
-                } else if (selectedOption === 'Remote') {
-                    newValInput.value = '';
-                    newValInput.readOnly = false;
-                }
+                $('#address_value').prop('disabled', true);
+                $('#location_value').change(function() {
+                    var location_id = $(this).val();
+                    $('#address_value').prop('disabled', false);
+                    var location = $('#location_value option:selected').text();
+
+                    if (location === 'Hybrid') {
+                        address_value.value = "Makedonska 12, Beograd";
+                        address_value.readOnly = true;
+                        address = address_value.value;
+                        newValInput.value = "Makedonska 12, Beograd";
+                    } else if (location === 'Remote') {
+                        address_value.readOnly = false;
+                        address_value.value = "";
+
+                        address_value.addEventListener('input', function() {
+                            address = address_value.value;
+                            newValInput.value = address;
+                        });
+                    }
+
+                });
             });
-
 
         } else if (selectedReason === 'Promene adrese poslodavca') {
             oldValInput.value = document.getElementById('old_value').getAttribute('office-address');
