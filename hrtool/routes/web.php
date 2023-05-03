@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/edit-profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile', [ProfileController::class, 'addFamilyMembers'])->name('addFamilyMembers');
+    Route::post('/profile/family-members/update', [ProfileController::class, 'updateFamilyMembers'])->name('updateFamilyMembers');
+    Route::post('/profile/family-members/delete/{id}', [ProfileController::class, 'deleteFamilyMember'])->name('profile.family-members.delete');
+    
 
 
     //Organizations

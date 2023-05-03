@@ -136,25 +136,64 @@ class ProfileController extends Controller
         // Log the request data
         error_log('Request Data: ' . print_r($request->all(), true));
 
-   
-        $member = $request->input('familyMember');
-
-        // Check if $member is not null
-        if (!is_null($member)) {
+        $members = $request->input('familyMembers'); // Get the array of family members
+    
+        // Check if $members is not null and not empty
+        if (!is_null($members) && count($members) > 0) {
             $user = Auth::user();
     
-            $familyMember = new Family_Member();
-            $familyMember->relationship = $member['relationship'];
-            $familyMember->jmbg = $member['jmbg'];
-            $familyMember->name = $member['name'];
-            $familyMember->birth_date = $member['birth_date'];
-            $familyMember->user_id = $user->id;
-            $familyMember->save();
+            foreach ($members as $member) {
+                $familyMember = new Family_Member();
+                $familyMember->relationship = $member['relationship'];
+                $familyMember->jmbg = $member['jmbg'];
+                $familyMember->name = $member['name'];
+                $familyMember->birth_date = $member['birth_date'];
+                $familyMember->user_id = $user->id;
+                $familyMember->save();
+            }
     
-            return response()->json(['success' => true, 'id' => $familyMember->id]);
+            return response()->json(['success' => true]);
         } else {
             return response()->json(['error' => 'No family member found in the request.'], 400);
         }
+    }
+
+    public function updateFamilyMembers(Request $request)
+    {
+        $familyMembersData = $request->input('familyMembers');
+
+        foreach ($familyMembersData as $memberData) {
+            if (isset($memberData['id'])) {
+                // Update the existing family member
+                $familyMember = Family_Member::find($memberData['id']);
+            } else {
+                // Create a new family member
+                $familyMember = new Family_Member();
+            }
+
+            $familyMember->relationship = $memberData['relationship'];
+            $familyMember->name = $memberData['name'];
+            $familyMember->birth_date = $memberData['birth_date'];
+            $familyMember->jmbg = $memberData['jmbg'];
+            $familyMember->user_id = Auth::user()->id;
+            $familyMember->save();
+        }
+
+        return response()->json(['message' => 'Family members updated successfully']);
+    }
+
+
+    public function deleteFamilyMember($id)
+    {
+        $familyMember = Family_Member::find($id);
+
+        if (!$familyMember) {
+            return response()->json(['error' => 'Family member not found.'], 404);
+        }
+
+        $familyMember->delete();
+
+        return response()->json(['message' => 'Family member deleted successfully']);
     }
 
 
