@@ -12,15 +12,15 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 12px;
-            line-height: 1.2;
+            line-height: 1.3;
             margin-left: 13px;
             margin-right: 13px;
         }
 
         h1 {
-            font-size: 12px;
+            font-size: 16px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 1px;
         }
 
         .contract-section p {
@@ -42,10 +42,6 @@
         td {
             border: none;
         }
-
-        td.italic {
-            font-style: italic;
-        }
     </style>
 
     <div class="contract-section">
@@ -54,8 +50,7 @@
             zaključenju:</p><br>
     </div>
 
-    <h1 style="margin-bottom: 0px">ANEKS</h1><br>
-    <h1>UGOVORA O RADU</h1><br>
+    <h1>ANEKS {{$annex_number}} <br>UGOVORA O RADU</h1><br>
 
     <div class="contract-section">
         <p style="text-align: center;">Ovim Aneksom se menja Ugovor o radu zaključen između:</p><br>
@@ -67,8 +62,8 @@
     </div>
 
     <div class="contract-section">
-        <p>2. {{$first_name}} {{$last_name}} iz {{$town}} ul. {{$street}}, JMBG:
-            {{$jmbg}} koji radi na poslovima {{$position}} (stara pozicija).
+        <p>2. <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG:
+            <strong>{{$jmbg}}</strong> koji radi na poslovima: <strong>{{$old_value}}</strong> (stara pozicija).
         </p><br>
     </div>
 
@@ -77,7 +72,7 @@
     </div>
 
     <div class="contract-section">
-        <p style="text-align: center;">1. za obavljanje poslova: _______ (nova pozicija).</p><br>
+        <p style="text-align: center;">1. za obavljanje poslova: <strong>{{$new_value}}</strong> (nova pozicija).</p><br>
     </div>
 
     <div class="contract-section">
@@ -86,12 +81,8 @@
 
     <div class="contract-section">
         <strong>
-            <p class="pos-desc"> new pos desc </p><br>
+            <p class="pos-desc">{!! $position_description !!}</p><br>
         </strong>
-    </div>
-
-    <div class="contract-section">
-        <p>Zaposleni obavlja poslove i ima dužnosti koje su određene ovim ugovorom i to:</p><br>
     </div>
 
     <div class="contract-section">
@@ -100,7 +91,8 @@
 
     <div class="contract-section">
         <p>Ovaj Aneks ugovora o radu stupa na snagu datumom potpisa ugovornih strana, a počinje važiti od
-            ________________ (datum početka važenja Aneksa)</p><br>
+            {{$annex_date}} (datum početka važenja Aneksa)
+        </p><br>
     </div>
 
     <div class="contract-section">
@@ -113,8 +105,7 @@
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana:</p><br>
-        <p>{{$annex_date}} (datum izrade Aneksa)</p><br>
+        <p>U Beogradu dana: {{$annex_created_date}} (datum izrade Aneksa)</p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">
@@ -129,7 +120,11 @@
             </tr>
             <tr>
                 <td><strong>{{$first_name}} {{$last_name}}</strong></td>
-                <td class="italic">Marija Kosanović, Direktorka ljudskih resursa</td>
+                <td class="italic">Marija Kosanović, </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="italic">Direktorka ljudskih resursa</td>
             </tr>
         </table>
     </div><br><br><br>

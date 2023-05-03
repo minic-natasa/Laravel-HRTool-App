@@ -102,9 +102,11 @@
                                                 @foreach ($positions as $position)
                                                 <tr>
                                                     <th scope="row">{{ $position->id }}</th>
-                                                    <td class="sorting_1 dtr-control">{{ $position->name }}</td>
+                                                    <td class="sorting_1 dtr-control">
+                                                        <a id="link" href="{{ route('positions.position-card', ['id' => $position->id]) }}">{{ $position->name }}</a>
+                                                    </td>
                                                     <td>{{ Str::limit($position->description, $limit = 30, $end = '...') }}</td>
-                                                    <td>{{ $position->organization->name }}</td>
+                                                    <td><a id="link" href="{{ route('organizations.organization-card', $position->organization->id) }}">{{ $position->organization->name }}</a></td>
                                                     <td>
 
                                                         <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
@@ -127,11 +129,22 @@
                                                             </div>
 
                                                         </div>
-
-
                                                     </td>
                                                 </tr>
                                                 @endforeach
+
+                                                <style>
+                                                    /* Set link color to the same color as normal text */
+                                                    #link {
+                                                        color: inherit;
+                                                        text-decoration: none;
+                                                    }
+
+                                                    /* Set link color to a different color on hover */
+                                                    #link:hover {
+                                                        color: #002EFF;
+                                                    }
+                                                </style>
 
                                             </tbody>
                                         </table>

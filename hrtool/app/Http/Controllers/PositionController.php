@@ -43,7 +43,6 @@ class PositionController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'organization_id' => 'required|exists:organizations,id',
-            'professional_qualifications_level'  => 'required|string',
             'professional_requirements_per_job_systematisation'  => 'required|string',
         ]);
 
@@ -51,7 +50,6 @@ class PositionController extends Controller
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'organization_id' => $request->input('organization_id'),
-            'professional_qualifications_level' => $request->input('professional_qualifications_level'),
             'professional_requirements_per_job_systematisation' => $request->input('professional_requirements_per_job_systematisation'),
         ]);
         $position->save();
@@ -90,7 +88,6 @@ class PositionController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'organization_id' => 'required|exists:organizations,id',
-            'professional_qualifications_level'  => 'required',
             'professional_requirements_per_job_systematisation'  => 'required|string',
         ]);
 
@@ -98,7 +95,6 @@ class PositionController extends Controller
         $position->name = $request->input('name');
         $position->description = $request->input('description');
         $position->organization_id = $request->input('organization_id');
-        $position->professional_qualifications_level = $request->input('professional_qualifications_level');
         $position->professional_requirements_per_job_systematisation = $request->input('professional_requirements_per_job_systematisation');
 
         $position->save();

@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/annexes/{id}', 'destroy')->name('annexes.destroy');
 
         //Printing
-        Route::get('/annexes/{id}/annex-pdf', 'annex_pdf')->name('annexes.annex-pdf');
+        Route::get('/annexes/{id}/annex-pdf/{annex_number}', 'annex_pdf')->name('annexes.annex-pdf');
         Route::get('/annexes/{id}/notice-pdf', 'notice_pdf')->name('annexes.notice-pdf');
     });
 
@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function () {
     });
 
     //Family members
-    
+
     Route::get('/family-members/{profileId}', [FamilyMemberController::class, 'getFamilyMembers']);
 });
 

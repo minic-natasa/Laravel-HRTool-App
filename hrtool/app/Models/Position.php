@@ -13,7 +13,6 @@ class Position extends Model
         'name',
         'description',
         'organization_id',
-        'professional_qualifications_level',
         'professional_requirements_per_job_systematisation',
     ];
 

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
+use App\Models\Organization;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -10,15 +13,20 @@ class UserController extends Controller
     //Display Users page
     public function index()
     {
+        $contracts = Contract::all();
+        $organizations = Organization::all();
+        $positions = Position::all();
         $users = User::all();
-        return view('users.index', ['users' => $users]);
+        return view('users.index', ['users' => $users], compact('contracts', 'organizations', 'positions'));
         //return view('users.index', compact('users'));
     }
 
     public function profile_card(string $id)
     {
+        $organizations = Organization::all();
+        $positions = Position::all();
         $user = User::find($id);
-        return view('users.profile-card', compact('user'));
+        return view('users.profile-card', compact('user', 'organizations', 'positions'));
     }
 
     public function create()

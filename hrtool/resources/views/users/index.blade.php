@@ -112,26 +112,55 @@
                                                 @foreach ($users as $user)
                                                 <tr>
                                                     <th scope="row">{{ $user->employee_number }}</th>
-                                                    <td class="sorting_1 dtr-control">{{ $user->first_name }} {{ $user->last_name }}</td>
+                                                    <td class="sorting_1 dtr-control"><a id="user" href="{{ route('users.profile-card', $user->id) }}">{{ $user->first_name }} {{ $user->last_name }}</a></td>
                                                     <td>{{ $user->email }}</td>
-                                                    <!--  <td>Team</td> -->
                                                     <td>
                                                         @php
-                                                        $positions = [];
+                                                        foreach($user->contract as $contr){
+
+                                                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+                                                        $annexPositionName = $annex ? $annex->new_value : '';
+                                                        $annexPosition = '';
+                                                        $currentPosition = '';
+                                                        $currentOrganization = $contr->organization;
+                                                        $annexOrganization = '';
+
+                                                        foreach ($contr->organization->position as $pos) {
+                                                        if ($pos->id == $contr->position){
+                                                        $currentPosition = $pos;
+                                                        $currentPositionName = $currentPosition->name;
+                                                        }
+                                                        }
+
+                                                        if ($annex) {
+                                                        foreach ($organizations as $org) {
+                                                        foreach ($org->position as $pos) {
+                                                        if ($pos->name == $annexPositionName) {
+                                                        $annexOrganization = $pos->organization;
+                                                        $annexPosition = $pos;
+                                                        break;
+                                                        }
+                                                        }
+                                                        }
+                                                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                                        } else {
+                                                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                        }
+                                                        }
                                                         @endphp
-                                                        @foreach($user->contract as $contr)
-                                                        @foreach($contr->organization->position as $pos)
-                                                        @if($pos->id == $contr->position)
-                                                        @php
-                                                        $positions[] = $pos->name;
-                                                        @endphp
-                                                        @endif
-                                                        @endforeach
-                                                        @endforeach
-                                                        @if(count($positions) > 0)
-                                                        {{ $positions[0] }}
-                                                        @if(count($positions) > 1)
-                                                        @for($i = 1; $i < count($positions); $i++) ; {{ $positions[$i] }} @endfor @endif @endif </td>
+                                                    </td>
+
+                                                    <style>
+                                                        /* Set link color to the same color as normal text */
+                                                        #link {
+                                                            color: inherit;
+                                                        }
+
+                                                        /* Set link color to a different color on hover */
+                                                        #link:hover {
+                                                            color: #002EFF;
+                                                        }
+                                                    </style>
 
                                                     <td>{{ $user->mobile }}</td>
                                                     <td>
@@ -161,6 +190,19 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
+
+                                                <style>
+                                                    /* Set link color to the same color as normal text */
+                                                    #user {
+                                                        color: inherit;
+                                                        text-decoration: none;
+                                                    }
+
+                                                    /* Set link color to a different color on hover */
+                                                    #user:hover {
+                                                        color: #002EFF;
+                                                    }
+                                                </style>
 
                                             </tbody>
                                         </table>

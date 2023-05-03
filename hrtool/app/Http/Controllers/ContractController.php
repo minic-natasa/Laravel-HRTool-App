@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Annex;
 use Illuminate\Http\Request;
 use App\Models\Contract;
 use App\Models\Organization;
@@ -19,17 +20,21 @@ class ContractController extends Controller
      */
     public function index()
     {
-
+        $annexes = Annex::all();
+        $organizations = Organization::all();
+        $positions = Position::all();
         $contracts = Contract::all();
-        return view('contracts.index', ['contracts' => $contracts]);
+        return view('contracts.index', ['contracts' => $contracts], compact('annexes', 'organizations', 'positions'));
     }
 
     public function profile($id)
     {
 
         $employee = User::find($id);
+        $organizations = Organization::all();
+        $positions = Position::all();
         $contracts = Contract::where('employee_number', $id)->get();
-        return view('contracts.profile', ['user_id' => $id], compact('employee', 'contracts'));
+        return view('contracts.profile', ['user_id' => $id], compact('employee', 'contracts', 'organizations', 'positions'));
     }
 
     /**

@@ -87,14 +87,49 @@
                                                 @foreach ($contracts as $contract)
                                                 <tr>
                                                     <th scope="row">{{ $contract->contract_number }}</th>
-                                                    <td class="sorting_1 dtr-control">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</td>
-                                                    <td>{{ $contract->organization->name }}</td>
+                                                    <td class="sorting_1 dtr-control">
+                                                        <a href="{{ route('users.profile-card', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
+                                                    </td>
+                                                    <td> @php
+                                                        $annex = $contract->annexes()->where('reason', 'Promene pozicije')->orderByDesc('created_at')->first();
+                                                        $annexPositionName = $annex ? $annex->new_value : '';
+                                                        $currentOrganization = $contract->organization;
+                                                        $annexOrganization = '';
+
+                                                        if ($annex) {
+                                                        foreach ($organizations as $org) {
+                                                        foreach ($org->position as $pos) {
+                                                        if ($pos->name == $annexPositionName) {
+                                                        $annexOrganization = $pos->organization;
+                                                        $annexPosition = $pos;
+                                                        break;
+                                                        }
+                                                        }
+                                                        }
+                                                        echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
+
+                                                        } else {
+                                                        echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
+                                                        }
+                                                        @endphp</td>
                                                     <td>
-                                                        @foreach($contract->organization->position as $pos)
-                                                        @if($pos->id == $contract->position)
-                                                        {{ $pos->name }}
-                                                        @endif
-                                                        @endforeach
+                                                        @php
+                                                        $currentPosition = '';
+
+                                                        foreach ($contract->organization->position as $pos) {
+                                                        if ($pos->id == $contract->position){
+                                                        $currentPosition = $pos;
+                                                        $currentPositionName = $currentPosition->name;
+                                                        }
+                                                        }
+
+                                                        if ($annex) {
+
+                                                        echo '<span title="Position Changed with Annex"><a href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                                        } else {
+                                                        echo '<a href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                        }
+                                                        @endphp
                                                     </td>
 
                                                     <td>
@@ -120,6 +155,16 @@
 
                                                         </div>
                                     </div>
+
+                                    <style>
+                                        a {
+                                            color: inherit;
+                                        }
+
+                                        a:hover {
+                                            color: #002EFF;
+                                        }
+                                    </style>
                                 </div>
 
                                 </td>

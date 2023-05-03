@@ -152,30 +152,71 @@
                 <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
                     <!-- <h4 class="card-title" style="margin-bottom: 10px; font-size: 15px">SEE CONTRACTS</h4> -->
                     <h5 class="card-title">Position</h5>
+
                     <p class="card-text" style="font-size: 13px;">
                         @php
-                        $positions = [];
+
+                        foreach($user->contract as $contr){
+
+                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+                        $annexPositionName = $annex ? $annex->new_value : '';
+                        $annexPosition = '';
+                        $currentPosition = '';
+                        $currentOrganization = $contr->organization;
+                        $annexOrganization = '';
+
+                        foreach ($contr->organization->position as $pos) {
+                        if ($pos->id == $contr->position){
+                        $currentPosition = $pos;
+                        $currentPositionName = $currentPosition->name;
+                        }
+                        }
+
+                        if ($annex) {
+                        foreach ($organizations as $org) {
+                        foreach ($org->position as $pos) {
+                        if ($pos->name == $annexPositionName) {
+                        $annexOrganization = $pos->organization;
+                        $annexPosition = $pos;
+                        break;
+                        }
+                        }
+                        }
+                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                        } else {
+                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                        }
+                        }
                         @endphp
-                        @foreach($user->contract as $contr)
-                        @foreach($contr->organization->position as $pos)
-                        @if($pos->id == $contr->position)
-                        @php
-                        $positions[] = $pos;
-                        @endphp
-                        @endif
-                        @endforeach
-                        @endforeach
-                        @if(count($positions) > 0)
-                        <a href="{{ route('positions.position-card', $positions[0]->id) }}">{{ $positions[0]->name }}</a>
-                        @if(count($positions) > 1)
-                        @for($i = 1; $i < count($positions); $i++) ; <a href="{{ route('positions.show', $positions[$i]->id) }}">{{ $positions[$i]->name }}</a>
-                            @endfor
-                            @endif
-                            @endif
                     </p>
+
+                    <style>
+                        /* Set link color to the same color as normal text */
+                        #link {
+                            color: inherit;
+                            text-decoration: none;
+                        }
+
+                        /* Set link color to a different color on hover */
+                        #link:hover {
+                            color: #002EFF;
+                        }
+                    </style>
+
 
                     <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
                 </div>
+
+
+                <style>
+                    #link {
+                        color: inherit;
+                    }
+
+                    #link:hover {
+                        color: #002EFF;
+                    }
+                </style>
 
                 <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
                     <h5 class="card-title" style="margin-bottom: 3px; font-size: 13px;">Professional Qualifications Level</h5>
@@ -211,7 +252,7 @@
                     <h5 class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Emergency Contact Number</h5>
                     <p class="card-text" style="font-size: 13px;">{{ $user->emergency_contact_number }}</p>
 
-                    <a href="javascript:void(0)" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="seeFamilyMembers()">
+                    <a href="javascript:void(0)" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="openFamilyMembersPopup()">
                         <i class="fas fa-user-friends"></i></i> See Family Members
                     </a>
 
@@ -224,6 +265,87 @@
 
         </div>
         <!-- end row -->
+
+
+        <div class="modal fade" id="familyMembersModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Family Members</h5>
+                        <button type="btn" class="close" style="color:black; border: none; background: transparent; cursor: pointer" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body" style="height: 55vh;">
+
+                        <div class="table-responsive" style="max-height: 50vh; overflow: scroll;">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Relationship</th>
+                                        <th>Name</th>
+                                        <th>Birth Date</th>
+                                        <th>JMBG</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $count = 1; ?>
+                                    @foreach ($user->familyMembers as $member)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{$member->relationship}}</td>
+                                        <td>{{$member->name}}</td>
+                                        <td>{{ date('d.m.Y.', strtotime($member->birth_date)) }}</td>
+                                        <td>{{$member->jmbg}}</td>
+                                        <td>
+                                            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                                <div class="btn-group" role="group">
+                                                    <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-line"></i>
+                                                    </button>
+
+                                                    <div class="dropdown-menu" id="actionMenu" aria-labelledby="btnGroupVerticalDrop1">
+                                                        <a href="" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
+                                                        <form action="" method="POST" style="display: inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this member?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                        </form>
+                                                    </div>
+
+                                                    <style>
+                                                        #actionMenu {
+                                                            min-width: 7vw !important;
+                                                        }
+                                                    </style>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php $count++; ?>
+
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openFamilyMembersPopup() {
+                $('#familyMembersModal').modal('show');
+            }
+        </script>
+
+
+
+
 
     </div>
 
