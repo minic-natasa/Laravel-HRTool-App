@@ -91,7 +91,7 @@
 
     <div class="contract-section">
         <p>Ovaj Aneks ugovora o radu stupa na snagu datumom potpisa ugovornih strana, a počinje važiti od
-            {{$annex_date}} (datum početka važenja Aneksa)
+            <strong>{{$annex_date}}</strong> (datum početka važenja Aneksa)
         </p><br>
     </div>
 
@@ -105,7 +105,7 @@
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana: {{$annex_created_date}} (datum izrade Aneksa)</p><br>
+        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong> (datum izrade Aneksa)</p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">

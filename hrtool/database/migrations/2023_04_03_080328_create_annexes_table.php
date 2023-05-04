@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('new_value');
             $table->date('annex_date');
             $table->date('annex_created_date');
+            $table->boolean('deleted');
             $table->timestamps();
 
             $table->unsignedBigInteger('contract_id');

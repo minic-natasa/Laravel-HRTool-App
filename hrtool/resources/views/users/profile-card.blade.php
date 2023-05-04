@@ -137,8 +137,23 @@
                     <p class="card-text">{{ $user->address_in_ID }}</p>
 
                     <h5 class="card-title">Current Address</h5>
-                    <p class="card-text">{{ $user->current_address }}</p>
 
+                    <p class="card-text">
+                        @php
+                        foreach($user->contract as $contr){
+                        $annexLocation = $contr->annexes()->where('reason', 'Promene adrese obavljanja posla')->orderByDesc('created_at')->first();
+                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
+                        $address = '';
+                        if ($annexLocation) {
+                        $address = $annexAddress;
+                        echo '<span class="changed" title="Address Changed with Annex">'.$address.'</span>';
+                        } else {
+                        echo $user->current_address;
+                        }
+                        }
+                        @endphp
+                    </p>
+                    
                     <h5 class="card-title">Slava</h5>
                     <p class="card-text">{{ $user->slava }}</p>
 

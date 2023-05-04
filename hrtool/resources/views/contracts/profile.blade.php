@@ -107,7 +107,48 @@
                                     <strong>Type of Contract:</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->type_of_contract}}</span>
                                     <strong>Location of Work:</strong>
-                                    <span style="display: block; margin-bottom: 8px;">{{$contract->location_of_work}}</span>
+
+                                    <span style="display: block; margin-bottom: 8px;">
+                                        @php
+                                        $annexLocation = $contract->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
+                                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
+                                        $location = '';
+
+                                        if ($annexLocation) {
+
+                                        if($annexAddress == "Makedonska 12, Beograd"){
+                                        $location = "Hybrid";
+                                        }else{
+                                        $location = "Remote";
+                                        }
+
+                                        echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . $location . '</span>';
+                                        } else {
+                                        echo $contract->location_of_work;
+                                        }
+                                        @endphp
+                                    </span>
+                                    <strong>Address of Work:</strong>
+
+                                    <span style="display: block; margin-bottom: 8px;">
+                                        @php
+                                        $annexLocation = $contract->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
+                                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
+                                        $address = '';
+
+                                        if ($annexLocation) {
+                                        $address = $annexAddress;
+                                        echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . $address . '</span>';
+                                        }
+                                        else {
+                                        if($contract->location_of_work == "Hybrid"){
+                                        echo "Office - Makedonska 12, Beograd";
+                                        }else{
+                                        echo $contract->employee->current_address;
+                                        }
+                                        }
+                                        @endphp
+                                    </span>
                                     <strong>Transportation:</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->transportation}}</span>
                                 </address>
@@ -135,11 +176,11 @@
                                                     <tr>
                                                         <td class="text-center">
                                                             @php
-                                                            $annex = $contract->annexes()->where('reason', 'Promene pozicije')->orderByDesc('created_at')->first();
+                                                            $annex = $contract->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->orderByDesc('created_at')->first();
                                                             $annexPositionName = $annex ? $annex->new_value : '';
                                                             $currentOrganization = $contract->organization;
                                                             $annexOrganization = '';
-
+                                                            $annexPosition = '';
                                                             if ($annex) {
                                                             foreach ($organizations as $org) {
                                                             foreach ($org->position as $pos) {
@@ -181,7 +222,7 @@
                                                         <td class="text-center">
                                                             @php
 
-                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->orderByDesc('created_at')->first();
+                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->where('deleted', false)->orderByDesc('created_at')->first();
                                                             $gross = $annexGross ? $annexGross->new_value : $contract->gross_salary_1;
                                                             $n = $gross * 0.701 + 2171.2;
                                                             $net = $annexGross ? $n : $contract->net_salary;
@@ -195,7 +236,7 @@
 
                                                         <td class="text-center" id="gross-annex">
                                                             @php
-                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->orderByDesc('created_at')->first();
+                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->where('deleted', false)->orderByDesc('created_at')->first();
                                                             $gross = $annexGross ? $annexGross->new_value : $contract->gross_salary_1;
                                                             if ($annexGross) {
                                                             echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . number_format($gross, 2, ',', '.') . ' RSD</span>';
@@ -305,14 +346,16 @@
                                         <th>Created At</th>
                                         <th>Start Date</th>
                                         <th>Print</th>
-                                        <th>Action</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php $count = 1; ?>
+                                    <?php $count = 0; ?>
                                     @foreach ($contract->annexes as $key => $annex)
+                                    @if ($annex->deleted === 0)
+                                    <?php $count++; ?>
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $count }}</td>
                                         <td>
                                             @if($annex->reason == 'Povećanja bruto 1 zarade')
                                             Povećanje bruto 1 zarade
@@ -339,39 +382,21 @@
                                                     </button>
 
                                                     <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                        <a href="{{ route('annexes.annex-pdf', ['id' => $annex->id, 'annex_number' => $key + 1]) }}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn"> Annex</a>
+                                                        <a href="{{ route('annexes.annex-pdf', ['id' => $annex->id, 'annex_number' => $count]) }}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn"> Annex</a>
                                                         <a href="{{ route('annexes.notice-pdf', $annex->id) }}" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn">Notice</a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                                <div class="btn-group" role="group">
-                                                    <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="ri-more-line"></i>
-                                                    </button>
-
-                                                    <div class="dropdown-menu" id="actionMenu" aria-labelledby="btnGroupVerticalDrop1">
-                                                        <a href="{{ route('contracts.edit', $contract->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                        <form action="{{ route('annexes.destroy', $annex->id) }}" method="POST" style="display: inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                                        </form>
-                                                    </div>
-
-                                                    <style>
-                                                        #actionMenu {
-                                                            min-width: 7vw !important;
-                                                        }
-                                                    </style>
-                                                </div>
-                                            </div>
+                                            <form action="{{ route('annexes.destroy', $annex->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                            </form>
                                         </td>
                                     </tr>
-                                    <?php $count++; ?>
-
+                                    @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -681,7 +706,6 @@
 
                 $('#address_value').prop('disabled', true);
                 $('#location_value').change(function() {
-                    var location_id = $(this).val();
                     $('#address_value').prop('disabled', false);
                     var location = $('#location_value option:selected').text();
 
@@ -692,7 +716,8 @@
                         newValInput.value = "Makedonska 12, Beograd";
                     } else if (location === 'Remote') {
                         address_value.readOnly = false;
-                        address_value.value = "";
+                        address_value.value = "{{ $contract->employee->current_address }}";
+                        newValInput.value = address_value.value;
 
                         address_value.addEventListener('input', function() {
                             address = address_value.value;

@@ -16,6 +16,7 @@ class Annex extends Model
         'new_value',
         'annex_date',
         'annex_created_date',
+        'deleted',
         'contract_id',
     ];
 

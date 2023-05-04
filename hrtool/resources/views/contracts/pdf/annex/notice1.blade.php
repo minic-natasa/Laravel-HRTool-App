@@ -53,12 +53,12 @@
             32/2013, 75/2014, 13/2017 - odluka US, 113/2017 i 95/2018 - autentično tumačenje, u daljem
             tekstu: Zakon), direktor Privrednog društva <strong>“SELLERS ALLEY”</strong> d.o.o. Beograd, ul. Makedonska
             12, MB: 21647900, PIB: 112312839 (u daljem tekstu: Poslodavac), dostavlja zaposlenom
-            {{$first_name}} {{$last_name}} iz {{$town}} ul. {{$street}}, JMBG: {{$jmbg}} koji radi na poslovima {{$position}} (trenutna pozicija) (u daljem tekstu:
-            Zaposleni), sledeće:</strong>
-        </p><br>
+            <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG: <strong>{{$jmbg}}</strong> koji radi na poslovima <strong>{{$position}}</strong> (trenutna pozicija) (u daljem tekstu:
+            Zaposleni), sledeće:
+        </p><br><br>
     </div>
 
-    <h1 style="margin-bottom: 0px">OBAVEŠTENJE O PONUDI ZA ZAKLJUČENJE</h1><br>
+    <h1 style="margin-bottom: 0px">OBAVEŠTENJE O PONUDI ZA ZAKLJUČENJE</h1>
     <h1>ANEKSA UGOVORA O RADU</h1><br>
 
     <div class="contract-section">
@@ -89,14 +89,13 @@
     </div>
 
     <div class="contract-section">
-        <p>Dostaviti:</p><br>
-        <p>-Radniku,</p><br>
-        <p>-Arhivi</p><br>
+        <p>Dostaviti:</p>
+        <p>-Radniku,</p>
+        <p>-Arhivi</p><br><br>
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana:</p><br>
-        <p>{{$annex_date}}</p><br>
+        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong> (datum izrade Aneksa)</p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">

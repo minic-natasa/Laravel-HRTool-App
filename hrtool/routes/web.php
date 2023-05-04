@@ -87,8 +87,6 @@ Route::middleware('auth')->group(function () {
     Route::controller(AnnexController::class)->group(function () {
         Route::get('/annexes/{id}', 'create')->name('annexes.create');
         Route::post('/annexes', 'store')->name('annexes.store');
-        Route::get('/annexes/{id}/edit', 'edit')->name('annexes.edit');
-        Route::put('/annexes/{id}', 'update')->name('annexes.update');
         Route::delete('/annexes/{id}', 'destroy')->name('annexes.destroy');
 
         //Printing

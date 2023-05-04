@@ -46,55 +46,18 @@ class AnnexController extends Controller
             'contract_id' => 'required|exists:contracts,id',
         ]);
 
-        $annex = new Annex([
-            'reason' => $request->input('reason'),
-            'old_value' => $request->input('old_value'),
-            'new_value' => $request->input('new_value'),
-            'annex_date' => $request->input('annex_date'),
-            'annex_created_date' => $request->input('annex_created_date'),
-            'contract_id' => $request->input('contract_id'),
-        ]);
-
+        $request->merge(['deleted' => 0]); // Set deleted to 0
+        $annex = new Annex($request->all());
         $annex->save();
 
         return redirect()->back()->with('success', 'Annex created successfully!');
     }
 
-    public function edit(string $id)
-    {
-        $annex = Annex::find($id);
-
-        return view('annexes.edit', compact('annex'));
-    }
-
-    public function update(Request $request, string $id)
-    {
-
-        $request->validate([
-            'reason' => 'required',
-            'old_value' => 'required',
-            'new_value' => 'required',
-            'annex_date' => 'required',
-            'annex_created_date' => 'required',
-        ]);
-
-        $annex = Annex::find($id);
-        $annex->reason = $request->input('reason');
-        $annex->old_value = $request->input('old_value');
-        $annex->new_value = $request->input('new_value');
-        $annex->annex_date = $request->input('annex_date');
-        $annex->annex_created_date = $request->input('annex_created_date');
-
-        $annex->save();
-
-        return redirect()->back()->with('success', 'Contract updated successfully!');
-    }
-
     public function destroy(string $id)
     {
         $annex = Annex::find($id);
-        $annex->delete();
-
+        $annex->deleted = true;
+        $annex->save();
         return redirect()->back()->with('success', 'Annex deleted successfully!');
     }
 
@@ -153,6 +116,18 @@ class AnnexController extends Controller
         $town = trim($address_parts[1]);
 
         $town = $this->changeTownDisplay($town);
+        $employee = $annex->contract->employee;
+        $position  = $annex->contract->organization->position->where('id', $annex->contract->position)->first()->name;
+
+        foreach ($employee->contract as $contr) {
+            $annexPP = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+
+            if ($annexPP) {
+                $position = $annexPP->new_value;
+            }
+        }
+
+
         $old_value = $annex->old_value;
         $new_value = $annex->new_value;
         $first_name = $annex->contract->employee->first_name;
@@ -166,6 +141,7 @@ class AnnexController extends Controller
             'name_of_one_parent' => $annex->contract->employee->name_of_one_parent,
             'last_name' => $last_name,
             'jmbg' => $annex->contract->employee->jmbg,
+            'position' => $position,
             'street' => $street,
             'town' => $town,
             'old_value' => $old_value,
@@ -185,23 +161,23 @@ class AnnexController extends Controller
             $data['position_description'] = $position_description;
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex1', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('aneks-promena-pozicije.pdf');
         } elseif ($annex->reason == 'Povećanja bruto 1 zarade') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex2', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('aneks-povećanje-bruto1-zarade.pdf');
         } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex3', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
         } elseif ($annex->reason == 'Promene adrese poslodavca') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex4', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('aneks-promena-adrese-poslodavca.pdf');
         } elseif ($annex->reason == 'Promene radnih sati') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex5', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('aneks-promena-radnih-sati.pdf');
         }
     }
 
@@ -226,9 +202,7 @@ class AnnexController extends Controller
             'employee_number'  => $annex->employee_number,
             'type_of_contract'  => $annex->type_of_contract,
             'contract_number'  => $annex->contract_number,
-            'contract_duration'  => $annex->contract_duration,
-            'probationary_period'  => $annex->probationary_period,
-            'probationary_period_text' => '',
+            'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
             'net_salary'  => $net_salary,
             'gross_salary_1' => $gross_salary_1,
             'gross_salary_2'  => $gross_salary_2,
@@ -245,23 +219,23 @@ class AnnexController extends Controller
         if ($annex->reason == 'Promene pozicije') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.notice1', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('obaveštenje-promena-pozicije.pdf');
         } elseif ($annex->reason == 'Povećanja bruto 1 zarade') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.notice2', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('obaveštenje-povećanje-bruto1-zarade.pdf');
         } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.notice3', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('obaveštenje-promena-adrese-obavljanja-posla.pdf');
         } elseif ($annex->reason == 'Promene adrese poslodavca') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.notice4', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('obaveštenje-promena-adrese-poslodavca.pdf');
         } elseif ($annex->reason == 'Promene radnih sati') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.notice5', $data);
-            return $pdf->stream('annex.pdf');
+            return $pdf->stream('obaveštenje-promena-radnih-sati.pdf');
         }
     }
 }
