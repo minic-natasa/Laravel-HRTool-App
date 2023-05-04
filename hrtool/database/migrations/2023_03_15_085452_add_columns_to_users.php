@@ -30,10 +30,8 @@ return new class extends Migration
             $table->bigInteger('jmbg')->unique();
             $table->bigInteger('ID_number')->unique();
             $table->bigInteger('passport_number')->unique();
-            $table->unsignedBigInteger('family_member_id')->nullable();
             $table->string('professional_qualifications_level');
             $table->string('profession');
-            
 
             /*
             DB::table('users')
@@ -54,29 +52,27 @@ return new class extends Migration
     public function down(): void
     {
         if (Schema::hasTable('users')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('first_name');
-            $table->dropColumn('last_name');
-            $table->dropColumn('name_of_one_parent');
-            $table->dropColumn('birth_date');
-            $table->dropColumn('address_in_ID');
-            $table->dropColumn('current_address');
-            $table->dropColumn('slava');
-            $table->dropColumn('private_email');
-            $table->dropColumn('mobile');
-            $table->dropColumn('bank_account_number');
-            $table->dropColumn('emergency_contact_name');
-            $table->dropColumn('emergency_contact_number');
-            $table->dropColumn('professional_qualifications_level');
-            $table->dropColumn('profession');
-            //$table->dropColumn('manager_id');
-            $table->dropColumn('employee_number');
-            $table->dropColumn('jmbg');
-            $table->dropColumn('ID_number');
-            $table->dropColumn('passport_number');
-            $table->dropColumn('family_member_id');
-
-
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('first_name');
+                $table->dropColumn('last_name');
+                $table->dropColumn('name_of_one_parent');
+                $table->dropColumn('birth_date');
+                $table->dropColumn('address_in_ID');
+                $table->dropColumn('current_address');
+                $table->dropColumn('slava');
+                $table->dropColumn('private_email');
+                $table->dropColumn('mobile');
+                $table->dropColumn('bank_account_number');
+                $table->dropColumn('emergency_contact_name');
+                $table->dropColumn('emergency_contact_number');
+                $table->dropColumn('professional_qualifications_level');
+                $table->dropColumn('profession');
+                //$table->dropColumn('manager_id');
+                $table->dropColumn('employee_number');
+                $table->dropColumn('jmbg');
+                $table->dropColumn('ID_number');
+                $table->dropColumn('passport_number');
+                $table->dropColumn('family_member_id');
             });
         }
     }
