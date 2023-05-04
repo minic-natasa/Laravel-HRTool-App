@@ -105,39 +105,38 @@ function addNewMember(memberId = null) {
     saveButton.style.marginRight = '10px';
 
     var deleteButton = document.createElement('button');
-deleteButton.setAttribute('class', 'btn btn-danger delete-btn');
-deleteButton.textContent = 'Delete';
-deleteButton.addEventListener('click', function () {
+    deleteButton.setAttribute('class', 'btn btn-danger delete-btn');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function () {
     
     deleteRow(deleteButton);
-});
-actionsCell.appendChild(deleteButton);
-deleteButton.style.marginRight = '10px';
+    });
+    actionsCell.appendChild(deleteButton);
+    deleteButton.style.marginRight = '10px';
 
-var editButton = document.createElement('button');
-editButton.setAttribute('class', 'btn btn-primary edit-btn');
-editButton.setAttribute('id', 'editButton');
-editButton.textContent = 'Edit';
-editButton.addEventListener('click', function () {
-    editRow(editButton);
-    enableInputs(newRow);
-});
-actionsCell.appendChild(editButton);
-editButton.style.display = 'none';
+    var editButton = document.createElement('button');
+    editButton.setAttribute('class', 'btn btn-primary edit-btn');
+    editButton.setAttribute('id', 'editButton');
+    editButton.textContent = 'Edit';
+    editButton.addEventListener('click', function () {
+        editRow(editButton);
+        enableInputs(newRow);
+    });
+    actionsCell.appendChild(editButton);
+    editButton.style.display = 'none';
 
-// Add cells to the row
-newRow.appendChild(relationshipCell);
-newRow.appendChild(nameCell);
-newRow.appendChild(birthdateCell);
-newRow.appendChild(jmbgCell);
-newRow.appendChild(actionsCell);
-newRow.appendChild(fmIDCell);
+    // Add cells to the row
+    newRow.appendChild(relationshipCell);
+    newRow.appendChild(nameCell);
+    newRow.appendChild(birthdateCell);
+    newRow.appendChild(jmbgCell);
+    newRow.appendChild(actionsCell);
+    newRow.appendChild(fmIDCell);
 
-// Add the new row to the table
-table.appendChild(newRow);
+    // Add the new row to the table
+    table.appendChild(newRow);
 
-return newRow; 
-
+    return newRow; 
 }
 
 function editRow(button) {
@@ -145,10 +144,10 @@ function editRow(button) {
 
     var row = button.parentNode.parentNode;
     var rowIndex = Array.from(row.parentNode.children).indexOf(row);
-    console.log("rowIndex:", rowIndex); // Add this line
-    console.log("familyMembers:", familyMembers); // Add this line
+    console.log("rowIndex:", rowIndex); 
+    console.log("familyMembers:", familyMembers);
     var existingRow = familyMembers[rowIndex];
-    console.log("existingRow:", existingRow); // Add this line
+    console.log("existingRow:", existingRow); 
     
     // Populate the input fields with the values from the existing row
     row.querySelectorAll(".relationship")[0].value = existingRow.relationship;
@@ -199,12 +198,12 @@ function saveRow(button) {
         };
         familyMembers.push(familyMember);
     }    
-    // Send the family member data to the Laravel controller
-
-
+    
         console.log(familyMembers);
 
-        showMembers();
+        // Send data to database
+        // Send the family member data to the Laravel controller
+        passMembers();
 
         // Hide the save button
         const saveBtn = row.querySelector('.save-btn');
@@ -226,16 +225,16 @@ function deleteRow(button) {
     var existingRow = familyMembers[rowIndex];
     // Remove the row from the familyMembers array
     //familyMembers.splice(rowIndex, 1);
-
-    //console.log(familyMembers);
-
+    
     const fmIdTd_value = row.querySelectorAll(".fmId")[0].value;
+
+    // call delete record from database function 
     deleteRowDb(fmIdTd_value) ;
+
     // Remove the row from the table
     row.parentNode.removeChild(row);
 
 }
-
 
 function enableInputs(row) {
     row.querySelectorAll('input').forEach((input) => {
@@ -249,12 +248,8 @@ function disableInputs(row) {
     });
 }
 
-function showMembers() {
-    submitFamilyMembers();
-}
-
-
-async function submitFamilyMembers() {
+//function to add new or edit existing familiy member in database
+async function passMembers() {
     try {
         const headers = {
             'Content-Type': 'application/json',
@@ -267,7 +262,7 @@ async function submitFamilyMembers() {
     }
 }
 
-
+//function to delete row in database
 async function deleteRowDb(id) {
     try {
         const headers = {
