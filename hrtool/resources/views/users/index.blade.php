@@ -118,7 +118,7 @@
                                                         @php
                                                         foreach($user->contract as $contr){
 
-                                                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+                                                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
                                                         $annexPositionName = $annex ? $annex->new_value : '';
                                                         $annexPosition = '';
                                                         $currentPosition = '';

@@ -141,7 +141,7 @@
                     <p class="card-text">
                         @php
                         foreach($user->contract as $contr){
-                        $annexLocation = $contr->annexes()->where('reason', 'Promene adrese obavljanja posla')->orderByDesc('created_at')->first();
+                        $annexLocation = $contr->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
                         $annexAddress = $annexLocation ? $annexLocation->new_value : '';
                         $address = '';
                         if ($annexLocation) {
@@ -173,7 +173,7 @@
 
                         foreach($user->contract as $contr){
 
-                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
                         $annexPositionName = $annex ? $annex->new_value : '';
                         $annexPosition = '';
                         $currentPosition = '';

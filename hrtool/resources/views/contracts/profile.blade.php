@@ -290,7 +290,7 @@
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
                                                     <!-- Only show the "See Contract Annexes" button if there are annexes -->
                                                     <li><a class="dropdown-item" href="javascript:void(0)" onclick="openCreateAnnexPopup()">Create New Annex</a></li>
-                                                    <li <?php if (count($contract->annexes) == 0) { ?> style="display:none" <?php } ?>><a class="dropdown-item" href="javascript:void(0)" onclick="openAnnexPopup()">See Contract Annexes</a></li>
+                                                    <li @if(count($contract->annexes) == 0 || $contract->annexes->where('deleted', false)->isEmpty()) style="display:none" @endif><a class="dropdown-item" href="javascript:void(0)" onclick="openAnnexPopup()">See Contract Annexes</a></li>
                                                 </div>
                                             </div>
                                         </div>
@@ -351,6 +351,8 @@
                                 </thead>
                                 <tbody>
                                     <?php $count = 0; ?>
+                                    @foreach ($contracts as $contract)
+                                    @if($contract)
                                     @foreach ($contract->annexes as $key => $annex)
                                     @if ($annex->deleted === 0)
                                     <?php $count++; ?>
@@ -398,6 +400,8 @@
                                     </tr>
                                     @endif
                                     @endforeach
+                                    @endif
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -423,11 +427,15 @@
                     </div>
 
                     <div class="modal-body" style="height: 55vh;">
-
+                        @foreach ($contracts as $contract)
+                        @if($contract)
                         <form action="{{ route('annexes.store') }}" method="POST">
                             @csrf
 
+
                             <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+
+
 
                             <div class="form-group row">
                                 <label for="reason" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Reason:') }}</label>
@@ -571,6 +579,8 @@
                                 </div>
                             </div>
                         </form>
+                        @endif
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -716,7 +726,11 @@
                         newValInput.value = "Makedonska 12, Beograd";
                     } else if (location === 'Remote') {
                         address_value.readOnly = false;
-                        address_value.value = "{{ $contract->employee->current_address }}";
+                        contracts.forEach(function(contract) {
+                            if (contract) {
+                                address_value.value = contract.employee.current_address;
+                            }
+                        });
                         newValInput.value = address_value.value;
 
                         address_value.addEventListener('input', function() {
