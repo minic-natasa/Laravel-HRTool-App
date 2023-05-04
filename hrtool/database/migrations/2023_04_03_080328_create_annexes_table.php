@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('annex_created_date');
             $table->boolean('deleted');
             $table->timestamps();
-
             $table->unsignedBigInteger('contract_id');
             $table->foreign('contract_id')->references('id')->on('contracts');
         });
