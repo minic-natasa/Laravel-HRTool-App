@@ -7,7 +7,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <head>
     <script src="{{ asset('assets/js/familymembers.js') }}"></script>
 
@@ -182,25 +182,6 @@
                 </div>
 
 
-                <!--
-                <div class="card card-body flex-item" style="flex: 1;">
-
-                    <h4 class="card-title" style="margin-bottom: 15px;">TEAM</h4>
-                    <h5 class="card-title">Lead</h5>
-                    <p class="card-text">Ime Prezime</p>
-
-                    <h5 class="card-title">Manager</h5>
-                    @if(!(Auth::User()->manager))
-                    <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: No </div>
-                    @endif
-
-                    @if(Auth::User()->manager)
-                    <div class="max-w-xl" style="margin-bottom: 10px;"> Manager: Yes</div>
-                    @endif
-
-                </div>
-            -->
-
                 <div class="card card-body flex-item" style="flex: 1;  margin-bottom: 1vh; height: 25vh; overflow-y: auto;">
                     <h5 class="card-title">Emergency Contact Name</h5>
                     <p class="card-text" style="font-size: 13px;">{{ Auth::User()->emergency_contact_name }}</p>
@@ -208,26 +189,6 @@
                     <h5 class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Emergency Contact Number</h5>
                     <p class="card-text" style="font-size: 13px;">{{ Auth::User()->emergency_contact_number }}</p>
 
-                    <!--
-                    <button class="btn" style="background: transparent; border: 1px solid #002EFF; color: #002EFF; padding: 7px 13px; font-size: 14px; cursor: pointer; display: inline-block;" onclick="openAddFamilyMembersPopup()">
-                        <i class="fa fa-plus"></i> Add Family Members
-                    </button>
-    -->
-
-
-                    <!-- Display family members 
-                    @if(count($familyMembers) > 0)
-                    <span class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Family Members:
-
-                        @foreach($familyMembers as $familyMember)
-                        {{ $familyMember->name }},
-                        @endforeach
-
-                        @else
-                        <p>No family members found.</p>
-                        @endif
-                    </span>
-                    -->
 
                     <div class="btn-group" role="group">
                         <button id="btnGroupVerticalDrop1" type="button" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -256,6 +217,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                    <input type="hidden" name="family_member_id" id="family_member_id" value=""> <!-- Add the hidden input field here -->
                         <table id="familyMembersTable" class="table">
                             <thead>
                                 <tr>
@@ -268,7 +230,7 @@
                             </thead>
 
                             <tbody id="familyMembersTableBody">
-
+                            @csrf
                             </tbody>
 
                         </table>
@@ -388,10 +350,15 @@
             });
 
         });
-
+        console.log(familyMembers);
         // Send an HTTP POST request to the controller method
         axios.post('/profile', {
                 familyMembers: familyMembers
+            }, {
+                headers: {
+                    // Include the CSRF token in the headers
+                    'X-CSRF-TOKEN': csrfToken
+                }
             })
             .then(response => {
                 console.log(response.data);
