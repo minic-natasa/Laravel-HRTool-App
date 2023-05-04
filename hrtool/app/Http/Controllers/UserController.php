@@ -57,7 +57,6 @@ class UserController extends Controller
             'jmbg' => 'required|integer|unique:users,jmbg',
             'ID_number' => 'required|integer|unique:users,ID_number',
             'passport_number' => 'required|integer|unique:users,passport_number',
-            'family_member_id' => 'nullable|exists:family_members,id',
             'professional_qualifications_level'  => 'required|string',
             'profession'  => 'required|string',
         ]);
@@ -71,7 +70,6 @@ class UserController extends Controller
             'bank_account_number' => $request->input('bank_account_number'),
             'emergency_contact_name' => $request->input('emergency_contact_name'),
             'emergency_contact_number' => $request->input('emergency_contact_number'),
-            'family_member_id' => $request->input('family_member_id'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'employee_number' => $request->input('employee_number'),
@@ -144,7 +142,6 @@ class UserController extends Controller
         $user->bank_account_number = $request->input('bank_account_number');
         $user->emergency_contact_name = $request->input('emergency_contact_name');
         $user->emergency_contact_number = $request->input('emergency_contact_number');
-        $user->family_member_id = $request->input('family_member_id');
         $user->employee_number = $request->input('employee_number');
         $user->birth_date = $request->input('birth_date');
         $user->address_in_ID = $request->input('address_in_ID');
