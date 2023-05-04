@@ -112,63 +112,6 @@ class ContractController extends Controller
         //$user = User::findOrFail($id);
         //return view('contract.show', compact('user'));
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $contract = Contract::find($id);
-        $organizations = Organization::all();
-        $positions = Position::all();
-
-        return view('contracts.edit', compact('contract', 'organizations', 'positions'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-
-        $request->validate([
-            'start_date' => 'required',
-            'first_day_on_job' => 'required',
-            'position' => 'required',
-            'organization_id' => 'required',
-            'type_of_contract' => 'required',
-            'contract_number' => 'required',
-            'contract_duration' => 'required',
-            'net_salary' => 'required',
-            'gross_salary_1' => 'required',
-            'gross_salary_2' => 'required',
-            'location_of_work' => 'required',
-            'transportation'  => 'required',
-        ]);
-
-
-        $probationary_period = ($request->input('contract_duration') === 'unlimited' && $request->input('probationary_period') !== null) ? $request->input('probationary_period') : 0;
-
-        $contract = Contract::find($id);
-        $contract->start_date = $request->input('start_date');
-        $contract->first_day_on_job = $request->input('first_day_on_job');
-        $contract->position = $request->input('position');
-        $contract->organization_id = $request->input('organization_id');
-        $contract->type_of_contract = $request->input('type_of_contract');
-        $contract->contract_number = $request->input('contract_number');
-        $contract->contract_duration = $request->input('contract_duration');
-        $contract->probationary_period = $probationary_period; // Update the probationary period field
-        $contract->net_salary = $request->input('net_salary');
-        $contract->gross_salary_1 = $request->input('gross_salary_1');
-        $contract->gross_salary_2 = $request->input('gross_salary_2');
-        $contract->location_of_work = $request->input('location_of_work');
-        $contract->transportation = $request->input('transportation');
-
-
-        $contract->save();
-
-        //return redirect('/users/{id}/contracts', ['id' => $contract->employee->id])->with('success', 'Contract updated successfully!');
-        return redirect('/contracts')->with('success', 'Contract updated successfully!');
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -176,9 +119,17 @@ class ContractController extends Controller
     public function destroy(string $id)
     {
         $contract = Contract::find($id);
-        $contract->delete();
+        $activeAnnexes = $contract->annexes->where('deleted', false);
 
-        return redirect('/contracts')->with('success', 'Contract deleted successfully!');
+        // Check if there are related annexes
+        if ($activeAnnexes->isNotEmpty()) {
+            // If there are deleted annexes, delete the contract
+            return redirect()->route('contracts.index')->with('error', 'You cannot delete a contract with annexes.');
+        } else {
+            $contract->status = 'inactive';
+            $contract->save();
+            return redirect()->route('contracts.index')->with('success', 'Contract deleted successfully');
+        }
     }
 
     public function changeTownDisplay($t)

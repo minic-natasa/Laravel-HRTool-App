@@ -302,12 +302,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Edit button -->
-                                        <div class="d-print-none">
-                                            <div class="float-end">
-                                                <a href="{{ route('contracts.edit', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px"><i class="fas fa-pencil-alt"></i> Edit</a>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -352,7 +346,7 @@
                                 <tbody>
                                     <?php $count = 0; ?>
                                     @foreach ($contracts as $contract)
-                                    @if($contract)
+                                    @if($contract && $contract->status == 'active')
                                     @foreach ($contract->annexes as $key => $annex)
                                     @if ($annex->deleted === 0)
                                     <?php $count++; ?>
@@ -428,7 +422,7 @@
 
                     <div class="modal-body" style="height: 55vh;">
                         @foreach ($contracts as $contract)
-                        @if($contract)
+                        @if($contract && $contract->status == 'active')
                         <form action="{{ route('annexes.store') }}" method="POST">
                             @csrf
 

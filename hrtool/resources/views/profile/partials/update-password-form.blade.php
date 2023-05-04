@@ -3,21 +3,7 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <div class="row">
-                            <div class="col-12">
-                                <h4 class="mb-sm-0">Update Password</h4>
-                            </div>
-                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {{ __('Ensure your account is using a long, random password to stay secure.') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <!-- end page title -->
+          
 
                 <div class="py-12">
                     <div class="max-w-7xl sm:px-6 lg:px-8">

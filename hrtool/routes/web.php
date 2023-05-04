@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'addFamilyMembers'])->name('addFamilyMembers');
     Route::post('/profile/family-members/update', [ProfileController::class, 'updateFamilyMembers'])->name('updateFamilyMembers');
     Route::post('/profile/family-members/delete/{id}', [ProfileController::class, 'deleteFamilyMember'])->name('profile.family-members.delete');
-    
+
 
 
     //Organizations
@@ -73,8 +73,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/users/{id}/contracts', 'profile')->name('contracts.profile');
         Route::get('/users/{id}/contracts/create', 'create')->name('contracts.create');
         Route::post('/contracts', 'store')->name('contracts.store');
-        Route::get('/contracts/{id}/edit', 'edit')->name('contracts.edit');
-        Route::put('/contracts/{id}', 'update')->name('contracts.update');
         Route::delete('/contracts/{id}', 'destroy')->name('contracts.destroy');
 
         //Printing

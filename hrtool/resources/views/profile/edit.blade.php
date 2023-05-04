@@ -10,7 +10,7 @@
                   <div class="page-title-box d-flex align-items-center justify-content-between">
                       <div class="d-flex align-items-center">
                           <a href="{{ route('profile.show') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
-                          <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">Edit Profile</h4>
+                          <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">UPDATE PASSWORD</h4>
                       </div>
                       <div class="d-flex align-items-center">
                           <div class="page-title-right">
@@ -28,12 +28,7 @@
 
 
           <div class="space-y-6">
-              <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800" style="margin-bottom: 20px;">
-                  <div class="max-w-xl">
-                      @include('profile.partials.update-profile-information-form')
-                  </div>
-              </div>
-
+             
               <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg dark:bg-gray-800" style="margin-bottom: 20px;">
                   <div class="max-w-xl">
                       @include('profile.partials.update-password-form')

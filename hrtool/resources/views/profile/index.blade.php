@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
 <head>
     <script src="{{ asset('assets/js/familymembers.js') }}"></script>
 
@@ -44,7 +45,7 @@
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">MY PROFILE</h4>
                     </div>
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;"><i class="fas fa-pencil-alt" title="Edit"></i> Edit Profile Informations</a>
+                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;"><i class="fas fa-lock" title="Edit"></i> Update Password</a>
                     </div>
                 </div>
             </div>
@@ -217,7 +218,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                    <input type="hidden" name="family_member_id" id="family_member_id" value=""> <!-- Add the hidden input field here -->
+                        <input type="hidden" name="family_member_id" id="family_member_id" value=""> <!-- Add the hidden input field here -->
                         <table id="familyMembersTable" class="table">
                             <thead>
                                 <tr>
@@ -230,7 +231,7 @@
                             </thead>
 
                             <tbody id="familyMembersTableBody">
-                            @csrf
+                                @csrf
                             </tbody>
 
                         </table>

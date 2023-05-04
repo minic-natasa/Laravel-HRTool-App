@@ -64,7 +64,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 400px; width: 100%;">
+                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 350px; width: 100%;">
                                         <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
                                             <thead>
                                                 <tr role="row" style="height: 0px;">
@@ -85,10 +85,11 @@
                                             <tbody>
 
                                                 @foreach ($contracts as $contract)
+                                                @if ($contract->status == 'active')
                                                 <tr>
                                                     <th scope="row">{{ $contract->contract_number }}</th>
                                                     <td class="sorting_1 dtr-control">
-                                                        <a href="{{ route('users.profile-card', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
+                                                        <a href="{{ route('contracts.profile', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
                                                     </td>
                                                     <td> @php
                                                         $annex = $contract->annexes()->where('reason', 'Promene pozicije')->orderByDesc('created_at')->first();
@@ -133,56 +134,64 @@
                                                     </td>
 
                                                     <td>
+                                                        <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                            <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                                        </form>
+                                                    </td>
 
-                                                        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                                    <style>
+                                                        a {
+                                                            color: inherit;
+                                                        }
 
-                                                            <div class="btn-group" role="group">
-                                                                <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <i class="ri-more-line"></i>
-                                                                </button>
+                                                        a:hover {
+                                                            color: #002EFF;
+                                                        }
+                                                    </style>
 
-                                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                                    <a href="{{ route('contracts.profile', $contract->employee->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fas fa-file-contract" title="Contract"></i></a>
-                                                                    <a href="{{ route('contracts.edit', $contract->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                                    <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this contract?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                                                    </form>
-                                                                </div>
+                                                </tr>
+                                                @endif
+                                                @endforeach
 
-                                                            </div>
-
-                                                        </div>
+                                            </tbody>
+                                        </table>
                                     </div>
-
-                                    <style>
-                                        a {
-                                            color: inherit;
-                                        }
-
-                                        a:hover {
-                                            color: #002EFF;
-                                        }
-                                    </style>
                                 </div>
-
-                                </td>
-                                </tr>
-                                @endforeach
-
-                                </tbody>
-                                </table>
                             </div>
                         </div>
+
                     </div>
-                </div>
 
-            </div>
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
 
-        </div> <!-- end card body-->
-    </div> <!-- end card -->
+        </div>
 
-</div>
+        <script>
+            function checkFunction(event, annexesDataElement) {
+                var contractAnnexes = JSON.parse(annexesDataElement.value);
 
-@endsection
+                // Check if there are any active annexes
+                var hasActiveAnnexes = false;
+                for (var i = 0; i < contractAnnexes.length; i++) {
+                    if (contractAnnexes[i].deleted == false) {
+                        hasActiveAnnexes = true;
+                        break;
+                    }
+                }
+
+                if (hasActiveAnnexes) {
+                    alert('You cannot delete contract with annexes.');
+                } else {
+                    if (confirm('Are you sure you want to delete this contract?')) {
+                        // Submit the form to delete the contract
+                        event.target.parentElement.submit();
+                    }
+                }
+            }
+        </script>
+
+        @endsection
