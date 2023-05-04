@@ -33,7 +33,7 @@ return new class extends Migration
             $table->unsignedBigInteger('family_member_id')->nullable();
             $table->string('professional_qualifications_level');
             $table->string('profession');
-            $table->foreign('family_member_id')->references('id')->on('family_members')->onDelete('set null');
+            
 
             /*
             DB::table('users')
