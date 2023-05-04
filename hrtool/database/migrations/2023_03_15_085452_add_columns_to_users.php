@@ -74,8 +74,6 @@ return new class extends Migration
             $table->dropColumn('jmbg');
             $table->dropColumn('ID_number');
             $table->dropColumn('passport_number');
-            $table->dropColumn('family_member_id');
-
 
             });
         }
