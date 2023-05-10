@@ -95,12 +95,12 @@ class ProfileController extends Controller
         $user->ID_number = $request->input('ID_number');
         $user->passport_number = $request->input('passport_number');
 
-        if($request->file('profile_picture')){
-                $file = $request->file('profile_picture');
-                $filename = date('YmdHi').$file->getClientOriginalName();
-                $file->move(public_path('upload/admin_images'), $filename);
-                $user['profile_picture'] = $filename;
-        }
+       // if($request->file('profile_picture')){
+       //         $file = $request->file('profile_picture');
+       //        $filename = date('YmdHi').$file->getClientOriginalName();
+       //         $file->move(public_path('upload/admin_images'), $filename);
+       //         $user['profile_picture'] = $filename;
+       // }
 
         $user->save();
 

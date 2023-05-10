@@ -69,6 +69,7 @@
 
         <div class="card-container level-1-container">
             @foreach ($contracts as $con)
+            @if ($con->status == 'active')
             @if($con->organization_id == $organization->id)
             @if($con->employee->manager && $organization->manager_id == $con->employee->id )
             <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-1">
@@ -89,31 +90,78 @@
 
             @endif
             @endif
+            @endif
             @endforeach
         </div>
 
         <div class="card-container level-2-container">
             @foreach ($contracts as $con)
+            @if ($con->status == 'active')
             @if($con->organization_id == $organization->id)
+
+            @php
+            $annex = $con->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
+            $annexPositionName = $annex ? $annex->new_value : '';
+            $annexPosition = '';
+            $annexOrganization = '';
+            $currentOrganization = $con->organization;
+            $currentPosition = '';
+
+            foreach ($con->organization->position as $pos) {
+            if ($pos->id == $con->position) {
+            $currentPosition = $pos;
+            }
+            }
+
+            if ($annex) {
+            foreach ($organization->position as $pos) {
+            if ($pos->name == $annexPositionName) {
+            $annexOrganization = $pos->organization;
+            $annexPosition = $pos;
+            break;
+            }
+            }
+            }
+
+            @endphp
+
             @if(!($con->employee->manager && $organization->manager_id == $con->employee->id ))
-            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-2">
-                <img src="{{ (!empty($con->employee->profile_picture) ? url('upload/admin_images/'.$con->employee->profile_picture) : url('upload/default_image.png')) }}" style="margin-bottom:15px" alt="Employee Picture" class="d-flex me-3 rounded-circle img-thumbnail avatar-md">
+            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-1">
+                <img src="{{ (!empty($con->employee->profile_picture) ? url('upload/admin_images/'.$con->employee->profile_picture) : url('upload/default_image.png')) }}" style="margin-bottom:10px;" alt="Employee Picture" class="d-flex me-3 rounded-circle img-thumbnail avatar-md">
                 <h2 class="mt-0 font-size-16 mb-1">{{ $con->employee->first_name}} {{ $con->employee->last_name}}</h2>
 
                 <p class="text-muted font-size-12" style="padding-right: 3px;">
                     @foreach($con->organization->position as $pos)
                     @if($con->position == $pos->id )
-                    {{ $pos->name }}
+                    @if ($annex && $annexPosition)
+                    {{$annexPositionName}}
+                    @else
+                    {{ $currentPosition->name }}
+                    @endif
                     @endif
                     @endforeach
                 </p>
+
+
+
+
             </a>
+
+            @endif
+
+
+
+
+
 
 
             @endif
             @endif
             @endforeach
         </div>
+
+
+
     </div>
 </div>
 

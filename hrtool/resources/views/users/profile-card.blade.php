@@ -12,7 +12,7 @@
         }
 
         .card {
-            margin-bottom: 3.9vh;
+            margin-bottom: 2.5vh;
         }
 
         h5 {
@@ -51,7 +51,7 @@
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
                 <div class="card card-body flex-item" style="flex: 1;  margin-bottom: 1vh; height: 67vh; overflow-y: auto;">
-                    <img id="showImage" src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 130px; margin-bottom:10px" alt="Profile Image">
+                    <img id="showImage" src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 130px; margin-bottom:7px" alt="Profile Image">
 
                     <h5 class="card-title" style="margin-top: 10px;">First Name</h5>
                     <p class="card-text">{{ $user->first_name }}</p>
@@ -63,7 +63,7 @@
                     <p class="card-text">{{ $user->last_name }}</p>
 
                     <h5 class="card-title">Birth Date</h5>
-                    <p class="card-text">{{ $user->birth_date }}</p>
+                    <p class="card-text">{{ date('d.m.Y.', strtotime($user->birth_date)) }}</p>
 
                     <div class="row flex-container" style="display: flex; margin-bottom:10px">
                         <div class="col">
@@ -140,7 +140,7 @@
 
                     <p class="card-text">
                         @php
-                        foreach($user->contract as $contr){
+                        foreach($user->contract()->where('status', 'active')->get() as $contr){
                         $annexLocation = $contr->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
                         $annexAddress = $annexLocation ? $annexLocation->new_value : '';
                         $address = '';
@@ -153,7 +153,7 @@
                         }
                         @endphp
                     </p>
-                    
+
                     <h5 class="card-title">Slava</h5>
                     <p class="card-text">{{ $user->slava }}</p>
 
@@ -164,45 +164,51 @@
             </div>
             <div class="col-lg-4 flex-item" style="flex: 1;">
 
-                <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
+                <div class="card card-body flex-item" style="flex: 1; height: 20vh; overflow-y: auto;">
                     <!-- <h4 class="card-title" style="margin-bottom: 10px; font-size: 15px">SEE CONTRACTS</h4> -->
                     <h5 class="card-title">Position</h5>
 
                     <p class="card-text" style="font-size: 13px;">
-                        @php
+                        <td>
+                            @php
+                            $activeContracts = $user->contract()->where('status', 'active')->get();
+                            if ($activeContracts->count() > 0) {
+                            foreach ($activeContracts as $contr) {
+                            $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
+                            $annexPositionName = $annex ? $annex->new_value : '';
+                            $annexPosition = '';
+                            $currentPosition = '';
+                            $currentOrganization = $contr->organization;
+                            $annexOrganization = '';
 
-                        foreach($user->contract as $contr){
+                            foreach ($contr->organization->position as $pos) {
+                            if ($pos->id == $contr->position) {
+                            $currentPosition = $pos;
+                            $currentPositionName = $currentPosition->name;
+                            }
+                            }
 
-                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
-                        $annexPositionName = $annex ? $annex->new_value : '';
-                        $annexPosition = '';
-                        $currentPosition = '';
-                        $currentOrganization = $contr->organization;
-                        $annexOrganization = '';
-
-                        foreach ($contr->organization->position as $pos) {
-                        if ($pos->id == $contr->position){
-                        $currentPosition = $pos;
-                        $currentPositionName = $currentPosition->name;
-                        }
-                        }
-
-                        if ($annex) {
-                        foreach ($organizations as $org) {
-                        foreach ($org->position as $pos) {
-                        if ($pos->name == $annexPositionName) {
-                        $annexOrganization = $pos->organization;
-                        $annexPosition = $pos;
-                        break;
-                        }
-                        }
-                        }
-                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
-                        } else {
-                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
-                        }
-                        }
-                        @endphp
+                            if ($annex) {
+                            foreach ($organizations as $org) {
+                            foreach ($org->position as $pos) {
+                            if ($pos->name == $annexPositionName) {
+                            $annexOrganization = $pos->organization;
+                            $annexPosition = $pos;
+                            break;
+                            }
+                            }
+                            }
+                            echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                            } else {
+                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                            }
+                            echo "<br>"; // Add line break after each position
+                            }
+                            } else {
+                            echo "No active contract found";
+                            }
+                            @endphp
+                        </td>
                     </p>
 
                     <style>

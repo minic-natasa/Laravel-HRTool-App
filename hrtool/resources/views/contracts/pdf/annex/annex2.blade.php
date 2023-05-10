@@ -59,14 +59,13 @@
 
     <div class="contract-section">
         <p>2. <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG:
-            <strong>{{$jmbg}}</strong> koji radi na poslovima: <strong>{{$position}}</strong> (trenutna pozicija).
+            <strong>{{$jmbg}}</strong> koji radi na poslovima: <strong>{{$position}}</strong>.
         </p><br>
     </div>
 
     <div class="contract-section">
         <p>Menja se član 6. Ugovora o radu, koji sada glasi: <strong>Visina osnovne zarade zaposlenog za pun
-                mesečni fond časova rada i standardni učinak svakog meseca iznosi {{$new_value}} (nova
-                bruto zarada) dinara u bruto I iznosu.</strong></p><br>
+                mesečni fond časova rada i standardni učinak svakog meseca iznosi {{$new_value}} dinara u bruto I iznosu.</strong></p><br>
     </div>
 
     <div class="contract-section">
@@ -75,7 +74,7 @@
 
     <div class="contract-section">
         <p>Ovaj Aneks ugovora o radu stupa na snagu datumom potpisa ugovornih strana, a počinje važiti od
-            <strong>{{$annex_date}}</strong> (datum početka važenja Aneksa)
+            <strong>{{$annex_date}}</strong>
         </p><br>
     </div>
 
@@ -89,7 +88,7 @@
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong> (datum izrade Aneksa)</p><br>
+        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong></p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">

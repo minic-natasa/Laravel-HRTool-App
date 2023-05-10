@@ -53,7 +53,7 @@
             32/2013, 75/2014, 13/2017 - odluka US, 113/2017 i 95/2018 - autentično tumačenje, u daljem
             tekstu: Zakon), direktor Privrednog društva <strong>“SELLERS ALLEY”</strong> d.o.o. Beograd, ul. Makedonska
             12, MB: 21647900, PIB: 112312839 (u daljem tekstu: Poslodavac), dostavlja zaposlenom
-            <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG: <strong>{{$jmbg}}</strong> koji radi na poslovima <strong>{{$position}}</strong> (trenutna pozicija) (u daljem tekstu:
+            <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG: <strong>{{$jmbg}}</strong> koji radi na poslovima <strong>{{$position}}</strong> (u daljem tekstu:
             Zaposleni), sledeće:
         </p><br><br>
     </div>
@@ -94,7 +94,7 @@
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong> (datum izrade Aneksa)</p><br>
+        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong></p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">

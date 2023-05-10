@@ -37,6 +37,7 @@ class AnnexController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'reason' => 'required|string',
             'old_value' => 'required|string',
@@ -51,6 +52,18 @@ class AnnexController extends Controller
         $annex->save();
 
         return redirect()->back()->with('success', 'Annex created successfully!');
+    }
+
+    public function getAnnexesByContract($contract_id)
+    {
+        $contract = Contract::with('annexes')->findOrFail($contract_id);
+
+        // Filter the annexes to remove the deleted ones
+        $annexes = $contract->annexes->filter(function ($annex) {
+            return $annex->deleted === 0;
+        });
+
+        return response()->json($annexes);
     }
 
     public function destroy(string $id)
@@ -139,6 +152,7 @@ class AnnexController extends Controller
             'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
             'first_name' => $first_name,
             'name_of_one_parent' => $annex->contract->employee->name_of_one_parent,
+            'current_address' => $annex->contract->employee->current_address,
             'last_name' => $last_name,
             'jmbg' => $annex->contract->employee->jmbg,
             'position' => $position,
@@ -168,8 +182,13 @@ class AnnexController extends Controller
             return $pdf->stream('aneks-povećanje-bruto1-zarade.pdf');
         } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
             $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.annex3', $data);
-            return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
+            if ($new_value = 'Makedonska 12, Beograd') {
+                $pdf->loadView('contracts.pdf.annex.annex3a', $data);
+                return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
+            } else {
+                $pdf->loadView('contracts.pdf.annex.annex3', $data);
+                return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
+            }
         } elseif ($annex->reason == 'Promene adrese poslodavca') {
             $pdf = app('dompdf.wrapper');
             $pdf->loadView('contracts.pdf.annex.annex4', $data);

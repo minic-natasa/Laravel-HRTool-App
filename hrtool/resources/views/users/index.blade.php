@@ -87,20 +87,20 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 300px; width: 100%;">
+                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 39vh; width: 100%;">
                                         <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
                                             <thead>
                                                 <tr role="row" style="height: 0px;">
-                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 121px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 14%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Name</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 147px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 16%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Email</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 226px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 22%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Position</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 210px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 21%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Office: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Mobile</div>
                                                     </th>
                                                 </tr>
@@ -116,8 +116,9 @@
                                                     <td>{{ $user->email }}</td>
                                                     <td>
                                                         @php
-                                                        foreach($user->contract as $contr){
-
+                                                        $activeContracts = $user->contract()->where('status', 'active')->get();
+                                                        if ($activeContracts->count() > 0) {
+                                                        foreach ($activeContracts as $contr) {
                                                         $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
                                                         $annexPositionName = $annex ? $annex->new_value : '';
                                                         $annexPosition = '';
@@ -126,7 +127,7 @@
                                                         $annexOrganization = '';
 
                                                         foreach ($contr->organization->position as $pos) {
-                                                        if ($pos->id == $contr->position){
+                                                        if ($pos->id == $contr->position) {
                                                         $currentPosition = $pos;
                                                         $currentPositionName = $currentPosition->name;
                                                         }
@@ -146,6 +147,10 @@
                                                         } else {
                                                         echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
                                                         }
+                                                        echo "<br>"; // Add line break after each position
+                                                        }
+                                                        } else {
+                                                        echo "No active contract found";
                                                         }
                                                         @endphp
                                                     </td>
@@ -163,30 +168,17 @@
                                                     </style>
 
                                                     <td>{{ $user->mobile }}</td>
+                                                    
                                                     <td>
+                                                        <div>
+                                                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
 
-                                                        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-
-                                                            <div class="btn-group" role="group">
-                                                                <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <i class="ri-more-line"></i>
-                                                                </button>
-
-                                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                                    <a href="{{ $user->id === Auth()->user()->id ? route('profile.show') : route('users.profile-card', $user->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Profile"></i></a>
-                                                                    <a href="{{ $user->id === Auth()->user()->id ? route('profile.edit') : route('users.edit', $user->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                                                    </form>
-                                                                </div>
-
-                                                            </div>
-
+                                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline-block; width: auto;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this employee?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                            </form>
                                                         </div>
-
-
                                                     </td>
                                                 </tr>
                                                 @endforeach

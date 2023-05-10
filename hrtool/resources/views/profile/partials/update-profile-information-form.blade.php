@@ -173,7 +173,7 @@
                                     </div>
                                     @endif
                                 </div>
-                                    -->
+                                   
 
 
 
@@ -191,7 +191,7 @@
                                         <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px; margin-left:-11px">Save</button>
                                     </div>
                                 </div>
-
+ -->
 
                                 @if (session('status') === 'profile-updated')
                                 <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">
@@ -208,7 +208,7 @@
         </div>
     </div>
 </section>
-
+<!--
 <script>
     $(document).ready(function() {
         // Function to update the image with the cropped data
@@ -246,3 +246,4 @@
         });
     });
 </script>
+-->

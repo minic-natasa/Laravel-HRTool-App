@@ -54,14 +54,15 @@
                             </div>
                         </div>
                         -->
-
                         <div class="form-group row">
                             <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager</label>
                             <div class="col-md-6">
                                 <select class="form-control" id="manager_id" name="manager_id">
                                     <option value="">-- Select Manager -- </option>
-                                    @foreach ($managers as $manager)
-                                    <option value="{{ $manager->id }}" {{ $manager->id == $organization->manager_id ? 'selected' : '' }}>{{ $manager->first_name }} {{ $manager->last_name }}</option>
+                                    @foreach ($activeManagers as $manager)
+                                    <option value="{{ $manager->id }}" {{ $manager->id == $organization->manager_id ? 'selected' : '' }}>
+                                        {{ $manager->first_name }} {{ $manager->last_name }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>

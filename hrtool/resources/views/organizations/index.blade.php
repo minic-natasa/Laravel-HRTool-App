@@ -70,23 +70,23 @@
                                             <table class="table dt-responsive nowrap w-100 dataTable no-footer" role="grid">
                                                 <thead>
                                                     <tr role="row">
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 14%;" aria-label="OrganizationID: activate to sort column ascending">ID</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 13%;" aria-label="OrganizationID: activate to sort column ascending">ID</th>
                                                         <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Department Name</th>
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-label="Manager: activate to sort column ascending">Manager</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 21%;" aria-label="Manager: activate to sort column ascending">Manager</th>
                                                         <th style="width: 100px;"></th>
                                                     </tr>
                                                 </thead>
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 300px; width: 100%;">
+                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto;max-height: 39vh; width: 100%;">
                                         <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
                                             <thead>
                                                 <tr role="row" style="height: 0px;">
-                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 130px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 13%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Department Name</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 250px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 25%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Manager</div>
                                                     </th>
                                                 </tr>
@@ -107,29 +107,15 @@
                                                     </td>
 
                                                     <td>
+                                                        <div>
+                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
 
-                                                        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-
-                                                            <div class="btn-group" role="group">
-                                                                <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <i class="ri-more-line"></i>
-                                                                </button>
-
-                                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                                    <a href="{{ route('organizations.organization-card', $organization->id) }}" class="btn btn-primary" style="margin-left:12px"><i class="fa fa-user" title="Organization"></i></a>
-                                                                    <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-primary" style="margin-right:5px; margin-left:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                                    <form action="{{ route('organizations.destroy', $organization->id) }}" method="POST" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this organization?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                                                    </form>
-                                                                </div>
-
-                                                            </div>
-
+                                                            <form action="{{ route('organizations.destroy', $organization->id) }}" method="POST" style="display: inline-block; width: auto;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this organization?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                            </form>
                                                         </div>
-
-
                                                     </td>
                                                 </tr>
                                                 @endforeach

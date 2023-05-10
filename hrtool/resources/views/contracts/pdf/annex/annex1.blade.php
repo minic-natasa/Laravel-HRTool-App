@@ -105,7 +105,7 @@
     </div>
 
     <div class="contract-section">
-        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong> (datum izrade Aneksa)</p><br>
+        <p>U Beogradu dana: <strong>{{$annex_created_date}}</strong></p><br>
     </div>
 
     <div class="contract-section" style="padding-top: 20px;">

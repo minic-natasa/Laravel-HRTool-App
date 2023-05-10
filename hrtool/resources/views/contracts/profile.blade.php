@@ -271,7 +271,7 @@
                                                 <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-file"></i> Documents
                                                 </button>
-                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1" style="">
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
                                                     <li><a class="dropdown-item" href="{{ route('contracts.mob', $contract->id) }}" target="_blank">Obaveštenje o mobingu</a></li>
                                                     <li><a class="dropdown-item" href="{{ route('contracts.uzb', $contract->id)}}" target="_blank">Obaveštenje o Zakonu o uzbunjivačima</a></li>
                                                     <li><a class="dropdown-item" href="{{ route('contracts.nda', $contract->id)}}" target="_blank">Sporazum o poverljivosti</a></li>
@@ -289,8 +289,8 @@
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
                                                     <!-- Only show the "See Contract Annexes" button if there are annexes -->
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="openCreateAnnexPopup()">Create New Annex</a></li>
-                                                    <li @if(count($contract->annexes) == 0 || $contract->annexes->where('deleted', false)->isEmpty()) style="display:none" @endif><a class="dropdown-item" href="javascript:void(0)" onclick="openAnnexPopup()">See Contract Annexes</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="openCreateAnnexPopup('{{ $contract->id }}')">Create New Annex</a></li>
+                                                    <li @if(count($contract->annexes) == 0 || $contract->annexes->where('deleted', false)->isEmpty()) style="display:none" @endif><a class="dropdown-item" href="javascript:void(0)" onclick="openAnnexPopup('{{ $contract->id }}')">See Contract Annexes</a></li>
                                                 </div>
                                             </div>
                                         </div>
@@ -299,6 +299,18 @@
                                         <div class="d-print-none">
                                             <div class="float-end">
                                                 <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print</a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Delete Button -->
+                                        <div class="d-print-none">
+                                            <div class="float-end">
+                                                <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                    <button type="submit" class="btn btn-link" style="margin-right:10px" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                                </form>
                                             </div>
                                         </div>
 
@@ -316,6 +328,9 @@
         @endforeach
 
 
+        @foreach ($contracts as $contract)
+        @if($contract->status == 'active')
+
         <div class="modal fade" id="annexModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -329,8 +344,11 @@
 
                     <div class="modal-body" style="height: 55vh;">
 
+                        <div>Contract ID: <span id="contract_id_display"></span></div>
+                        <input type="hidden" name="contract_id" value="" id="contract_id_input">
+
                         <div class="table-responsive" style="max-height: 50vh; overflow: scroll;">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="annexes-table">
                                 <thead>
                                     <tr>
                                         <th>Annex</th>
@@ -343,59 +361,9 @@
                                         <th>Delete</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php $count = 0; ?>
-                                    @foreach ($contracts as $contract)
-                                    @if($contract && $contract->status == 'active')
-                                    @foreach ($contract->annexes as $key => $annex)
-                                    @if ($annex->deleted === 0)
-                                    <?php $count++; ?>
-                                    <tr>
-                                        <td>{{ $count }}</td>
-                                        <td>
-                                            @if($annex->reason == 'Povećanja bruto 1 zarade')
-                                            Povećanje bruto 1 zarade
-                                            @elseif($annex->reason == 'Promene pozicije')
-                                            Promena pozicije
-                                            @elseif($annex->reason == 'Promene adrese obavljanja posla')
-                                            Promena adrese obavljanja posla
-                                            @elseif($annex->reason == 'Promene adrese poslodavca')
-                                            Promena adrese poslodavca
-                                            @elseif($annex->reason == 'Promene radnih sati')
-                                            Promena radnih sati
-                                            @endif
-                                        </td>
-                                        <td>{{$annex->old_value}}</td>
-                                        <td>{{$annex->new_value}}</td>
-                                        <td>{{ date('d.m.Y.', strtotime($annex->annex_created_date)) }}</td>
-                                        <td>{{ date('d.m.Y.', strtotime($annex->annex_date)) }}</td>
 
-                                        <td>
-                                            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                                                <div class="btn-group" role="group">
-                                                    <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="ri-more-line"></i>
-                                                    </button>
+                                <tbody id="annexes-tbody">
 
-                                                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                        <a href="{{ route('annexes.annex-pdf', ['id' => $annex->id, 'annex_number' => $count]) }}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn"> Annex</a>
-                                                        <a href="{{ route('annexes.notice-pdf', $annex->id) }}" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn">Notice</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <form action="{{ route('annexes.destroy', $annex->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    @endforeach
-                                    @endif
-                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -421,14 +389,14 @@
                     </div>
 
                     <div class="modal-body" style="height: 55vh;">
-                        @foreach ($contracts as $contract)
+
+
                         @if($contract && $contract->status == 'active')
                         <form action="{{ route('annexes.store') }}" method="POST">
                             @csrf
 
-
-                            <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-
+                            <div>Contract ID: <span id="contract_id_display"></span></div>
+                            <input type="hidden" name="contract_id" value="">
 
 
                             <div class="form-group row">
@@ -453,7 +421,7 @@
                             <div class="form-group row" id="old_value_container">
                                 <label for="old_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Value:') }}</label>
                                 <div class="col-md-8">
-                                    <input id="old_value" type="text" class="form-control" name="old_value" value="-- Select reason for creating new annex first --" readonly gross-1-salary="{{ $gross ? $gross : $contract->gross_salary_1 }}" position="{{ $annexPosition ? $annexPosition->name : $contract->organization->position->where('id', $contract->position)->first()->name }}" office-address="Makedonska 12, Beograd" working-hours="40" current-address="{{ $contract->location_of_work === 'Hybrid' ? 'Makedonska 12, Beograd' : $contract->employee->current_address }}">
+                                    <input id="old_value" type="text" class="form-control" name="old_value" value="-- Select reason for creating new annex first --" readonly gross-1-salary="{{ $gross ? $gross : $contract->gross_salary_1 }}" position="{{ $annexPosition ? $annexPosition->name : $contract->organization->position->where('id', $contract->position)->first()->name }}" office-address="Makedonska 12, Beograd" working-hours="40" current-address="{{ $annexLocation ? $annexLocation->new_value : ($contract->location_of_work === 'Remote' ? $contract->employee->current_address : ($contract->location_of_work === 'Hybrid' ? 'Makedonska 12, Beograd' : $contract->employee->current_address)) }}">
                                     @error('old_value')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -466,7 +434,7 @@
                                 <label for="net_salary_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>
 
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" id="net_salary_value" name="net_salary_value" placeholder="-- Enter Net Salary --" required>
+                                    <input type="text" class="form-control" id="net_salary_value" name="net_salary_value" placeholder="-- Enter net salary --" required>
                                 </div>
                             </div>
 
@@ -525,7 +493,7 @@
                                 <label for="address_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Current Address:</label>
 
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control" id="address_value" name="address_value" placeholder="-- Enter Current Address --" required>
+                                    <input type="text" class="form-control" id="address_value" name="address_value" placeholder="" required>
                                 </div>
                             </div>
 
@@ -574,7 +542,7 @@
                             </div>
                         </form>
                         @endif
-                        @endforeach
+
                     </div>
                 </div>
             </div>
@@ -707,35 +675,25 @@
             var address = "";
 
             $(document).ready(function() {
-
                 $('#address_value').prop('disabled', true);
                 $('#location_value').change(function() {
-                    $('#address_value').prop('disabled', false);
+                    // $('#address_value').prop('disabled', false);
                     var location = $('#location_value option:selected').text();
+                    var current_address = null;
 
                     if (location === 'Hybrid') {
                         address_value.value = "Makedonska 12, Beograd";
                         address_value.readOnly = true;
-                        address = address_value.value;
                         newValInput.value = "Makedonska 12, Beograd";
-                    } else if (location === 'Remote') {
-                        address_value.readOnly = false;
-                        contracts.forEach(function(contract) {
-                            if (contract) {
-                                address_value.value = contract.employee.current_address;
-                            }
-                        });
-                        newValInput.value = address_value.value;
-
-                        address_value.addEventListener('input', function() {
-                            address = address_value.value;
-                            newValInput.value = address;
-                        });
                     }
 
+                    if (location === 'Remote') {
+                        address_value.value = "{{ $contract->employee->current_address }}";
+                        address_value.readOnly = true;
+                        newValInput.value = "{{ $contract->employee->current_address }}";
+                    }
                 });
             });
-
         } else if (selectedReason === 'Promene adrese poslodavca') {
             oldValInput.value = document.getElementById('old_value').getAttribute('office-address');
             newValInput.readOnly = false;
@@ -746,24 +704,130 @@
             oldValInput.value = document.getElementById('old_value').getAttribute('working-hours');
             newValInput.readOnly = false;
             newValInput.value = "";
-
-
         }
     });
 </script>
 
 
 <script>
-    function openAnnexPopup() {
+    function openAnnexPopup(contract_id) {
+        // Set the contract ID value in the hidden input field
+        $('#contract_id_input').val(contract_id);
+        // Set the contract ID value in the displayed span element
+        $('#contract_id_display').text(contract_id);
+
+        // Fetch the annexes data and update the table
+        fetchAnnexes(contract_id);
+
+
+        // Show the modal
         $('#annexModal').modal('show');
+    }
+
+    function getAnnexDeleteUrl(annexId) {
+        return `/annexes/${annexId}`;
+    }
+
+    function fetchAnnexes(contractId) {
+        // Make an AJAX request to your Laravel controller to get the related annexes data
+        $.ajax({
+            url: "/annexes/" + contractId,
+            type: "GET",
+            success: function(data) {
+                console.log(data);
+
+                // Convert data to an array
+                var dataArray = Object.values(data);
+
+                // Clear the table content
+                $('#annexes-tbody').empty();
+
+                // Loop through the fetched annexes data and insert them into the table
+                var count = 0;
+                dataArray.forEach(function(annex) {
+                    count++;
+
+                    var annexDate = new Date(annex.annex_date);
+                    var formattedAnnexDate = annexDate.getDate() + '.' + (annexDate.getMonth() + 1) + '.' + annexDate.getFullYear() + '.';
+
+                    var annexCreatedDate = new Date(annex.annex_created_date);
+                    var formattedAnnexCreatedDate = annexCreatedDate.getDate() + '.' + (annexCreatedDate.getMonth() + 1) + '.' + annexCreatedDate.getFullYear() + '.';
+
+                    var newRow = `
+    <tr>
+        <td>${count}</td>
+        <td>${annex.reason}</td>
+        <td>${annex.old_value}</td>
+        <td>${annex.new_value}</td>
+        <td>${formattedAnnexDate}</td>
+        <td>${formattedAnnexCreatedDate}</td>
+        <td>
+            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                <div class="btn-group" role="group">
+                    <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="ri-more-line"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                    <a href="/annexes/${annex.id}/annex-pdf/${count}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn${annex.id}"> Annex</a>
+                    <a href="/annexes/${annex.id}/notice-pdf" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn${annex.id}">Notice</a>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+        <form action="${getAnnexDeleteUrl(annex.id)}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
+            </form>
+        </td>
+
+    </tr>`;
+                    $('#annexes-tbody').append(newRow);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching annexes data:", xhr, status, error);
+            }
+        });
     }
 </script>
 
 <script>
-    function openCreateAnnexPopup() {
+    function openCreateAnnexPopup(contract_id) {
         $('#annexCreateModal').modal('show');
+        $('#annexCreateModal').find('form').attr('action', "{{ route('annexes.store') }}");
+        $('#annexCreateModal').find('input[name="contract_id"]').val(contract_id);
+        $('#annexCreateModal').find('#contract_id_display').text(contract_id); // display the contract id in a separate element
     }
 </script>
+
+<script>
+    function checkFunction(event, annexesDataElement) {
+        var contractAnnexes = JSON.parse(annexesDataElement.value);
+
+        // Check if there are any active annexes
+        var hasActiveAnnexes = false;
+        for (var i = 0; i < contractAnnexes.length; i++) {
+            if (contractAnnexes[i].deleted == false) {
+                hasActiveAnnexes = true;
+                break;
+            }
+        }
+
+        if (hasActiveAnnexes) {
+            alert('You cannot delete contract with annexes.');
+        } else {
+            if (confirm('Are you sure you want to delete this contract?')) {
+                // Submit the form to delete the contract
+                event.target.parentElement.submit();
+            }
+        }
+    }
+</script>
+
+@endif
+@endforeach
 
 @if(session('success'))
 <script>

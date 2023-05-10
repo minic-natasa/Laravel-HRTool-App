@@ -39,7 +39,7 @@
 
                                 <div class="form-group row">
                                     <div class="col-md-6 offset-md-2">
-                                        <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">Save</button>
+                                        <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">Update Password</button>
                                     </div>
                                 </div>
 

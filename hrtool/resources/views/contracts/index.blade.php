@@ -54,7 +54,7 @@
                                             <table class="table dt-responsive nowrap w-100 dataTable no-footer" role="grid">
                                                 <thead>
                                                     <tr role="row">
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 13%;" aria-label="ContractID: activate to sort column ascending">Contract Number</th>
+                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 15%;" aria-label="ContractID: activate to sort column ascending">Contract Number</th>
                                                         <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-sort="ascending" aria-label="Employee: activate to sort column descending">Employee</th>
                                                         <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-label="OrganizationUnit: activate to sort column ascending">Organization Unit</th>
                                                         <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-label="Position: activate to sort column ascending">Position</th>
@@ -64,17 +64,17 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 350px; width: 100%;">
+                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 46vh; width: 100%;">
                                         <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
                                             <thead>
                                                 <tr role="row" style="height: 0px;">
-                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 115px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
+                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 15%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Employee</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 265px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 25%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Organization Unit</div>
                                                     </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 260px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
+                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 25%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
                                                         <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Position</div>
                                                     </th>
                                                 </tr>

@@ -6,6 +6,7 @@ use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Organization;
 use App\Models\User;
+use App\Models\Manager;
 
 class OrganizationController extends Controller
 {
@@ -79,13 +80,20 @@ class OrganizationController extends Controller
         // Retrieve all users who are managers
         $managers = User::where('manager', 1)->get();
 
+        // Get active managers for this organization
+        $activeManagers = User::where('manager', 1)
+            ->whereHas('contract', function ($query) use ($organization) {
+                $query->where('organization_id', $organization->id)
+                    ->where('status', 'active');
+            })->get();
+
         // Retrieve all contracts from managers
         //$contracts = Contract::whereIn('user_id', $managers->pluck('id'))->get();
 
         //Retrieve all contracts from DB
         $contracts = Contract::all();
 
-        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts'));
+        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts', 'activeManagers'));
     }
 
     /**
@@ -115,5 +123,31 @@ class OrganizationController extends Controller
         $organization->delete();
 
         return redirect()->route('organizations.index')->with('success', 'Organization deleted successfully!');
+    }
+
+    public function showForm(string $organizationId)
+    {
+        $organization = Organization::findOrFail($organizationId);
+
+        // Retrieve all managers who have an organization with the given ID
+        $managers = Manager::whereHas('organizations', function ($query) use ($organizationId) {
+            $query->where('id', $organizationId);
+        })->get();
+
+        // Retrieve all managers who have an active contract with the given organization
+        $activeManagers = collect();
+        foreach ($managers as $manager) {
+            foreach ($manager->contracts as $contract) {
+                if ($contract->active && $contract->organization_id == $organizationId) {
+                    $activeManagers->push($manager);
+                    break;
+                }
+            }
+        }
+
+        return view('organizations.edit', [
+            'organization' => $organization,
+            'activeManagers' => $activeManagers
+        ]);
     }
 }

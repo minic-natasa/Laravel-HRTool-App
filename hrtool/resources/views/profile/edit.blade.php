@@ -10,14 +10,14 @@
                   <div class="page-title-box d-flex align-items-center justify-content-between">
                       <div class="d-flex align-items-center">
                           <a href="{{ route('profile.show') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
-                          <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">UPDATE PASSWORD</h4>
+                          <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CHOOSE NEW PASSWORD</h4>
                       </div>
                       <div class="d-flex align-items-center">
                           <div class="page-title-right">
                               <ol class="breadcrumb m-0">
                                   <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
                                   <li class="breadcrumb-item"><a href="{{ route('profile.show') }}">Profile</a>
-                                  <li class="breadcrumb-item active">Edit Profile</li>
+                                  <li class="breadcrumb-item active">Update Password</li>
                               </ol>
                           </div>
                       </div>

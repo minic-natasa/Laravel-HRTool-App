@@ -29,16 +29,17 @@ class ContractController extends Controller
 
     public function profile($id)
     {
-
         $employee = User::find($id);
         $organizations = Organization::all();
         $positions = Position::all();
         $contracts = Contract::where('employee_number', $id)->get();
-        return view('contracts.profile', ['user_id' => $id], compact('employee', 'contracts', 'organizations', 'positions'));
+        $contract_id = request('contract_id');
+        return view('contracts.profile', ['user_id' => $id, 'contract_id' => $contract_id, 'employee' => $employee, 'contracts' => $contracts, 'organizations' => $organizations, 'positions' => $positions]);
     }
 
+
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource.F
      */
     public function create(string $id)
     {

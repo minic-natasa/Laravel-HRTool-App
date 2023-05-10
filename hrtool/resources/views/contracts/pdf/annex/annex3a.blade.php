@@ -68,17 +68,7 @@
     </div>
 
     <div class="contract-section">
-        <p><strong>Zaposleni će obavljati poslove od kuće, van prostorija poslodavca, i to na adresi: {{$current_address}}</strong></p><br>
-    </div>
-
-    <div class="contract-section">
-        <p style="text-align: center;">Menja se član 11. Ugovora o radu tako što se dodaje:</p><br>
-    </div>
-
-    <div class="contract-section">
-        <p><strong>Zaposleni ostvaruje pravo i na dodatnu naknadu troškova u iznosu od 3.000 RSD neto na
-                mesečnom nivou na ime troškova rada od kuće (korišćenje ličnih resursa rada - struja, internet,
-                lična sredstva rada i slično).</strong></p><br>
+        <p><strong>Zaposleni će obavljati poslove iz kancelarije, i to na adresi: Makedonska 12, Beograd</strong></p><br>
     </div>
 
     <div class="contract-section">
