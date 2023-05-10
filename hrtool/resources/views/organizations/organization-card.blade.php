@@ -10,8 +10,8 @@
             border: 1px solid #ccc;
             padding: 15px;
             margin: 15px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px #ccc;
+            border-radius: 15px;
+            box-shadow: 2px 2px 27px #ccc;
             position: relative;
         }
 
@@ -70,25 +70,54 @@
         <div class="card-container level-1-container">
             @foreach ($contracts as $con)
             @if ($con->status == 'active')
-            @if($con->organization_id == $organization->id)
-            @if($con->employee->manager && $organization->manager_id == $con->employee->id )
-            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-1">
+
+            @php
+            $annex = $con->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
+            $annexPositionName = $annex ? $annex->new_value : '';
+            $annexPosition = '';
+            $annexOrganization = '';
+            $contractOrganization = $con->organization;
+            $contractPosition = '';
+
+
+            foreach ($con->organization->position as $pos) {
+            if ($pos->id == $con->position) {
+            $contractPosition = $pos;
+            $contractOrganization = $contractPosition->organization;
+            break;
+            }
+            }
+
+            if ($annex) {
+            foreach ($organizations as $org) {
+            foreach ($org->position as $pos) {
+            if ($pos->name == $annexPositionName) {
+            $annexOrganization = $pos->organization;
+            $annexPosition = $pos;
+            break;
+            }
+            }
+            }
+            }
+
+            @endphp
+
+            @if($organization->manager_id == $con->employee->id && ($annex ? $annexOrganization->id == $organization->id : $contractOrganization->id == $organization->id))
+            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-2">
                 <img src="{{ (!empty($con->employee->profile_picture) ? url('upload/admin_images/'.$con->employee->profile_picture) : url('upload/default_image.png')) }}" style="margin-bottom:10px;" alt="Employee Picture" class="d-flex me-3 rounded-circle img-thumbnail avatar-md">
                 <h2 class="mt-0 font-size-16 mb-1">{{ $con->employee->first_name}} {{ $con->employee->last_name}}</h2>
                 <p class="text-muted font-size-14" style="color: #002EFF !important">
                     <strong>Unit Manager</strong><br>
                 </p>
-
                 <p class="text-muted font-size-12" style="padding-right: 3px;">
-                    @foreach($con->organization->position as $pos)
-                    @if($con->position == $pos->id )
-                    {{ $pos->name }}
+                    @if ($annex && $annexPosition)
+                    {{$annexPositionName}}
+                    @else
+                    {{ $contractPosition->name }}
                     @endif
-                    @endforeach
                 </p>
-            </a>
 
-            @endif
+            </a>
             @endif
             @endif
             @endforeach
@@ -97,24 +126,27 @@
         <div class="card-container level-2-container">
             @foreach ($contracts as $con)
             @if ($con->status == 'active')
-            @if($con->organization_id == $organization->id)
 
             @php
             $annex = $con->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
             $annexPositionName = $annex ? $annex->new_value : '';
             $annexPosition = '';
             $annexOrganization = '';
-            $currentOrganization = $con->organization;
-            $currentPosition = '';
+            $contractOrganization = $con->organization;
+            $contractPosition = '';
+
 
             foreach ($con->organization->position as $pos) {
             if ($pos->id == $con->position) {
-            $currentPosition = $pos;
+            $contractPosition = $pos;
+            $contractOrganization = $contractPosition->organization;
+            break;
             }
             }
 
             if ($annex) {
-            foreach ($organization->position as $pos) {
+            foreach ($organizations as $org) {
+            foreach ($org->position as $pos) {
             if ($pos->name == $annexPositionName) {
             $annexOrganization = $pos->organization;
             $annexPosition = $pos;
@@ -122,44 +154,27 @@
             }
             }
             }
+            }
 
             @endphp
 
-            @if(!($con->employee->manager && $organization->manager_id == $con->employee->id ))
-            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-1">
+            @if(!($organization->manager_id == $con->employee->id) && ($annex ? $annexOrganization->id == $organization->id : $contractOrganization->id == $organization->id))
+            <a href="{{ url('users/'.$con->employee->id.'/profile-card') }}" class="card level-2">
                 <img src="{{ (!empty($con->employee->profile_picture) ? url('upload/admin_images/'.$con->employee->profile_picture) : url('upload/default_image.png')) }}" style="margin-bottom:10px;" alt="Employee Picture" class="d-flex me-3 rounded-circle img-thumbnail avatar-md">
                 <h2 class="mt-0 font-size-16 mb-1">{{ $con->employee->first_name}} {{ $con->employee->last_name}}</h2>
-
                 <p class="text-muted font-size-12" style="padding-right: 3px;">
-                    @foreach($con->organization->position as $pos)
-                    @if($con->position == $pos->id )
                     @if ($annex && $annexPosition)
                     {{$annexPositionName}}
                     @else
-                    {{ $currentPosition->name }}
+                    {{ $contractPosition->name }}
                     @endif
-                    @endif
-                    @endforeach
                 </p>
 
-
-
-
             </a>
-
-            @endif
-
-
-
-
-
-
-
             @endif
             @endif
             @endforeach
         </div>
-
 
 
     </div>

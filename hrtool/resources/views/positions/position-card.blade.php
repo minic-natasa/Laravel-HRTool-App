@@ -34,7 +34,7 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('organizations.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
+                        <a href="{{ route('positions.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-14" style="margin-left: 10px; margin-top:5px;">{{$position->name}}</h4>
                     </div>
 
@@ -55,7 +55,7 @@
                 <div class="card" style="height: 64vh;">
                     <div class="card-body" style="overflow-y: auto;">
 
-                    <h4 class="card-title mb-4" style="padding-left: 15px; padding-top:15px;">DESCRIPTION</h4>
+                        <h4 class="card-title mb-4" style="padding-left: 15px; padding-top:15px;">DESCRIPTION</h4>
 
                         <div class="text-center mt-4">
                             <ul style="text-align: justify; padding-bottom:5px">

@@ -344,8 +344,10 @@
 
                     <div class="modal-body" style="height: 55vh;">
 
-                        <div>Contract ID: <span id="contract_id_display"></span></div>
-                        <input type="hidden" name="contract_id" value="" id="contract_id_input">
+                        <div style="display:none;">
+                            <div>Contract ID: <span id="contract_id_display"></span></div>
+                            <input type="hidden" name="contract_id" value="" id="contract_id_input">
+                        </div>
 
                         <div class="table-responsive" style="max-height: 50vh; overflow: scroll;">
                             <table class="table table-bordered" id="annexes-table">
@@ -395,9 +397,10 @@
                         <form action="{{ route('annexes.store') }}" method="POST">
                             @csrf
 
-                            <div>Contract ID: <span id="contract_id_display"></span></div>
-                            <input type="hidden" name="contract_id" value="">
-
+                            <div style="display:none;">
+                                <div>Contract ID: <span id="contract_id_display"></span></div>
+                                <input type="hidden" name="contract_id" value="">
+                            </div>
 
                             <div class="form-group row">
                                 <label for="reason" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Reason:') }}</label>
@@ -563,16 +566,20 @@
         const posDiv = document.getElementById('positionDiv');
         const locDiv = document.getElementById('locationDiv');
         const addrDiv = document.getElementById('addressDiv');
+        const newValueDiv = document.getElementById('newValueDiv');
 
         var net_salary_value = document.getElementById('net_salary_value');
         var organization_value = document.getElementById('organization_value');
         var position_value = document.getElementById('position_value');
         var location_value = document.getElementById('location_value');
         var address_value = document.getElementById('address_value');
+        var new_value = document.getElementById('new_value');
 
         if (reason_for_annex == 'Povećanja bruto 1 zarade') {
             netSalaryDiv.style.display = 'flex';
             net_salary_value.required = true;
+            newValueDiv.style.display = 'flex';
+            new_value.required = true;
         } else {
             netSalaryDiv.style.display = 'none';
             net_salary_value.required = false;
@@ -615,12 +622,15 @@
         const oldValInput = document.getElementById('old_value');
         var net_salary_value = document.getElementById('net_salary_value');
         const newValInput = document.getElementById('new_value');
+        var location_value = document.getElementById('location_value');
+        var address_value = document.getElementById('address_value');
 
         // set the input field's value based on the selected reason
         if (selectedReason === 'Povećanja bruto 1 zarade') {
             oldValInput.value = document.getElementById('old_value').getAttribute('gross-1-salary');
             const newValueInput = document.getElementById('new_value');
             newValInput.readOnly = true;
+            newValInput.value = "";
             net_salary_value.addEventListener('input', function() {
                 var net_salary = parseFloat(net_salary_value.value);
                 if (!isNaN(net_salary)) {

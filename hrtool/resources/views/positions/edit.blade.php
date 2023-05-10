@@ -43,15 +43,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="description" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Description</label>
-                            <div class="col-md-6">
-                                <textarea class="form-control" id="description" name="description" rows="3" style="margin-bottom: 4px;" required>{{ $position->description }}</textarea>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                            <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization</label>
+                            <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Organization</label>
                             <div class="col-md-6">
                                 <select class="form-control" id="organization_id" name="organization_id">
                                     @foreach ($organizations as $org)
@@ -62,24 +54,17 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="professional_qualifications_level" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Qualifications Level:</label>
+                            <label for="description" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Description</label>
                             <div class="col-md-6">
-                                <select name="professional_qualifications_level" class="form-control">
-                                    <option value="I" {{ $position->professional_qualifications_level == 'I' ? 'selected' : '' }}>I</option>
-                                    <option value="II" {{ $position->professional_qualifications_level == 'II' ? 'selected' : '' }}>II</option>
-                                    <option value="III" {{ $position->professional_qualifications_level == 'III' ? 'selected' : '' }}>III</option>
-                                    <option value="IV" {{ $position->professional_qualifications_level == 'IV' ? 'selected' : '' }}>IV</option>
-                                    <option value="V" {{ $position->professional_qualifications_level == 'V' ? 'selected' : '' }}>V</option>
-                                    <option value="VI" {{ $position->professional_qualifications_level == 'VI' ? 'selected' : '' }}>VI</option>
-                                    <option value="VII" {{ $position->professional_qualifications_level == 'VII' ? 'selected' : '' }}>VII</option>
-                                </select>
+                                <textarea class="form-control" id="description" name="description" rows="4" style="margin-bottom: 4px;" required>{{ $position->description }}</textarea>
                             </div>
                         </div>
 
+        
                         <div class="form-group row">
                             <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
                             <div class="col-md-6">
-                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="2" style="margin-bottom: 4px;" required>{{ $position->professional_requirements_per_job_systematisation }}</textarea>
+                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="3" style="margin-bottom: 4px;" required>{{ $position->professional_requirements_per_job_systematisation }}</textarea>
                             </div>
                         </div>
 

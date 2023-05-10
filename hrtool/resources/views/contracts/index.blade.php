@@ -92,7 +92,7 @@
                                                         <a href="{{ route('contracts.profile', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
                                                     </td>
                                                     <td> @php
-                                                        $annex = $contract->annexes()->where('reason', 'Promene pozicije')->orderByDesc('created_at')->first();
+                                                        $annex = $contract->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->orderByDesc('created_at')->first();
                                                         $annexPositionName = $annex ? $annex->new_value : '';
                                                         $currentOrganization = $contract->organization;
                                                         $annexOrganization = '';
