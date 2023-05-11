@@ -68,7 +68,7 @@
     </div>
 
     <div class="contract-section">
-        <p><strong>Zaposleni će obavljati poslove iz kancelarije, i to na adresi: Makedonska 12, Beograd</strong></p><br>
+        <p><strong>Zaposleni će obavljati poslove iz kancelarije, i to na adresi: {{$new_value}}</strong></p><br>
     </div>
 
     <div class="contract-section">

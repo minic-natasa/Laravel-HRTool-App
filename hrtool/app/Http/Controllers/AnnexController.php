@@ -182,12 +182,12 @@ class AnnexController extends Controller
             return $pdf->stream('aneks-povećanje-bruto1-zarade.pdf');
         } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
             $pdf = app('dompdf.wrapper');
-            if ($new_value = 'Makedonska 12, Beograd') {
+            if ($new_value == 'Makedonska 12, Beograd') {
                 $pdf->loadView('contracts.pdf.annex.annex3a', $data);
-                return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
+                return $pdf->stream('aneks-promena-adrese-obavljanja-posla-hybrid.pdf');
             } else {
                 $pdf->loadView('contracts.pdf.annex.annex3', $data);
-                return $pdf->stream('aneks-promena-adrese-obavljanja-posla.pdf');
+                return $pdf->stream('aneks-promena-adrese-obavljanja-posla-remote.pdf');
             }
         } elseif ($annex->reason == 'Promene adrese poslodavca') {
             $pdf = app('dompdf.wrapper');

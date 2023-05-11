@@ -45,7 +45,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer table-responsive">
+                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
 
                         <!--
             <div class="row">
@@ -168,7 +168,7 @@
                                                     </style>
 
                                                     <td>{{ $user->mobile }}</td>
-                                                    
+
                                                     <td>
                                                         <div>
                                                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
@@ -198,6 +198,8 @@
 
                                             </tbody>
                                         </table>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -210,6 +212,10 @@
             </div> <!-- end card -->
 
         </div>
+
+        <style>
+          
+        </style>
 
     </div>
 

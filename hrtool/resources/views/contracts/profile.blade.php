@@ -54,7 +54,6 @@
                 <div class="card">
                     <div class="card-body" id="contract-{{$contract->id}}">
 
-
                         <div class="row">
                             <!-- Contract Details -->
                             <div class="row align-items-center" style="margin-bottom: 10px; margin-left:3px">
@@ -174,9 +173,10 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
+
                                                         <td class="text-center">
                                                             @php
-                                                            $annex = $contract->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->orderByDesc('created_at')->first();
+                                                            $annex = $contract->annexes()->where('reason', 'Promene pozicije') ->where('deleted', false)->orderByDesc('created_at')->first();
                                                             $annexPositionName = $annex ? $annex->new_value : '';
                                                             $currentOrganization = $contract->organization;
                                                             $annexOrganization = '';
@@ -198,7 +198,6 @@
                                                             }
                                                             @endphp
                                                         </td>
-
                                                         <td class="text-center">
                                                             @php
                                                             $currentPosition = '';
@@ -326,7 +325,6 @@
 
         @endif
         @endforeach
-
 
         @foreach ($contracts as $contract)
         @if($contract->status == 'active')

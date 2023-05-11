@@ -63,7 +63,7 @@
 
     <div class="contract-section">
         <p>2. <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG:
-            <strong>{{$jmbg}}</strong> koji radi na poslovima: <strong>{{$old_value}}</strong> (stara pozicija).
+            <strong>{{$jmbg}}</strong> koji radi na poslovima: <strong>{{$old_value}}</strong>.
         </p><br>
     </div>
 
@@ -72,7 +72,7 @@
     </div>
 
     <div class="contract-section">
-        <p style="text-align: center;">1. za obavljanje poslova: <strong>{{$new_value}}</strong> (nova pozicija).</p><br>
+        <p style="text-align: center;">1. za obavljanje poslova: <strong>{{$new_value}}</strong>.</p><br>
     </div>
 
     <div class="contract-section">
@@ -91,7 +91,7 @@
 
     <div class="contract-section">
         <p>Ovaj Aneks ugovora o radu stupa na snagu datumom potpisa ugovornih strana, a počinje važiti od
-            <strong>{{$annex_date}}</strong> (datum početka važenja Aneksa)
+            <strong>{{$annex_date}}</strong>
         </p><br>
     </div>
 

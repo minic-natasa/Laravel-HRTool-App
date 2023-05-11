@@ -36,7 +36,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer table-responsive">
+                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
 
                         <div class="row">
                             <div class="col-sm-12 col-md-6"></div>
