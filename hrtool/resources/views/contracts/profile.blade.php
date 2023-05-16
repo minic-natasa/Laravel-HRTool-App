@@ -36,17 +36,6 @@
         </div>
         <!-- end page title -->
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-                <!--
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <a href="#" class="btn btn-primary mb-3">Create New Annex</a>
-                </div>
-                -->
-            </div>
-        </div>
-
         @foreach ($contracts as $contract)
         @if($contract->status == 'active')
         <div class="row">
@@ -106,48 +95,53 @@
                                     <strong>Type of Contract:</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->type_of_contract}}</span>
                                     <strong>Location of Work:</strong>
-
                                     <span style="display: block; margin-bottom: 8px;">
                                         @php
-                                        $annexLocation = $contract->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
-                                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
-                                        $location = '';
+                                        $reasonToSearch = 'Promena adrese obavljanja posla';
+                                        $latestAnnexAdd = $contract->annexes()
+                                        ->where('deleted', 0)
+                                        ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                        ->orderByDesc('annex_date')
+                                        ->first();
 
-                                        if ($annexLocation) {
+                                        $reasonToSearchE = 'Promena adrese poslodavca';
+                                        $latestAnnexEmpl = $contract->annexes()
+                                        ->where('deleted', 0)
+                                        ->whereRaw("FIND_IN_SET('$reasonToSearchE', reason) > 0")
+                                        ->orderByDesc('annex_date')
+                                        ->first();
 
-                                        if($annexAddress == "Makedonska 12, Beograd"){
-                                        $location = "Hybrid";
-                                        }else{
-                                        $location = "Remote";
-                                        }
+                                        $addressValue = $latestAnnexAdd ? $latestAnnexAdd->address_of_work : (
+                                        $contract->location_of_work === 'Remote' ? $contract->employee->current_address :
+                                        ($latestAnnexEmpl ? $latestAnnexEmpl->address_of_employer : "Makedonska 12, Beograd"));
 
+
+                                        $location = $latestAnnexAdd ? ($latestAnnexAdd->address_of_work == $contract->employee->current_address ? "Remote" : "Hybrid") : "Hybrid";
+
+                                        if ($latestAnnexAdd) {
                                         echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . $location . '</span>';
-                                        } else {
-                                        echo $contract->location_of_work;
-                                        }
-                                        @endphp
-                                    </span>
-                                    <strong>Address of Work:</strong>
-
-                                    <span style="display: block; margin-bottom: 8px;">
-                                        @php
-                                        $annexLocation = $contract->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
-                                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
-                                        $address = '';
-
-                                        if ($annexLocation) {
-                                        $address = $annexAddress;
-                                        echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . $address . '</span>';
                                         }
                                         else {
-                                        if($contract->location_of_work == "Hybrid"){
-                                        echo "Office - Makedonska 12, Beograd";
-                                        }else{
-                                        echo $contract->employee->current_address;
+                                        echo $location;
                                         }
+
+                                        @endphp
+                                    </span>
+
+                                    <strong>Address of Work:</strong>
+                                    <span style="display: block; margin-bottom: 8px;">
+                                        @php
+
+                                        if ($latestAnnexAdd) {
+                                        echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . $addressValue . '</span>';
+                                        }
+                                        else {
+                                        echo $addressValue;
                                         }
                                         @endphp
                                     </span>
+
+
                                     <strong>Transportation:</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->transportation}}</span>
                                 </address>
@@ -161,7 +155,7 @@
 
                                     <div class="">
                                         <div class="table-responsive">
-                                            <table class="table" style="font-size: 13px;">
+                                            <table class="table" style="font-size: 13px; margin-bottom:3vh">
                                                 <thead>
                                                     <tr>
                                                         <td class="text-center"><strong>Organization Unit</strong></td>
@@ -173,15 +167,21 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-
                                                         <td class="text-center">
                                                             @php
-                                                            $annex = $contract->annexes()->where('reason', 'Promene pozicije') ->where('deleted', false)->orderByDesc('created_at')->first();
-                                                            $annexPositionName = $annex ? $annex->new_value : '';
+                                                            $reasonToSearch = 'Promena pozicije';
+
+                                                            $latestAnnexPos = $contract->annexes()
+                                                            ->where('deleted', 0)
+                                                            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                                            ->orderByDesc('annex_date')
+                                                            ->first();
+
+                                                            $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
                                                             $currentOrganization = $contract->organization;
                                                             $annexOrganization = '';
-                                                            $annexPosition = '';
-                                                            if ($annex) {
+
+                                                            if ($latestAnnexPos) {
                                                             foreach ($organizations as $org) {
                                                             foreach ($org->position as $pos) {
                                                             if ($pos->name == $annexPositionName) {
@@ -191,13 +191,15 @@
                                                             }
                                                             }
                                                             }
-                                                            echo '<span title="Organization Changed with Annex"><a id="link" href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
-
+                                                            echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
                                                             } else {
-                                                            echo '<a id="link" href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
+                                                            echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
                                                             }
+
                                                             @endphp
+
                                                         </td>
+
                                                         <td class="text-center">
                                                             @php
                                                             $currentPosition = '';
@@ -209,23 +211,31 @@
                                                             }
                                                             }
 
-                                                            if ($annex) {
+                                                            if ($latestAnnexPos) {
 
-                                                            echo '<span title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                                            echo '<span title="Position Changed with Annex"><a href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
                                                             } else {
-                                                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                            echo '<a href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
                                                             }
                                                             @endphp
                                                         </td>
 
                                                         <td class="text-center">
                                                             @php
+                                                            $reasonToSearch = 'Povećanje bruto 1 zarade';
 
-                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->where('deleted', false)->orderByDesc('created_at')->first();
-                                                            $gross = $annexGross ? $annexGross->new_value : $contract->gross_salary_1;
+                                                            $latestAnnexGross = $contract->annexes()
+                                                            ->where('deleted', 0)
+                                                            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                                            ->orderByDesc('annex_date')
+                                                            ->first();
+
+                                                            $gross = $latestAnnexGross ? $latestAnnexGross->gross_salary : $contract->gross_salary_1;
                                                             $n = $gross * 0.701 + 2171.2;
-                                                            $net = $annexGross ? $n : $contract->net_salary;
-                                                            if ($annexGross) {
+                                                            $net = $latestAnnexGross ? $n : $contract->net_salary;
+
+
+                                                            if ($latestAnnexGross) {
                                                             echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . number_format($net, 2, ',', '.') . ' RSD</span>';
                                                             } else {
                                                             echo number_format($net, 2, ',', '.') . ' RSD';
@@ -233,11 +243,9 @@
                                                             @endphp
                                                         </td>
 
-                                                        <td class="text-center" id="gross-annex">
+                                                        <td class="text-center">
                                                             @php
-                                                            $annexGross = $contract->annexes()->where('reason', 'Povećanja bruto 1 zarade')->where('deleted', false)->orderByDesc('created_at')->first();
-                                                            $gross = $annexGross ? $annexGross->new_value : $contract->gross_salary_1;
-                                                            if ($annexGross) {
+                                                            if ($latestAnnexGross) {
                                                             echo '<span style="cursor: default; font-weight: bold;" title="Value Changed with Annex">' . number_format($gross, 2, ',', '.') . ' RSD</span>';
                                                             } else {
                                                             echo number_format($gross, 2, ',', '.') . ' RSD';
@@ -246,9 +254,182 @@
                                                         </td>
 
                                                         <td class="text-center">{{ number_format($contract->gross_salary_2, 2, ',', '.') }} RSD</td>
+
                                                     </tr>
                                                 </tbody>
                                             </table>
+
+                                            <!-- Documents button -->
+                                            <div class="float-end">
+                                                <div class="btn-group dropup" role="group">
+                                                    <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-file"></i> Documents
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                        <li><a class="dropdown-item" href="{{ route('contracts.mob', $contract->id) }}" target="_blank">Obaveštenje o mobingu</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('contracts.uzb', $contract->id)}}" target="_blank">Obaveštenje o Zakonu o uzbunjivačima</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('contracts.nda', $contract->id)}}" target="_blank">Sporazum o poverljivosti</a></li>
+                                                        <!--<li><a class="dropdown-item" href="{{ route('contracts.odm', $contract->id)}}" target="_blank">Zahtev za korišćenje godišnjeg odmora</a></li>
+                                                     <li><a class="dropdown-item" href="{{ route('contracts.rev', $contract->id)}}">Revers</a></li> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Print button -->
+                                            <div class="d-print-none">
+                                                <div class="float-end">
+                                                    <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print</a>
+                                                </div>
+                                            </div>
+
+                                            @if(count($contract->annexes->where('deleted', false)) > 0)
+                                            <div class="d-print-none">
+                                                <div class="float-end">
+                                                    <button class="btn btn-primary waves-effect waves-light annexes-button" style="margin-right:10px" target="_blank" data-contract-id="{{ $contract->id }}">
+                                                        <i class="fas fa-file-alt"></i> Annexes
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            @else
+                                            <div class="d-print-none">
+                                                <div class="float-end">
+                                                    <a href="{{ route('annexes.create', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px"><i class="fas fa-file-alt"></i></i> Create New Annex</a>
+                                                </div>
+                                            </div>
+                                            @endif
+
+                                            <!-- Delete Button -->
+                                            <div class="d-print-none">
+                                                <div class="float-end">
+                                                    <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                        <button type="submit" class="btn btn-link" style="margin-right:10px" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <br>
+
+                                            <div class="table-responsive annexes-table" id="annexes-table-{{ $contract->id }}" style="display: none; padding-top: 5vh; width: max-content;">
+                                                <table class="table mb-0">
+
+
+                                                    <!-- Create New Annex button -->
+                                                    <div class="d-print-none">
+                                                        <div>
+                                                            <a href="{{ route('annexes.create', $contract->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:10px; margin-bottom:3vh; margin-top:1vh"><i class="fas fa-file-alt"></i></i> Create New Annex</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Annex</th>
+                                                            <th>Reason for Annex</th>
+                                                            <th>Contract Value</th>
+                                                            <th>New Value</th>
+                                                            <th>Created At</th>
+                                                            <th>Start Date</th>
+                                                            <th>Print</th>
+                                                            <th>Delete</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php $count = 0; ?>
+
+                                                        @if($contract && $contract->status == 'active')
+                                                        @foreach ($contract->annexes as $key => $annex)
+                                                        @if ($annex->deleted === 0)
+                                                        <?php $count++; ?>
+                                                        <tr>
+                                                            <td class="text-center">{{ $count }}</td>
+                                                            <td>
+                                                                @php
+                                                                $reasons = explode(',', $annex->reason);
+                                                                @endphp
+                                                                @foreach($reasons as $key => $reason)
+                                                                {{$reason}}@if($key !== count($reasons) - 1),<br>
+                                                                @endif
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                @if(in_array('Povećanje bruto 1 zarade', explode(',', $annex->reason)))
+                                                                {{ number_format($annex->old_gross_salary, 2, ',', '.')}} RSD<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena pozicije', explode(',', $annex->reason)))
+                                                                {{$annex->old_position}}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena adrese obavljanja posla', explode(',', $annex->reason)))
+                                                                {{ $annex->old_address_of_work; }}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena adrese poslodavca', explode(',', $annex->reason)))
+                                                                {{$annex->old_address_of_employer}}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena radnih sati', explode(',', $annex->reason)))
+                                                                {{$annex->old_working_hours}}<br>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if(in_array('Povećanje bruto 1 zarade', explode(',', $annex->reason)))
+                                                                {{ number_format($annex->gross_salary, 2, ',', '.') }} RSD<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena pozicije', explode(',', $annex->reason)))
+                                                                {{$annex->position}}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena adrese obavljanja posla', explode(',', $annex->reason)))
+                                                                {{ $annex->address_of_work; }}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena adrese poslodavca', explode(',', $annex->reason)))
+                                                                {{$annex->address_of_employer}}<br>
+                                                                @endif
+
+                                                                @if(in_array('Promena radnih sati', explode(',', $annex->reason)))
+                                                                {{$annex->working_hours}}<br>
+                                                                @endif
+                                                            </td>
+                                                            <td>{{ date('d.m.Y.', strtotime($annex->annex_created_date)) }}</td>
+                                                            <td>{{ date('d.m.Y.', strtotime($annex->annex_date)) }}</td>
+
+                                                            <td>
+                                                                <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                                                    <div class="btn-group" role="group">
+                                                                        <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="ri-more-line"></i>
+                                                                        </button>
+
+                                                                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                                            <a href="{{ route('annexes.annex-pdf', ['id' => $annex->id, 'annex_number' => $count]) }}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn"> Annex</a>
+                                                                            <a href="{{ route('annexes.notice-pdf', $annex->id) }}" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn">Notice</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <form action="{{ route('annexes.destroy', $annex->id) }}" method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        @endif
+                                                        @endforeach
+                                                        @endif
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div> <br><br>
+
 
                                             <style>
                                                 /* Set link color to the same color as normal text */
@@ -264,550 +445,38 @@
 
                                         </div>
 
-                                        <!-- Documents button -->
-                                        <div class="float-end">
-                                            <div class="btn-group" role="group">
-                                                <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-file"></i> Documents
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                    <li><a class="dropdown-item" href="{{ route('contracts.mob', $contract->id) }}" target="_blank">Obaveštenje o mobingu</a></li>
-                                                    <li><a class="dropdown-item" href="{{ route('contracts.uzb', $contract->id)}}" target="_blank">Obaveštenje o Zakonu o uzbunjivačima</a></li>
-                                                    <li><a class="dropdown-item" href="{{ route('contracts.nda', $contract->id)}}" target="_blank">Sporazum o poverljivosti</a></li>
-                                                    <!--<li><a class="dropdown-item" href="{{ route('contracts.odm', $contract->id)}}" target="_blank">Zahtev za korišćenje godišnjeg odmora</a></li>
-                                                     <li><a class="dropdown-item" href="{{ route('contracts.rev', $contract->id)}}">Revers</a></li> -->
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Annexes button -->
-                                        <div class="float-end">
-                                            <div class="btn-group" role="group">
-                                                <button id="btnGroupVerticalDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right:10px">
-                                                    <i class="fas fa-file-alt"></i> Annexes
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                                    <!-- Only show the "See Contract Annexes" button if there are annexes -->
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="openCreateAnnexPopup('{{ $contract->id }}')">Create New Annex</a></li>
-                                                    <li @if(count($contract->annexes) == 0 || $contract->annexes->where('deleted', false)->isEmpty()) style="display:none" @endif><a class="dropdown-item" href="javascript:void(0)" onclick="openAnnexPopup('{{ $contract->id }}')">See Contract Annexes</a></li>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Print button -->
-                                        <div class="d-print-none">
-                                            <div class="float-end">
-                                                <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print</a>
-                                            </div>
-                                        </div>
-
-                                        <!-- Delete Button -->
-                                        <div class="d-print-none">
-                                            <div class="float-end">
-                                                <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
-                                                    <button type="submit" class="btn btn-link" style="margin-right:10px" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
-                                                </form>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div> <!-- end row -->
-
                     </div>
                 </div>
             </div> <!-- end col -->
         </div>
-
         @endif
         @endforeach
-
-        @foreach ($contracts as $contract)
-        @if($contract->status == 'active')
-
-        <div class="modal fade" id="annexModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Contract Annexes</h5>
-                        <button type="btn" class="close" style="color:black; border: none; background: transparent; cursor: pointer" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body" style="height: 55vh;">
-
-                        <div style="display:none;">
-                            <div>Contract ID: <span id="contract_id_display"></span></div>
-                            <input type="hidden" name="contract_id" value="" id="contract_id_input">
-                        </div>
-
-                        <div class="table-responsive" style="max-height: 50vh; overflow: scroll;">
-                            <table class="table table-bordered" id="annexes-table">
-                                <thead>
-                                    <tr>
-                                        <th>Annex</th>
-                                        <th>Reason for Annex</th>
-                                        <th>Contract Value</th>
-                                        <th>New Value</th>
-                                        <th>Created At</th>
-                                        <th>Start Date</th>
-                                        <th>Print</th>
-                                        <th>Delete</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="annexes-tbody">
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-        <div class="modal fade" id="annexCreateModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Create New Annex</h5>
-                        <button type="btn" class="close" style="color:black; border: none; background: transparent; cursor: pointer" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body" style="height: 55vh;">
-
-
-                        @if($contract && $contract->status == 'active')
-                        <form action="{{ route('annexes.store') }}" method="POST">
-                            @csrf
-
-                            <div style="display:none;">
-                                <div>Contract ID: <span id="contract_id_display"></span></div>
-                                <input type="hidden" name="contract_id" value="">
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="reason" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Reason:') }}</label>
-                                <div class="col-md-8">
-                                    <select id="reason" class="form-control @error('reason') is-invalid @enderror" name="reason" onchange="showOrHideFields()" required>
-                                        <option value=""> -- Select reason for creating new annex -- </option>
-                                        <option value="Povećanja bruto 1 zarade" {{ old('reason') == 'Povećanja bruto 1 zarade' ? 'selected' : '' }}>Povećanje bruto 1 zarade</option>
-                                        <option value="Promene pozicije" {{ old('reason') == 'Promene pozicije' ? 'selected' : '' }}>Promena pozicije</option>
-                                        <option value="Promene adrese obavljanja posla" {{ old('reason') == 'Promene adrese obavljanja posla' ? 'selected' : '' }}>Promena adrese obavljanja posla</option>
-                                        <option value="Promene adrese poslodavca" {{ old('reason') == 'Promene adrese poslodavca' ? 'selected' : '' }}>Promena adrese poslodavca</option>
-                                        <option value="Promene radnih sati" {{ old('reason') == 'Promene radnih sati' ? 'selected' : '' }}>Promena radnih sati</option>
-                                    </select>
-                                    @error('reason')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row" id="old_value_container">
-                                <label for="old_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Value:') }}</label>
-                                <div class="col-md-8">
-                                    <input id="old_value" type="text" class="form-control" name="old_value" value="-- Select reason for creating new annex first --" readonly gross-1-salary="{{ $gross ? $gross : $contract->gross_salary_1 }}" position="{{ $annexPosition ? $annexPosition->name : $contract->organization->position->where('id', $contract->position)->first()->name }}" office-address="Makedonska 12, Beograd" working-hours="40" current-address="{{ $annexLocation ? $annexLocation->new_value : ($contract->location_of_work === 'Remote' ? $contract->employee->current_address : ($contract->location_of_work === 'Hybrid' ? 'Makedonska 12, Beograd' : $contract->employee->current_address)) }}">
-                                    @error('old_value')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row" id="net_salary" style="display: none;">
-                                <label for="net_salary_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>
-
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="net_salary_value" name="net_salary_value" placeholder="-- Enter net salary --" required>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row" id="organizationDiv" style="display: none;">
-                                <label for="organization_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Organization Unit:') }}</label>
-                                <div class="col-md-8">
-                                    <select class="form-control" id="organization_value" name="organization_value" data-placeholder="-- Select organization unit --">
-                                        <option value="">-- Select organization unit -- </option>
-                                        @foreach ($organizations as $organization)
-                                        <option value="{{ $organization->id }}">{{ $organization->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('organization_value')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row" id="positionDiv" style="display: none;">
-                                <label for="position_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Position:') }}</label>
-                                <div class="col-md-8">
-                                    <select name="position_value" id="position_value" class="form-control" disabled>
-                                        <option value="">-- Select organization unit first -- </option>
-                                    </select>
-
-                                    @error('position_value')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row" id="locationDiv" style="display: none;">
-                                <label for="location_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Location of Work:</label>
-
-                                <div class="col-md-8">
-                                    <select id="location_value" class="form-control @error('location_value') is-invalid @enderror" name="location_value" required>
-                                        <option value=""> -- Select location of work -- </option>
-                                        <option value="Hybrid" {{ old('location_value') == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
-                                        <option value="Remote" {{ old('location_value') == 'Remote' ? 'selected' : '' }}>Remote</option>
-                                    </select>
-                                    @error('location_value')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row" id="addressDiv" style="display: none;">
-                                <label for="address_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Current Address:</label>
-
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="address_value" name="address_value" placeholder="" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row" id="newValueDiv">
-                                <label for="new_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">New Value:</label>
-
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="new_value" name="new_value" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="annex_created_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Created Date:') }}</label>
-
-                                <div class="col-md-8">
-                                    <input id="annex_created_date" type="date" class="form-control @error('annex_created_date') is-invalid @enderror" name="annex_created_date" value="{{ old('annex_created_date') }}" required autocomplete="annex_created_date">
-
-                                    @error('annex_created_date')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="annex_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date:') }}</label>
-
-                                <div class="col-md-8">
-                                    <input id="annex_date" type="date" class="form-control @error('annex_date') is-invalid @enderror" name="annex_date" value="{{ old('annex_date') }}" required autocomplete="annex_date">
-
-                                    @error('annex_date')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
-                                        {{ __('Create') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        @endif
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
 
     </div>
 </div>
 
 <script>
-    const reasonSelect = document.getElementById('reason');
+    const annexesButtons = document.querySelectorAll('.annexes-button');
+    const annexesTables = document.querySelectorAll('.annexes-table');
 
-    function showOrHideFields() {
-        var reason_for_annex = document.getElementById('reason').value;
-        const netSalaryDiv = document.getElementById('net_salary');
-        const orgDiv = document.getElementById('organizationDiv');
-        const posDiv = document.getElementById('positionDiv');
-        const locDiv = document.getElementById('locationDiv');
-        const addrDiv = document.getElementById('addressDiv');
-        const newValueDiv = document.getElementById('newValueDiv');
+    annexesButtons.forEach((annexesButton) => {
+        annexesButton.addEventListener('click', () => {
+            const contractId = annexesButton.getAttribute('data-contract-id');
+            const annexesTable = document.querySelector(`#annexes-table-${contractId}`);
 
-        var net_salary_value = document.getElementById('net_salary_value');
-        var organization_value = document.getElementById('organization_value');
-        var position_value = document.getElementById('position_value');
-        var location_value = document.getElementById('location_value');
-        var address_value = document.getElementById('address_value');
-        var new_value = document.getElementById('new_value');
-
-        if (reason_for_annex == 'Povećanja bruto 1 zarade') {
-            netSalaryDiv.style.display = 'flex';
-            net_salary_value.required = true;
-            newValueDiv.style.display = 'flex';
-            new_value.required = true;
-        } else {
-            netSalaryDiv.style.display = 'none';
-            net_salary_value.required = false;
-            net_salary_value.value = "";
-        }
-
-        if (reason_for_annex == 'Promene pozicije') {
-            orgDiv.style.display = 'flex';
-            posDiv.style.display = 'flex';
-            organization_value.required = true;
-            position_value.required = true;
-            newValueDiv.style.display = 'none';
-        } else {
-            orgDiv.style.display = 'none';
-            posDiv.style.display = 'none';
-            organization_value.required = false;
-            organization_value.value = "";
-            position_value.required = false;
-            position_value.value = "";
-        }
-
-        if (reason_for_annex == 'Promene adrese obavljanja posla') {
-            locDiv.style.display = 'flex';
-            location_value.required = true;
-            addrDiv.style.display = 'flex';
-            address_value.required = true;
-            newValueDiv.style.display = 'none';
-        } else {
-            locDiv.style.display = 'none';
-            location_value.required = false;
-            location_value.value = "";
-            addrDiv.style.display = 'none';
-            address_value.required = false;
-            address_value.value = "";
-        }
-    }
-
-    reasonSelect.addEventListener('change', function() {
-        const selectedReason = this.value;
-        const oldValInput = document.getElementById('old_value');
-        var net_salary_value = document.getElementById('net_salary_value');
-        const newValInput = document.getElementById('new_value');
-        var location_value = document.getElementById('location_value');
-        var address_value = document.getElementById('address_value');
-
-        // set the input field's value based on the selected reason
-        if (selectedReason === 'Povećanja bruto 1 zarade') {
-            oldValInput.value = document.getElementById('old_value').getAttribute('gross-1-salary');
-            const newValueInput = document.getElementById('new_value');
-            newValInput.readOnly = true;
-            newValInput.value = "";
-            net_salary_value.addEventListener('input', function() {
-                var net_salary = parseFloat(net_salary_value.value);
-                if (!isNaN(net_salary)) {
-                    var gross_1_salary = (net_salary - 2171.2) / 0.701;
-                    const new_value = gross_1_salary.toFixed(2);
-                    newValInput.value = new_value;
-                }
-            });
-        } else if (selectedReason === 'Promene pozicije') {
-            oldValInput.value = document.getElementById('old_value').getAttribute('position');
-            newValInput.readOnly = false;
-            newValInput.value = "";
-
-            $(document).ready(function() {
-
-                $('#position_value').prop('disabled', true);
-
-                $('#organization_value').change(function() {
-                    var organization_id = $(this).val();
-                    $('#position_value').prop('disabled', false);
-                    var org_name = $('#organization_value option:selected').text();
-
-                    $.ajax({
-                        url: "{{ route('positions.get-by-organization') }}",
-                        type: 'GET',
-                        data: {
-                            organization_id: organization_id
-                        },
-                        success: function(response) {
-                            $('#position_value').html('<option value=""> -- Select position from ' + org_name + ' unit -- </option>');
-                            $.each(response.positions, function(index, position) {
-                                $('#position_value').append('<option value="' + position.id + '">' + position.name + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.log(xhr.responseText);
-                        }
-                    });
-                });
-            });
-
-            $('#position_value').change(function() {
-                var position_name = $('#position_value option:selected').text();
-                newValInput.value = position_name;
-            });
-
-
-        } else if (selectedReason === 'Promene adrese obavljanja posla') {
-            oldValInput.value = document.getElementById('old_value').getAttribute('current-address');
-            newValInput.readOnly = false;
-            newValInput.value = "";
-            var address = "";
-
-            $(document).ready(function() {
-                $('#address_value').prop('disabled', true);
-                $('#location_value').change(function() {
-                    // $('#address_value').prop('disabled', false);
-                    var location = $('#location_value option:selected').text();
-                    var current_address = null;
-
-                    if (location === 'Hybrid') {
-                        address_value.value = "Makedonska 12, Beograd";
-                        address_value.readOnly = true;
-                        newValInput.value = "Makedonska 12, Beograd";
-                    }
-
-                    if (location === 'Remote') {
-                        address_value.value = "{{ $contract->employee->current_address }}";
-                        address_value.readOnly = true;
-                        newValInput.value = "{{ $contract->employee->current_address }}";
-                    }
-                });
-            });
-        } else if (selectedReason === 'Promene adrese poslodavca') {
-            oldValInput.value = document.getElementById('old_value').getAttribute('office-address');
-            newValInput.readOnly = false;
-            newValInput.value = "";
-
-
-        } else if (selectedReason === 'Promene radnih sati') {
-            oldValInput.value = document.getElementById('old_value').getAttribute('working-hours');
-            newValInput.readOnly = false;
-            newValInput.value = "";
-        }
-    });
-</script>
-
-
-<script>
-    function openAnnexPopup(contract_id) {
-        // Set the contract ID value in the hidden input field
-        $('#contract_id_input').val(contract_id);
-        // Set the contract ID value in the displayed span element
-        $('#contract_id_display').text(contract_id);
-
-        // Fetch the annexes data and update the table
-        fetchAnnexes(contract_id);
-
-
-        // Show the modal
-        $('#annexModal').modal('show');
-    }
-
-    function getAnnexDeleteUrl(annexId) {
-        return `/annexes/${annexId}`;
-    }
-
-    function fetchAnnexes(contractId) {
-        // Make an AJAX request to your Laravel controller to get the related annexes data
-        $.ajax({
-            url: "/annexes/" + contractId,
-            type: "GET",
-            success: function(data) {
-                console.log(data);
-
-                // Convert data to an array
-                var dataArray = Object.values(data);
-
-                // Clear the table content
-                $('#annexes-tbody').empty();
-
-                // Loop through the fetched annexes data and insert them into the table
-                var count = 0;
-                dataArray.forEach(function(annex) {
-                    count++;
-
-                    var annexDate = new Date(annex.annex_date);
-                    var formattedAnnexDate = annexDate.getDate() + '.' + (annexDate.getMonth() + 1) + '.' + annexDate.getFullYear() + '.';
-
-                    var annexCreatedDate = new Date(annex.annex_created_date);
-                    var formattedAnnexCreatedDate = annexCreatedDate.getDate() + '.' + (annexCreatedDate.getMonth() + 1) + '.' + annexCreatedDate.getFullYear() + '.';
-
-                    var newRow = `
-    <tr>
-        <td>${count}</td>
-        <td>${annex.reason}</td>
-        <td>${annex.old_value}</td>
-        <td>${annex.new_value}</td>
-        <td>${formattedAnnexDate}</td>
-        <td>${formattedAnnexCreatedDate}</td>
-        <td>
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <div class="btn-group" role="group">
-                    <button id="btnGroupVerticalDrop1" type="button" class="btn waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="ri-more-line"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                    <a href="/annexes/${annex.id}/annex-pdf/${count}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn${annex.id}"> Annex</a>
-                    <a href="/annexes/${annex.id}/notice-pdf" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn${annex.id}">Notice</a>
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td>
-        <form action="${getAnnexDeleteUrl(annex.id)}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
-            </form>
-        </td>
-
-    </tr>`;
-                    $('#annexes-tbody').append(newRow);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching annexes data:", xhr, status, error);
+            if (annexesTable.style.display === 'none') {
+                annexesTable.style.display = 'block';
+                annexesButton.innerHTML = '<i class="fas fa-times"></i> Hide Annexes';
+            } else {
+                annexesTable.style.display = 'none';
+                annexesButton.innerHTML = '<i class="fas fa-file-alt"></i> Annexes';
             }
         });
-    }
-</script>
-
-<script>
-    function openCreateAnnexPopup(contract_id) {
-        $('#annexCreateModal').modal('show');
-        $('#annexCreateModal').find('form').attr('action', "{{ route('annexes.store') }}");
-        $('#annexCreateModal').find('input[name="contract_id"]').val(contract_id);
-        $('#annexCreateModal').find('#contract_id_display').text(contract_id); // display the contract id in a separate element
-    }
+    });
 </script>
 
 <script>
@@ -833,16 +502,5 @@
         }
     }
 </script>
-
-@endif
-@endforeach
-
-@if(session('success'))
-<script>
-    $(function() {
-        $('#annexCreateModal').modal('hide');
-    });
-</script>
-@endif
 
 @endsection

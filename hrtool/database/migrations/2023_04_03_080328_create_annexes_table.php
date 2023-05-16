@@ -13,14 +13,23 @@ return new class extends Migration
     {
         Schema::create('annexes', function (Blueprint $table) {
             $table->id();
-            $table->string('reason');
-            $table->string('old_value');
-            $table->string('new_value');
+            $table->text('reason');
+            $table->string('old_gross_salary')->nullable();
+            $table->string('gross_salary')->nullable();
+            $table->string('old_position')->nullable();
+            $table->string('position')->nullable();
+            $table->string('old_address_of_work')->nullable();
+            $table->string('address_of_work')->nullable();
+            $table->string('old_address_of_employer')->nullable();
+            $table->string('address_of_employer')->nullable();
+            $table->string('old_working_hours')->nullable();
+            $table->string('working_hours')->nullable();
             $table->date('annex_date');
             $table->date('annex_created_date');
-            $table->boolean('deleted');
-            $table->timestamps();
+            $table->boolean('deleted')->default(0);
             $table->unsignedBigInteger('contract_id');
+            $table->timestamps();
+
             $table->foreign('contract_id')->references('id')->on('contracts');
         });
     }

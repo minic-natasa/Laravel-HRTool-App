@@ -55,7 +55,7 @@
                 <li>
                     <a href="{{ route('contracts.index')}}" :isActive="request()->routeIs('contracts.index')" class=" waves-effect">
                         <i class="fas fa-file-contract" title="Contracts" style="font-size: 15px;"></i>
-                        <span>Contracts</span>
+                        <span>Active Contracts</span>
                     </a>
                 </li>
 

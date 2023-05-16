@@ -103,12 +103,13 @@
                                                     <td>
                                                         @if ($organization->manager_id)
                                                         <a id="link" href="{{ route('users.profile-card', $organization->manager_id) }}">{{ $organization->manager->first_name }} {{ $organization->manager->last_name }}</a>
+                                                        @else {{'/'}}
                                                         @endif
                                                     </td>
 
                                                     <td>
                                                         <div>
-                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
+                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-link"><i class="fas fa-user-tie" title="Edit"></i></a>
 
                                                             <form action="{{ route('organizations.destroy', $organization->id) }}" method="POST" style="display: inline-block; width: auto;">
                                                                 @csrf

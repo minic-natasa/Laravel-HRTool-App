@@ -51,14 +51,16 @@ class OrganizationController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'parent_id' => 'nullable|exists:organizations,id',
-            'manager_id' => 'nullable|exists:users,id',
+            //'manager_id' => 'nullable|exists:users,id',
+            'manager_id' => 'nullable',
         ]);
 
         // Create the new organization
         $organization = new Organization([
             'name' => $request->input('name'),
             'parent_id' => $request->input('parent_id'),
-            'manager_id' => $request->input('manager_id'),
+            //'manager_id' => $request->input('manager_id'),
+            'manager_id' => null, // set manager_id to null
         ]);
         $organization->save();
 
@@ -113,7 +115,7 @@ class OrganizationController extends Controller
 
         $organization->save();
 
-        return redirect()->route('organizations.index')->with('success', 'Organization updated successfully!');
+        return redirect()->route('organizations.organization-card', $organization->id)->with('success', 'Organization updated successfully!');
     }
 
     /**

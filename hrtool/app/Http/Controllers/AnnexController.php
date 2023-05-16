@@ -20,9 +20,6 @@ class AnnexController extends Controller
      */
     public function index(string $id)
     {
-
-        $contract = Contract::find($id);
-        return view('annexes.index', ['contracts' => $id], compact('contract'));
     }
 
     public function create(string $id)
@@ -32,26 +29,61 @@ class AnnexController extends Controller
         $organizations = Organization::all();
         $positions = Position::all();
 
-        return view('annexes.create', compact('contract', 'positions', 'organizations'));
+        return view('contracts.annex', compact('contract', 'positions', 'organizations'));
     }
 
     public function store(Request $request)
     {
 
+
         $request->validate([
-            'reason' => 'required|string',
-            'old_value' => 'required|string',
-            'new_value' => 'required|string',
+            'reason' => 'required|array|min:1',
+            'old_gross_salary' => 'nullable|string',
+            'gross_salary' => 'nullable|string',
+            'old_position' => 'nullable|string',
+            'position' => 'nullable|string',
+            'old_address_of_work' => 'nullable|string',
+            'address_of_work' => 'nullable|string',
+            'old_address_of_employer' => 'nullable|string',
+            'address_of_employer' => 'nullable|string',
+            'old_working_hours' => 'nullable|string',
+            'working_hours' => 'nullable|string',
             'annex_date' => 'required|date',
             'annex_created_date' => 'required|date',
-            'contract_id' => 'required|exists:contracts,id',
+            'deleted' => 'required|boolean',
+            'contract_id' => 'required|integer',
         ]);
 
-        $request->merge(['deleted' => 0]); // Set deleted to 0
-        $annex = new Annex($request->all());
-        $annex->save();
+        $reasons = implode(',', $request->input('reason'));
+        $annex = new Annex([
 
-        return redirect()->back()->with('success', 'Annex created successfully!');
+            'old_gross_salary' => $request->input('old_gross_salary'),
+            'gross_salary' => $request->input('gross_salary'),
+
+            'old_position' => $request->input('old_position'),
+            'position' => $request->input('position'),
+
+            'old_address_of_work' => $request->input('old_address_of_work'),
+
+            'old_address_of_employer' => $request->input('old_address_of_employer'),
+            'address_of_employer' => $request->input('address_of_employer'),
+
+            'old_working_hours' => $request->input('old_working_hours'),
+            'working_hours' => $request->input('working_hours'),
+
+            'annex_date' => $request->input('annex_date'),
+            'annex_created_date' => $request->input('annex_created_date'),
+
+            'contract_id' => $request->input('contract_id'),
+            'deleted' => $request->input('deleted'),
+
+            'reason' => $reasons,
+        ]);
+
+        $annex->address_of_work = $request->address_of_work;
+        $annex->save();
+        $contract = Contract::find($request->input('contract_id'));
+        return redirect()->route('contracts.profile', ['id' => $contract->employee])->with('success', 'Annex created successfully!');
     }
 
     public function getAnnexesByContract($contract_id)

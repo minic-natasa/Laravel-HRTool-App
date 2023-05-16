@@ -91,13 +91,32 @@
                                                     <td class="sorting_1 dtr-control">
                                                         <a href="{{ route('contracts.profile', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
                                                     </td>
-                                                    <td> @php
-                                                        $annex = $contract->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->orderByDesc('created_at')->first();
-                                                        $annexPositionName = $annex ? $annex->new_value : '';
+
+                                                    <td>
+                                                        @php
+
+                                                        $reasonToSearch = 'Promena pozicije';
+
+                                                        $latestAnnexPos = $contract->annexes()
+                                                        ->where('deleted', 0)
+                                                        ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                                        ->orderByDesc('annex_date')
+                                                        ->first();
+
+                                                        $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
                                                         $currentOrganization = $contract->organization;
                                                         $annexOrganization = '';
+                                                        $annexPosition = '';
+                                                        $currentPosition = '';
 
-                                                        if ($annex) {
+                                                        foreach ($contract->organization->position as $pos) {
+                                                        if ($pos->id == $contract->position) {
+                                                        $currentPosition = $pos;
+                                                        $currentPositionName = $currentPosition->name;
+                                                        }
+                                                        }
+
+                                                        if ($latestAnnexPos) {
                                                         foreach ($organizations as $org) {
                                                         foreach ($org->position as $pos) {
                                                         if ($pos->name == $annexPositionName) {
@@ -108,39 +127,32 @@
                                                         }
                                                         }
                                                         echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
-
                                                         } else {
                                                         echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
                                                         }
-                                                        @endphp</td>
-                                                    <td>
-                                                        @php
-                                                        $currentPosition = '';
-
-                                                        foreach ($contract->organization->position as $pos) {
-                                                        if ($pos->id == $contract->position){
-                                                        $currentPosition = $pos;
-                                                        $currentPositionName = $currentPosition->name;
-                                                        }
-                                                        }
-
-                                                        if ($annex) {
-
-                                                        echo '<span title="Position Changed with Annex"><a href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
-                                                        } else {
-                                                        echo '<a href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
-                                                        }
                                                         @endphp
                                                     </td>
+                                                    <td>
+                                                        @php
+                                                        if ($latestAnnexPos) {
+                                                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                                        } else {
+                                                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                        }
+                                                        @endphp</td>
+
 
                                                     <td>
-                                                        <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
-                                                            <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
-                                                        </form>
+                                                       
+                                                                <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                                    <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                                                </form>
+                                                           
                                                     </td>
+
 
                                                     <style>
                                                         a {

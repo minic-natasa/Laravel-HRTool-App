@@ -12,8 +12,16 @@ class Annex extends Model
     protected $fillable = [
 
         'reason',
-        'old_value',
-        'new_value',
+        'old_gross_salary',
+        'gross_salary',
+        'old_position',
+        'position',
+        'old_address_of_work',
+        'address_of_work',
+        'old_address_of_employer',
+        'address_of_employer',
+        'old_working_hours',
+        'working_hours',
         'annex_date',
         'annex_created_date',
         'deleted',

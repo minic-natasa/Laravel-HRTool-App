@@ -39,7 +39,7 @@ class ContractController extends Controller
 
 
     /**
-     * Show the form for creating a new resource.F
+     * Show the form for creating a new resource.
      */
     public function create(string $id)
     {

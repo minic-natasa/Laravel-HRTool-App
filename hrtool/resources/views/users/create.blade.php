@@ -1,3 +1,5 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
 @extends('admin.master')
 @section('admin')
 
@@ -8,9 +10,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
                         <a href="{{ route('users.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
-                       <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW EMPLOYEE</h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW EMPLOYEE</h4>
                     </div>
 
                     <div class="page-title-right">
@@ -29,7 +31,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form method="POST" action="{{ route('users.store') }}">
+                    <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group row">
@@ -287,7 +289,11 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+
+                        <div class="form-group row">
+                            <label for="professional_qualifications_level" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Professional Qualifications Level') }}</label>
+
+                            <div class="col-md-6">
                                 <select id="professional_qualifications_level" class="form-control @error('professional_qualifications_level') is-invalid @enderror" name="professional_qualifications_level" required>
                                     <option value=""> -- Select professional qualifications level -- </option>
                                     <option value="I" {{ old('professional_qualifications_level') == 'I' ? 'selected' : '' }}>I</option>
@@ -342,6 +348,16 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="profile_picture" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Profile Image</label>
+
+                            <input id="picture-input" name="profile_picture" type="file" class="col-md-6" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" autocomplete="profile_picture" />
+
+                            <div style="display: block; text-align: left; margin-left:12vw;">
+                                <img id="showImage" src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 135px;" alt="Profile Picture">
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
@@ -360,3 +376,42 @@
     </div>
     <!-- End Page-content -->
     @endsection
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to update the image with the cropped data
+            function updateImage(imageData) {
+                var image = document.getElementById('showImage');
+                image.src = imageData;
+            }
+
+            $('#picture-input').change(function(e) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create a new image object
+                    var image = new Image();
+                    // Set the source of the image to the uploaded file data
+                    image.src = e.target.result;
+                    // Once the image is loaded, crop it to a square and get the new data
+                    image.onload = function() {
+                        // Calculate the size of the square to crop
+                        var size = Math.min(image.width, image.height);
+                        // Create a new canvas element with the square size
+                        var canvas = document.createElement('canvas');
+                        canvas.width = size;
+                        canvas.height = size;
+                        // Get the context of the canvas
+                        var context = canvas.getContext('2d');
+                        // Draw the cropped image onto the canvas
+                        context.drawImage(image, (image.width - size) / 2, (image.height - size) / 2, size, size, 0, 0, size, size);
+                        // Get the new data URL of the cropped image
+                        var newDataUrl = canvas.toDataURL('image/png');
+                        // Call the function to update the image with the new data
+                        updateImage(newDataUrl);
+                    };
+                }
+                reader.readAsDataURL(e.target.files['0']);
+            });
+        });
+    </script>

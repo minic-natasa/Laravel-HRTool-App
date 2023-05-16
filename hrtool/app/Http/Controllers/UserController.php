@@ -89,6 +89,14 @@ class UserController extends Controller
 
         ]);
 
+        if ($request->file('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('upload/admin_images'), $filename);
+            $user['profile_picture'] = $filename;
+        }
+
+
         $user->save();
 
         return redirect('/users')->with('success', 'User created successfully!');
@@ -155,12 +163,12 @@ class UserController extends Controller
         $user->professional_qualifications_level = $request->input('professional_qualifications_level');
         $user->profession = $request->input('profession');
 
-        if($request->file('profile_picture')){
+        if ($request->file('profile_picture')) {
             $file = $request->file('profile_picture');
-            $filename = date('YmdHi').$file->getClientOriginalName();
+            $filename = date('YmdHi') . $file->getClientOriginalName();
             $file->move(public_path('upload/admin_images'), $filename);
             $user['profile_picture'] = $filename;
-    }
+        }
 
         $user->save();
 

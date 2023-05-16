@@ -78,7 +78,7 @@
                                 <div class="text-center mt-4">
                                     <h5>UNIT</h5>
                                     <a href="{{ route('organizations.organization-card', $position->organization->id) }}">
-                                        <p class="mb-2 text-truncate">{{$position->organization->name}}</p>
+                                        <p class="mb-2">{{$position->organization->name}}</p>
                                     </a>
                                 </div>
                             </div>

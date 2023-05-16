@@ -115,16 +115,25 @@
                                                     <td class="sorting_1 dtr-control"><a id="user" href="{{ route('users.profile-card', $user->id) }}">{{ $user->first_name }} {{ $user->last_name }}</a></td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>
+
                                                         @php
                                                         $activeContracts = $user->contract()->where('status', 'active')->get();
                                                         if ($activeContracts->count() > 0) {
                                                         foreach ($activeContracts as $contr) {
-                                                        $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
-                                                        $annexPositionName = $annex ? $annex->new_value : '';
-                                                        $annexPosition = '';
-                                                        $currentPosition = '';
+
+                                                        $reasonToSearch = 'Promena pozicije';
+
+                                                        $latestAnnexPos = $contr->annexes()
+                                                        ->where('deleted', 0)
+                                                        ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                                        ->orderByDesc('annex_date')
+                                                        ->first();
+
+                                                        $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
                                                         $currentOrganization = $contr->organization;
                                                         $annexOrganization = '';
+                                                        $annexPosition = '';
+                                                        $currentPosition = '';
 
                                                         foreach ($contr->organization->position as $pos) {
                                                         if ($pos->id == $contr->position) {
@@ -133,7 +142,7 @@
                                                         }
                                                         }
 
-                                                        if ($annex) {
+                                                        if ($latestAnnexPos) {
                                                         foreach ($organizations as $org) {
                                                         foreach ($org->position as $pos) {
                                                         if ($pos->name == $annexPositionName) {
@@ -147,7 +156,7 @@
                                                         } else {
                                                         echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
                                                         }
-                                                        echo "<br>"; // Add line break after each position
+                                                        echo "<br>";
                                                         }
                                                         } else {
                                                         echo "No active contract found";
@@ -159,6 +168,7 @@
                                                         /* Set link color to the same color as normal text */
                                                         #link {
                                                             color: inherit;
+                                                            text-decoration: none;
                                                         }
 
                                                         /* Set link color to a different color on hover */
@@ -166,6 +176,7 @@
                                                             color: #002EFF;
                                                         }
                                                     </style>
+
 
                                                     <td>{{ $user->mobile }}</td>
 
@@ -214,7 +225,7 @@
         </div>
 
         <style>
-          
+
         </style>
 
     </div>

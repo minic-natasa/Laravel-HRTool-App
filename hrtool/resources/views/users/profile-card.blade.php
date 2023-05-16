@@ -169,17 +169,24 @@
                     <h5 class="card-title">Position</h5>
 
                     <p class="card-text" style="font-size: 13px;">
-                        <td>
                             @php
                             $activeContracts = $user->contract()->where('status', 'active')->get();
                             if ($activeContracts->count() > 0) {
                             foreach ($activeContracts as $contr) {
-                            $annex = $contr->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
-                            $annexPositionName = $annex ? $annex->new_value : '';
-                            $annexPosition = '';
-                            $currentPosition = '';
+
+                            $reasonToSearch = 'Promena pozicije';
+
+                            $latestAnnexPos = $contr->annexes()
+                            ->where('deleted', 0)
+                            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                            ->orderByDesc('annex_date')
+                            ->first();
+
+                            $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
                             $currentOrganization = $contr->organization;
                             $annexOrganization = '';
+                            $annexPosition = '';
+                            $currentPosition = '';
 
                             foreach ($contr->organization->position as $pos) {
                             if ($pos->id == $contr->position) {
@@ -188,7 +195,7 @@
                             }
                             }
 
-                            if ($annex) {
+                            if ($latestAnnexPos) {
                             foreach ($organizations as $org) {
                             foreach ($org->position as $pos) {
                             if ($pos->name == $annexPositionName) {
@@ -202,13 +209,12 @@
                             } else {
                             echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
                             }
-                            echo "<br>"; // Add line break after each position
+                            echo "<br>";
                             }
                             } else {
                             echo "No active contract found";
                             }
                             @endphp
-                        </td>
                     </p>
 
                     <style>
@@ -310,7 +316,9 @@
                                         <th>Name</th>
                                         <th>Birth Date</th>
                                         <th>JMBG</th>
+                                        <!--
                                         <th>Action</th>
+                                        -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -322,6 +330,7 @@
                                         <td>{{$member->name}}</td>
                                         <td>{{ date('d.m.Y.', strtotime($member->birth_date)) }}</td>
                                         <td>{{$member->jmbg}}</td>
+                                        <!--
                                         <td>
                                             <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
                                                 <div class="btn-group" role="group">
@@ -346,6 +355,7 @@
                                                 </div>
                                             </div>
                                         </td>
+                                                    -->
                                     </tr>
                                     <?php $count++; ?>
 

@@ -10,7 +10,7 @@
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <a href="{{ route('organizations.index') }}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT ORGANIZATION</h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT {{$organization->name}} ORGANIZATION</h4>
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="page-title-right">
@@ -34,6 +34,7 @@
                         @csrf
                         @method('PUT')
 
+                        <!--
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Name</label>
                             <div class="col-md-6">
@@ -41,7 +42,7 @@
                             </div>
                         </div>
 
-                        <!--
+                        
                         <div class="form-group row">
                             <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager</label>
                             <div class="col-md-6">
@@ -55,8 +56,8 @@
                         </div>
                         -->
                         <div class="form-group row">
-                            <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager</label>
-                            <div class="col-md-6">
+                            <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px; padding-left:4vw;">Manager:</label>
+                            <div class="col-md-4">
                                 <select class="form-control" id="manager_id" name="manager_id">
                                     <option value="">-- Select Manager -- </option>
                                     @foreach ($activeManagers as $manager)
@@ -67,7 +68,7 @@
                                 </select>
                             </div>
                         </div>
-
+                        <!--
                         <div class="form-group row">
                             <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization</label>
                             <div class="col-md-6">
@@ -79,7 +80,7 @@
                                 </select>
                             </div>
                         </div>
-
+ -->
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">{{ __('Save') }}</button>

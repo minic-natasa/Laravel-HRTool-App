@@ -54,12 +54,8 @@
                         <h4 class="font-size-14" style="margin-left: 10px; margin-top:5px;">{{$organization->name}} UNIT</h4>
                     </div>
 
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('organizations.index') }}">Organizations</a>
-                            <li class="breadcrumb-item active">Organization Card</li>
-                        </ol>
+                    <div class="d-flex align-items-center">
+                        <a href="{{route('organizations.edit', $organization->id)}}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-user-tie" title="Manager"></i> Manager</a>
                     </div>
                 </div>
             </div>
@@ -128,8 +124,13 @@
             @if ($con->status == 'active')
 
             @php
-            $annex = $con->annexes()->where('reason', 'Promene pozicije')->where('deleted', false)->latest('created_at')->first();
-            $annexPositionName = $annex ? $annex->new_value : '';
+            $reasonToSearch = 'Promena pozicije';
+            $annex = $con->annexes()
+            ->where('deleted', 0)
+            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+            ->orderByDesc('annex_date')
+            ->first();
+            $annexPositionName = $annex ? $annex->position : '';
             $annexPosition = '';
             $annexOrganization = '';
             $contractOrganization = $con->organization;
