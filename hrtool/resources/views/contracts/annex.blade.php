@@ -386,6 +386,7 @@
                             <label for="working_hours_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Working Hours:</label>
 
                             <div class="col-md-6">
+                            
                                 <input type="text" class="form-control" id="working_hours_value" name="working_hours" placeholder="">
                                 @error('working_hours_value')
                                 <span class="invalid-feedback" role="alert">

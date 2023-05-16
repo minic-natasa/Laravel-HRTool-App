@@ -68,19 +68,19 @@
                                 </select>
                             </div>
                         </div>
-                        <!--
+                        
                         <div class="form-group row">
-                            <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization</label>
-                            <div class="col-md-6">
+                            <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px; padding-left:4vw;">Parent Organization:</label>
+                            <div class="col-md-4">
                                 <select class="form-control" id="parent_id" name="parent_id">
-                                    <option value="">-- Select Parent Organization Unit -- </option>
+                                    <option value="">-- Select Parent Organization -- </option>
                                     @foreach ($organizations as $org)
                                     <option value="{{ $org->id }}" {{ $org->id == $organization->parent_id ? 'selected' : '' }}>{{ $org->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
- -->
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">{{ __('Save') }}</button>

@@ -372,7 +372,7 @@
                                                                 @endif
 
                                                                 @if(in_array('Promena radnih sati', explode(',', $annex->reason)))
-                                                                {{$annex->old_working_hours}}<br>
+                                                                {{$annex->old_working_hours}}h<br>
                                                                 @endif
                                                             </td>
                                                             <td>
@@ -393,7 +393,7 @@
                                                                 @endif
 
                                                                 @if(in_array('Promena radnih sati', explode(',', $annex->reason)))
-                                                                {{$annex->working_hours}}<br>
+                                                                {{$annex->working_hours}}h<br>
                                                                 @endif
                                                             </td>
                                                             <td>{{ date('d.m.Y.', strtotime($annex->annex_created_date)) }}</td>

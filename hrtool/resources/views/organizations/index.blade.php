@@ -109,7 +109,7 @@
 
                                                     <td>
                                                         <div>
-                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-link"><i class="fas fa-user-tie" title="Edit"></i></a>
+                                                            <a href="{{ route('organizations.edit', $organization->id) }}" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
 
                                                             <form action="{{ route('organizations.destroy', $organization->id) }}" method="POST" style="display: inline-block; width: auto;">
                                                                 @csrf

@@ -55,7 +55,7 @@
                     </div>
 
                     <div class="d-flex align-items-center">
-                        <a href="{{route('organizations.edit', $organization->id)}}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-user-tie" title="Manager"></i> Manager</a>
+                        <a href="{{route('organizations.edit', $organization->id)}}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Edit"></i> Edit Organization</a>
                     </div>
                 </div>
             </div>
