@@ -193,13 +193,13 @@ class ContractController extends Controller
 
         $net_salary = number_format($contract->net_salary, 2, ',', '.');
         $gross_salary_1 = number_format($contract->gross_salary_1, 2, ',', '.');
-        $gross_salary_2 = number_format($contract->gross_salary_2, 2, ',', '.');
-
+        
         $position_description = '';
         foreach (explode("\n", $contract->organization->position->where('id', $contract->position)->first()->description) as $line) {
             $position_description .= "·&nbsp;" . trim($line) . "<br>";
         }
         $data['position_description'] = $position_description;
+        
         $data = [
             'start_date' => date('d.m.Y', strtotime($contract->start_date)),
             'first_day_on_job' => date('d.m.Y.', strtotime($contract->first_day_on_job)),
@@ -213,7 +213,6 @@ class ContractController extends Controller
             'probationary_period_text' => '',
             'net_salary'  => $net_salary,
             'gross_salary_1' => $gross_salary_1,
-            'gross_salary_2'  => $gross_salary_2,
             'location_of_work'  => $contract->location_of_work,
             'transportation'  => $contract->transportation,
             'first_name' => $contract->employee->first_name,

@@ -159,78 +159,103 @@ class AnnexController extends Controller
         $address_parts = explode(',', $annex->contract->employee->address_in_ID);
         $street = trim($address_parts[0]);
         $town = trim($address_parts[1]);
-
         $town = $this->changeTownDisplay($town);
+
+        $first_name = $annex->contract->employee->first_name;
+        $last_name = $annex->contract->employee->last_name;
+        $name_of_one_parent = $annex->contract->employee->name_of_one_parent;
+        $current_address = $annex->contract->employee->current_address;
+
+        $reason = $annex->reason;
+        $reasons = explode(',', $reason);
+        $reasons = array_map('trim', $reasons);
+
         $employee = $annex->contract->employee;
-        $position  = $annex->contract->organization->position->where('id', $annex->contract->position)->first()->name;
+        $position = $annex->contract->organization->position->where('id', $annex->contract->position)->first()->name;
+        $employer = 'Makedonska 12, Beograd';
 
-        foreach ($employee->contract as $contr) {
-            $annexPP = $contr->annexes()->where('reason', 'Promene pozicije')->latest('created_at')->first();
+        $annexPosition = $annex->position;
+        $annexGrossSalary =  number_format($annex->gross_salary, 2, ',', '.');
+        $annexWorkingAddress = $annex->address_of_work;
+        $annexEmployerAddress = $annex->address_of_employer;
+        $annexWorkingHours = $annex->working_hours;
 
-            if ($annexPP) {
-                $position = $annexPP->new_value;
+        $position_description = '';
+        $pos = null;
+
+        if ($annexPosition) {
+            $pos = Position::where('name', $annex->position)->first();
+            foreach (explode("\n", $pos->description) as $line) {
+                $position_description .= "·&nbsp;" . trim($line) . "<br>";
             }
         }
 
 
-        $old_value = $annex->old_value;
-        $new_value = $annex->new_value;
-        $first_name = $annex->contract->employee->first_name;
-        $last_name = $annex->contract->employee->last_name;
+        foreach ($employee->contract as $contr) {
+            $reasonToSearch1 = 'Promena pozicije';
+            $latestAnnexPos = $contr->annexes()
+                ->where('deleted', 0)
+                ->where('annex_date', '<', $annex->annex_date) // Add this condition to filter annexes created before the current $annex
+                ->whereRaw("FIND_IN_SET('$reasonToSearch1', reason) > 0")
+                ->orderByDesc('annex_date')
+                ->first();
+
+            if ($latestAnnexPos) {
+                if (in_array('Promena pozicije', $reasons)) {
+                    $position = $latestAnnexPos->old_position;
+                }
+                $position = $latestAnnexPos->position;
+            }
+
+            $reasonToSearch2 = 'Promena adrese poslodavca';
+            $latestAnnexEmp = $contr->annexes()
+                ->where('deleted', 0)
+                ->where('annex_date', '<', $annex->annex_date) // Add this condition to filter annexes created before the current $annex
+                ->whereRaw("FIND_IN_SET('$reasonToSearch2', reason) > 0")
+                ->orderByDesc('annex_date')
+                ->first();
+
+            if ($latestAnnexEmp) {
+                if (in_array('Promena adrese poslodavca', $reasons)) {
+                    $employer = $latestAnnexEmp->old_address_of_employer;
+                }
+                $employer = $latestAnnexEmp->address_of_employer;
+            }
+        }
+
+        $employer_parts = explode(',', $employer);
+        $employerStreet = trim($employer_parts[0]);
+        $employerTown = trim($employer_parts[1]);
 
         $data = [
             'annex_number' => $annex_number,
-            'annex_date' => date('d.m.Y.', strtotime($annex->annex_date)),
-            'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
             'first_name' => $first_name,
-            'name_of_one_parent' => $annex->contract->employee->name_of_one_parent,
-            'current_address' => $annex->contract->employee->current_address,
+            'name_of_one_parent' => $name_of_one_parent,
             'last_name' => $last_name,
             'jmbg' => $annex->contract->employee->jmbg,
-            'position' => $position,
             'street' => $street,
             'town' => $town,
-            'old_value' => $old_value,
-            'new_value' => $new_value,
-
+            'position' => $position,
+            'annex_date' => date('d.m.Y.', strtotime($annex->annex_date)),
+            'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
+            'annexPosition' => $annexPosition,
+            'annexGrossSalary' => $annexGrossSalary,
+            'annexWorkingAddress' => $annexWorkingAddress,
+            'annexEmployerAddress' => $annexEmployerAddress,
+            'annexWorkingHours' => $annexWorkingHours,
+            'current_address' => $current_address,
+            'employer' => $employer,
+            'position_description' => $position_description,
+            'pos' => $pos,
+            'employerStreet' => $employerStreet,
+            'employerTown' => $employerTown,
         ];
 
-
-        if ($annex->reason == 'Promene pozicije') {
-
-            $position = Position::where('name', $annex->new_value)->first();
-            $data['position'] = $position;
-            $position_description = '';
-            foreach (explode("\n", $position->description) as $line) {
-                $position_description .= "·&nbsp;" . trim($line) . "<br>";
-            }
-            $data['position_description'] = $position_description;
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.annex1', $data);
-            return $pdf->stream('aneks-promena-pozicije.pdf');
-        } elseif ($annex->reason == 'Povećanja bruto 1 zarade') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.annex2', $data);
-            return $pdf->stream('aneks-povećanje-bruto1-zarade.pdf');
-        } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
-            $pdf = app('dompdf.wrapper');
-            if ($new_value == 'Makedonska 12, Beograd') {
-                $pdf->loadView('contracts.pdf.annex.annex3a', $data);
-                return $pdf->stream('aneks-promena-adrese-obavljanja-posla-hybrid.pdf');
-            } else {
-                $pdf->loadView('contracts.pdf.annex.annex3', $data);
-                return $pdf->stream('aneks-promena-adrese-obavljanja-posla-remote.pdf');
-            }
-        } elseif ($annex->reason == 'Promene adrese poslodavca') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.annex4', $data);
-            return $pdf->stream('aneks-promena-adrese-poslodavca.pdf');
-        } elseif ($annex->reason == 'Promene radnih sati') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.annex5', $data);
-            return $pdf->stream('aneks-promena-radnih-sati.pdf');
-        }
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.annex.annex', $data);
+        return $pdf->stream('aneks-ugovora-o-radu.pdf');
     }
+
 
     public function notice_pdf(string $id)
     {
@@ -238,55 +263,96 @@ class AnnexController extends Controller
         $address_parts = explode(',', $annex->contract->employee->address_in_ID);
         $street = trim($address_parts[0]);
         $town = trim($address_parts[1]);
-
         $town = $this->changeTownDisplay($town);
-        $annex_date = new DateTime($annex->annex_date);
 
-        $net_salary = number_format($annex->net_salary, 2, ',', '.');
-        $gross_salary_1 = number_format($annex->gross_salary_1, 2, ',', '.');
-        $gross_salary_2 = number_format($annex->gross_salary_2, 2, ',', '.');
+        $first_name = $annex->contract->employee->first_name;
+        $last_name = $annex->contract->employee->last_name;
+        $name_of_one_parent = $annex->contract->employee->name_of_one_parent;
 
+
+        $reason = $annex->reason;
+        $reasons = explode(',', $reason);
+        $reasons = array_map('trim', $reasons);
+
+        $annexReason = '';
+
+        $employee = $annex->contract->employee;
+        $position  = $annex->contract->organization->position->where('id', $annex->contract->position)->first()->name;
+
+        foreach ($employee->contract as $contr) {
+
+            $reasonToSearch = 'Promena pozicije';
+            $latestAnnexPos = $contr->annexes()
+                ->where('deleted', 0)
+                ->where('annex_date', '<', $annex->annex_date) // Add this condition to filter annexes created before the current $annex
+                ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                ->orderByDesc('annex_date')
+                ->first();
+
+            if ($latestAnnexPos) {
+
+                if (in_array('Promena pozicije', $reasons)) {
+                    $position = $latestAnnexPos->old_position;
+                }
+
+                $position = $latestAnnexPos->position;
+            }
+        }
+
+        if (in_array('Povećanje bruto 1 zarade', $reasons)) {
+            $annexReason .= 'u pogledu povećanja bruto 1 zarade';
+        }
+
+        if (in_array('Promena pozicije', $reasons)) {
+            if ($annexReason !== '') {
+                $annexReason .= ', ';
+            }
+            $annexReason .= 'u promeni radne pozicije';
+        }
+
+        if (in_array('Promena adrese poslodavca', $reasons)) {
+            if ($annexReason !== '') {
+                $annexReason .= ', ';
+            }
+            $annexReason .= 'u promeni adrese poslodavca';
+        }
+
+        if (in_array('Promena radnih sati', $reasons)) {
+            if ($annexReason !== '') {
+                $annexReason .= ', ';
+            }
+            $annexReason .= 'u promeni radnih sati';
+        }
+
+        if (in_array('Promena adrese obavljanja posla', $reasons)) {
+            if ($annexReason !== '') {
+                $annexReason .= ', ';
+            }
+            $annexReason .= 'u promeni adrese obavljanja posla';
+        }
+
+        if (count($reasons) > 1) {
+            $lastCommaIndex = strrpos($annexReason, ',');
+            $annexReason = substr_replace($annexReason, ' i', $lastCommaIndex, 1);
+        }
 
         $data = [
-            'annex_date' => date('d.m.Y.', strtotime($annex->annex_date)),
-            'position'  => $annex->contract->organization->position->where('id', $annex->contract->position)->first()->name,
-            'employee_number'  => $annex->employee_number,
-            'type_of_contract'  => $annex->type_of_contract,
-            'contract_number'  => $annex->contract_number,
-            'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
-            'net_salary'  => $net_salary,
-            'gross_salary_1' => $gross_salary_1,
-            'gross_salary_2'  => $gross_salary_2,
-            'first_name' => $annex->contract->employee->first_name,
-            'name_of_one_parent' => $annex->contract->employee->name_of_one_parent,
-            'last_name' => $annex->contract->employee->last_name,
+
+            'first_name' => $first_name,
+            'name_of_one_parent' => $name_of_one_parent,
+            'last_name' => $last_name,
             'jmbg' => $annex->contract->employee->jmbg,
-            'current_address' => $annex->contract->employee->current_address,
             'street' => $street,
             'town' => $town,
+
+            'position'  => $position,
+            'annex_created_date' => date('d.m.Y.', strtotime($annex->annex_created_date)),
+            'annex_reason' => $annexReason,
         ];
 
 
-        if ($annex->reason == 'Promene pozicije') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.notice1', $data);
-            return $pdf->stream('obaveštenje-promena-pozicije.pdf');
-        } elseif ($annex->reason == 'Povećanja bruto 1 zarade') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.notice2', $data);
-            return $pdf->stream('obaveštenje-povećanje-bruto1-zarade.pdf');
-        } elseif ($annex->reason == 'Promene adrese obavljanja posla') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.notice3', $data);
-            return $pdf->stream('obaveštenje-promena-adrese-obavljanja-posla.pdf');
-        } elseif ($annex->reason == 'Promene adrese poslodavca') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.notice4', $data);
-            return $pdf->stream('obaveštenje-promena-adrese-poslodavca.pdf');
-        } elseif ($annex->reason == 'Promene radnih sati') {
-            $pdf = app('dompdf.wrapper');
-            $pdf->loadView('contracts.pdf.annex.notice5', $data);
-            return $pdf->stream('obaveštenje-promena-radnih-sati.pdf');
-        }
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('contracts.pdf.annex.notice', $data);
+        return $pdf->stream('obaveštenje-o-ponudi-za-zaključenje-aneksa-ugovora-o-radu.pdf');
     }
 }

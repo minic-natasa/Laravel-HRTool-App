@@ -53,7 +53,7 @@
             32/2013, 75/2014, 13/2017 - odluka US, 113/2017 i 95/2018 - autentično tumačenje, u daljem
             tekstu: Zakon), direktor Privrednog društva <strong>“SELLERS ALLEY”</strong> d.o.o. Beograd, ul. Makedonska
             12, MB: 21647900, PIB: 112312839 (u daljem tekstu: Poslodavac), dostavlja zaposlenom
-            <strong>{{$first_name}} {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG: <strong>{{$jmbg}}</strong> koji radi na poslovima <strong>{{$position}}</strong> (u daljem tekstu:
+            <strong>{{$first_name}} ({{$name_of_one_parent}}) {{$last_name}}</strong> iz <strong>{{$town}}</strong> ul. <strong>{{$street}}</strong>, JMBG: <strong>{{$jmbg}}</strong> koji radi na poslovima <strong>{{$position}}</strong> (u daljem tekstu:
             Zaposleni), sledeće:
         </p><br><br>
     </div>
@@ -63,8 +63,7 @@
 
     <div class="contract-section">
         <p>Da su se stekli uslovi iz člana 171. i 172. Zakona o radu u cilju izmene ugovorenih uslova rada (u
-            daljem tekstu: aneks ugovora) te da poslodavac zaposlenom nudi aneks ugovora u <strong>promeni
-                radne pozicije.</strong></p><br>
+            daljem tekstu: aneks ugovora) te da poslodavac zaposlenom nudi aneks ugovora <strong>{{$annex_reason}}.</strong></p><br>
     </div>
 
     <div class="contract-section">
