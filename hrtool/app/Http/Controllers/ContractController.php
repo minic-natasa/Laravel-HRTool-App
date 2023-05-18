@@ -102,7 +102,12 @@ class ContractController extends Controller
 
         $contract->save();
 
-        return redirect('/contracts')->with('success', 'Contract created successfully!');
+        $notification = array(
+            'message' => 'Contract created successfully!',
+            'alert-type' => 'success'
+        );
+
+        return  redirect()->route('contracts.index')->with($notification);
     }
 
     /**
@@ -124,12 +129,21 @@ class ContractController extends Controller
 
         // Check if there are related annexes
         if ($activeAnnexes->isNotEmpty()) {
-            // If there are deleted annexes, delete the contract
-            return redirect()->route('contracts.index')->with('error', 'You cannot delete a contract with annexes.');
+            $notification = [
+                'message' => 'You cannot delete a contract with annexes!',
+                'alert-type' => 'error'
+            ];
+            return redirect()->back()->with($notification);
         } else {
             $contract->status = 'inactive';
             $contract->save();
-            return redirect()->route('contracts.index')->with('success', 'Contract deleted successfully');
+
+            $notification = array(
+                'message' => 'Contract deleted successfully!',
+                'alert-type' => 'success'
+            );
+
+            return redirect()->route('contracts.index')->with($notification);
         }
     }
 
@@ -193,13 +207,13 @@ class ContractController extends Controller
 
         $net_salary = number_format($contract->net_salary, 2, ',', '.');
         $gross_salary_1 = number_format($contract->gross_salary_1, 2, ',', '.');
-        
+
         $position_description = '';
         foreach (explode("\n", $contract->organization->position->where('id', $contract->position)->first()->description) as $line) {
             $position_description .= "·&nbsp;" . trim($line) . "<br>";
         }
         $data['position_description'] = $position_description;
-        
+
         $data = [
             'start_date' => date('d.m.Y', strtotime($contract->start_date)),
             'first_day_on_job' => date('d.m.Y.', strtotime($contract->first_day_on_job)),

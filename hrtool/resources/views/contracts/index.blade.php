@@ -143,14 +143,14 @@
 
 
                                                     <td>
-                                                       
-                                                                <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
-                                                                    <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
-                                                                </form>
-                                                           
+
+                                                        <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                            <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                                        </form>
+
                                                     </td>
 
 
@@ -196,7 +196,7 @@
                 }
 
                 if (hasActiveAnnexes) {
-                    alert('You cannot delete contract with annexes.');
+                    toastr.error('You cannot delete a contract with annexes!');
                 } else {
                     if (confirm('Are you sure you want to delete this contract?')) {
                         // Submit the form to delete the contract
@@ -205,5 +205,6 @@
                 }
             }
         </script>
+
 
         @endsection

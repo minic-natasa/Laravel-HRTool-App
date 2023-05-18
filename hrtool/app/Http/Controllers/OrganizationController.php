@@ -64,9 +64,13 @@ class OrganizationController extends Controller
         ]);
         $organization->save();
 
+        $notification = array(
+            'message' => 'Organization created successfully!',
+            'alert-type' => 'success'
+        );
+
         // Redirect to the index page with a success message
-        return redirect()->route('organizations.index')
-            ->with('success', 'Organization created successfully.');
+        return redirect()->route('organizations.index')->with($notification);
     }
 
     /**
@@ -115,7 +119,12 @@ class OrganizationController extends Controller
 
         $organization->save();
 
-        return redirect()->route('organizations.organization-card', $organization->id)->with('success', 'Organization updated successfully!');
+        $notification = array(
+            'message' => 'Organization updated successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('organizations.organization-card', $organization->id)->with($notification);
     }
 
     /**
@@ -125,7 +134,12 @@ class OrganizationController extends Controller
     {
         $organization->delete();
 
-        return redirect()->route('organizations.index')->with('success', 'Organization deleted successfully!');
+        $notification = array(
+            'message' => 'Organization deleted successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('organizations.index')->with($notification);
     }
 
     public function showForm(string $organizationId)

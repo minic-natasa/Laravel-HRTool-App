@@ -54,8 +54,12 @@ class PositionController extends Controller
         ]);
         $position->save();
 
-        return redirect()->route('positions.index')
-            ->with('success', 'Position created successfully.');
+        $notification = array(
+            'message' => 'Position created successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('positions.index')->with($notification);
     }
 
     /**
@@ -99,7 +103,12 @@ class PositionController extends Controller
 
         $position->save();
 
-        return redirect()->route('positions.index')->with('success', 'Position updated successfully!');
+        $notification = array(
+            'message' => 'Position updated successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('positions.index')->with($notification);
     }
 
     /**
@@ -110,7 +119,12 @@ class PositionController extends Controller
         $position = Position::find($id);
         $position->delete();
 
-        return redirect()->route('positions.index')->with('success', 'Position deleted successfully!');
+        $notification = array(
+            'message' => 'Position deleted successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('positions.index')->with($notification);
     }
 
     public function getByOrganization(Request $request)

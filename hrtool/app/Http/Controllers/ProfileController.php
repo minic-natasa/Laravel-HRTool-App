@@ -31,13 +31,13 @@ class ProfileController extends Controller
 
     public function show(Request $request): View
     {
-            $user = $request->user();
-            $familyMembers = $user->familyMembers()->get();
+        $user = $request->user();
+        $familyMembers = $user->familyMembers()->get();
 
-            return view('profile.index', [
-                'user' => $user,
-                'familyMembers' => $familyMembers,
-            ]);
+        return view('profile.index', [
+            'user' => $user,
+            'familyMembers' => $familyMembers,
+        ]);
     }
 
     /**
@@ -95,18 +95,22 @@ class ProfileController extends Controller
         $user->ID_number = $request->input('ID_number');
         $user->passport_number = $request->input('passport_number');
 
-       // if($request->file('profile_picture')){
-       //         $file = $request->file('profile_picture');
-       //        $filename = date('YmdHi').$file->getClientOriginalName();
-       //         $file->move(public_path('upload/admin_images'), $filename);
-       //         $user['profile_picture'] = $filename;
-       // }
+        // if($request->file('profile_picture')){
+        //         $file = $request->file('profile_picture');
+        //        $filename = date('YmdHi').$file->getClientOriginalName();
+        //         $file->move(public_path('upload/admin_images'), $filename);
+        //         $user['profile_picture'] = $filename;
+        // }
 
         $user->save();
 
-        return redirect('/profile')->with('success', 'Profile updated successfully!');
-    }
+        $notification = array(
+            'message' => 'Profile updated successfully!',
+            'alert-type' => 'success'
+        );
 
+        return redirect('/profile')->with($notification);
+    }
 
     /**
      * Delete the user's account.
@@ -137,11 +141,11 @@ class ProfileController extends Controller
         error_log('Request Data: ' . print_r($request->all(), true));
 
         $members = $request->input('familyMembers'); // Get the array of family members
-    
+
         // Check if $members is not null and not empty
         if (!is_null($members) && count($members) > 0) {
             $user = Auth::user();
-    
+
             foreach ($members as $member) {
                 $familyMember = new Family_Member();
                 $familyMember->relationship = $member['relationship'];
@@ -151,7 +155,7 @@ class ProfileController extends Controller
                 $familyMember->user_id = $user->id;
                 $familyMember->save();
             }
-    
+
             return response()->json(['success' => true]);
         } else {
             return response()->json(['error' => 'No family member found in the request.'], 400);
@@ -195,7 +199,4 @@ class ProfileController extends Controller
 
         return response()->json(['message' => 'Family member deleted successfully']);
     }
-
-
-
 }

@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <title>Pelican Cement - HRTool</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesdesign" name="author" />
+    <meta content="Admin & Dashboard Template" name="description" />
+    <meta content="Pelican Cement" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
 
@@ -29,6 +29,9 @@
     <!-- App Css-->
     <link href="{{asset('assets/css/app.min.css')}}" id="app-style" rel="stylesheet" type="text/css" />
 
+    <!-- Toastr Css -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+
 </head>
 
 <body data-topbar="dark">
@@ -39,7 +42,7 @@
     <div id="layout-wrapper">
 
 
- 
+
         @include('admin.components.header');
 
         @include('admin.components.sidebar');
@@ -53,13 +56,13 @@
             @yield('admin')
 
             @include('admin.components.footer')
-    
+
         </div>
         <!-- end main content-->
 
     </div>
     <!-- END layout-wrapper -->
- 
+
 
 
     <!-- JAVASCRIPT -->
@@ -89,6 +92,49 @@
 
     <!-- App js -->
     <script src="{{asset('assets/js/app.js')}}"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+    @if(Session::has('message'))
+    <script>
+        var type = "{{ Session::get('alert-type','info') }}";
+        switch (type) {
+            case 'info':
+                toastr.options = {
+                    "closeButton": true,
+                    "positionClass": "toast-bottom-right",
+                }
+                toastr.info(" {{ Session::get('message') }} ");
+                break;
+
+            case 'success':
+                toastr.options = {
+                    "closeButton": true,
+                    "positionClass": "toast-bottom-right",
+
+                }
+                toastr.success(" {{ Session::get('message') }} ");
+                break;
+
+            case 'warning':
+                toastr.options = {
+                    "closeButton": true,
+                    "positionClass": "toast-bottom-right",
+                }
+                toastr.warning(" {{ Session::get('message') }} ");
+                break;
+
+            case 'error':
+                toastr.options = {
+                    "closeButton": true,
+                    "positionClass": "toast-bottom-right",
+                }
+                toastr.error(" {{ Session::get('message') }} ");
+                break;
+        }
+    </script>
+    @endif
 </body>
 
 </html>

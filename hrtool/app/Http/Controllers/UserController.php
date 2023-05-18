@@ -96,10 +96,14 @@ class UserController extends Controller
             $user['profile_picture'] = $filename;
         }
 
-
         $user->save();
 
-        return redirect('/users')->with('success', 'User created successfully!');
+        $notification = array(
+            'message' => 'User created successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('users.index')->with($notification);
     }
 
     public function edit(string $id)
@@ -172,7 +176,12 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect('/users')->with('success', 'User updated successfully!');
+        $notification = array(
+            'message' => 'User updated successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('users.index')->with($notification);
     }
 
 
@@ -183,6 +192,11 @@ class UserController extends Controller
         $user = User::find($id);
         $user->delete();
 
-        return redirect('/users')->with('success', 'User deleted successfully!');
+        $notification = array(
+            'message' => 'User deleted successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('users.index')->with($notification);
     }
 }

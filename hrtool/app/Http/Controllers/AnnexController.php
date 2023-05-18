@@ -83,7 +83,13 @@ class AnnexController extends Controller
         $annex->address_of_work = $request->address_of_work;
         $annex->save();
         $contract = Contract::find($request->input('contract_id'));
-        return redirect()->route('contracts.profile', ['id' => $contract->employee])->with('success', 'Annex created successfully!');
+
+        $notification = array(
+            'message' => 'Annex created successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('contracts.profile', ['id' => $contract->employee])->with($notification);
     }
 
     public function getAnnexesByContract($contract_id)
@@ -103,7 +109,13 @@ class AnnexController extends Controller
         $annex = Annex::find($id);
         $annex->deleted = true;
         $annex->save();
-        return redirect()->back()->with('success', 'Annex deleted successfully!');
+
+        $notification = array(
+            'message' => 'Annex deleted successfully!',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
     }
 
     public function changeTownDisplay($t)
