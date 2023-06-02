@@ -36,8 +36,9 @@
             <x-footer />
         </div>
 
+ <!--
         <div class="fixed top-10 right-10">
-            <!--
+           
             <x-button
                 type="button"
                 icon-only
@@ -57,8 +58,9 @@
                     class="w-6 h-6"
                 />
             </x-button>
-    -->
+    
         </div>
+        -->
     </div>
 </body>
 </html>

@@ -1,5 +1,11 @@
 @extends('admin.master')
 @section('admin')
+
+
+@section('title')
+Employee Card | HRTool
+@endsection
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-CETL8oiIgKF/U9rPmWW0ylQzBm4/WwL4n4eIvM+d2M8QyyiU1X9cSg6U5WwnU8PKnLpV7cTWqNX3uV7f8DxhGQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
@@ -31,16 +37,20 @@
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('users.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">{{ $user->first_name }} {{ $user->last_name }}</h4>
+                        <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px; margin-right:10px">{{ $user->first_name }} {{ $user->last_name }}</h4>
                     </div>
+
                     <div class="d-flex align-items-center">
+                        @if(Auth::user()->can('employee.edit'))
                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px; margin-right:5px;"><i class="fas fa-pencil-alt" title="Edit"></i> Edit</a>
+                        @endif
+                        @if(Auth::user()->can('employee.delete'))
                         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-outline-danger waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="return confirm('Are you sure you want to delete this user?')"><i class="fa fa-trash" title="Delete"></i> Delete</button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -137,22 +147,7 @@
                     <p class="card-text">{{ $user->address_in_ID }}</p>
 
                     <h5 class="card-title">Current Address</h5>
-
-                    <p class="card-text">
-                        @php
-                        foreach($user->contract()->where('status', 'active')->get() as $contr){
-                        $annexLocation = $contr->annexes()->where('reason', 'Promene adrese obavljanja posla')->where('deleted', false)->orderByDesc('created_at')->first();
-                        $annexAddress = $annexLocation ? $annexLocation->new_value : '';
-                        $address = '';
-                        if ($annexLocation) {
-                        $address = $annexAddress;
-                        echo '<span class="changed" title="Address Changed with Annex">'.$address.'</span>';
-                        } else {
-                        echo $user->current_address;
-                        }
-                        }
-                        @endphp
-                    </p>
+                    <p class="card-text">{{ $user->current_address }}</p>
 
                     <h5 class="card-title">Slava</h5>
                     <p class="card-text">{{ $user->slava }}</p>
@@ -169,52 +164,60 @@
                     <h5 class="card-title">Position</h5>
 
                     <p class="card-text" style="font-size: 13px;">
-                            @php
-                            $activeContracts = $user->contract()->where('status', 'active')->get();
-                            if ($activeContracts->count() > 0) {
-                            foreach ($activeContracts as $contr) {
+                        @php
+                        $activeContracts = $user->contract()->where('status', 'active')->get();
+                        if ($activeContracts->count() > 0) {
+                        foreach ($activeContracts as $contr) {
 
-                            $reasonToSearch = 'Promena pozicije';
+                        $reasonToSearch = 'Promena pozicije';
 
-                            $latestAnnexPos = $contr->annexes()
-                            ->where('deleted', 0)
-                            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
-                            ->orderByDesc('annex_date')
-                            ->first();
+                        $latestAnnexPos = $contr->annexes()
+                        ->where('deleted', 0)
+                        ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                        ->orderByDesc('annex_date')
+                        ->first();
 
-                            $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
-                            $currentOrganization = $contr->organization;
-                            $annexOrganization = '';
-                            $annexPosition = '';
-                            $currentPosition = '';
+                        $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
+                        $currentOrganization = $contr->organization;
+                        $annexOrganization = '';
+                        $annexPosition = '';
+                        $currentPosition = '';
 
-                            foreach ($contr->organization->position as $pos) {
-                            if ($pos->id == $contr->position) {
-                            $currentPosition = $pos;
-                            $currentPositionName = $currentPosition->name;
-                            }
-                            }
+                        foreach ($contr->organization->position as $pos) {
+                        if ($pos->id == $contr->position) {
+                        $currentPosition = $pos;
+                        $currentPositionName = $currentPosition->name;
+                        }
+                        }
 
-                            if ($latestAnnexPos) {
-                            foreach ($organizations as $org) {
-                            foreach ($org->position as $pos) {
-                            if ($pos->name == $annexPositionName) {
-                            $annexOrganization = $pos->organization;
-                            $annexPosition = $pos;
-                            break;
-                            }
-                            }
-                            }
-                            echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
-                            } else {
-                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
-                            }
-                            echo "<br>";
-                            }
-                            } else {
-                            echo "No active contract found";
-                            }
-                            @endphp
+                        if ($latestAnnexPos) {
+                        foreach ($organizations as $org) {
+                        foreach ($org->position as $pos) {
+                        if ($pos->name == $annexPositionName) {
+                        $annexOrganization = $pos->organization;
+                        $annexPosition = $pos;
+                        break;
+                        }
+                        }
+                        }
+                        if (Auth::user()->can('position.profile')) {
+                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                        } else {
+                        echo $annexPosition->name;
+                        }
+                        } else {
+                        if (Auth::user()->can('position.profile')) {
+                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                        } else {
+                        echo $currentPositionName;
+                        }
+                        echo "<br>";
+                        }
+                        }
+                        } else {
+                        echo "No active contract found";
+                        }
+                        @endphp
                     </p>
 
                     <style>
@@ -230,8 +233,13 @@
                         }
                     </style>
 
-
+                    @if($user->contract()->where('status', 'active')->exists())
                     <a href="{{ route('contracts.profile', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Contracts</a>
+                    @else
+                    <a href="{{ route('contracts.create', $user->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-file-contract" title="Contracts"></i> Create Contract</a>
+
+                    @endif
+
                 </div>
 
 
@@ -279,9 +287,14 @@
                     <h5 class="card-title" style="font-size: 13px; margin-bottom: 3px; ">Emergency Contact Number</h5>
                     <p class="card-text" style="font-size: 13px;">{{ $user->emergency_contact_number }}</p>
 
+                    @if($user->familyMembers()->exists())
+                    @if(Auth::User()->can('fam-member.profile'))
                     <a href="javascript:void(0)" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;" onclick="openFamilyMembersPopup()">
                         <i class="fas fa-user-friends"></i></i> See Family Members
                     </a>
+                    @endif
+                    @endif
+
 
 
                 </div>

@@ -3,25 +3,25 @@
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="/admin" class="logo logo-dark">
+                <a href="/homepage" class="logo logo-dark">
                     <span class="logo-sm">
-
-                        <img src="{{asset('assets/images/logo.png')}}" alt="logo-sm" height="22">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('assets/images/logo_blue.png')}}" alt="logo-dark" height="40">
+                        <img src="{{ asset('assets/images/logo_blue.png') }}" alt="logo-dark" height="40">
                     </span>
                 </a>
 
-                <a href="/admin" class="logo logo-light">
+                <a href="/homepage" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{asset('assets/images/logo.png')}}" alt="logo-sm-light" height="22">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="logo-sm-light" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('assets/images/logo_white.png')}}" alt="logo-light" height="40">
+                        <img src="{{ asset('assets/images/logo_white.png') }}" alt="logo-light" height="40">
                     </span>
                 </a>
             </div>
+
 
             <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
                 <i class="ri-menu-2-line align-middle"></i>

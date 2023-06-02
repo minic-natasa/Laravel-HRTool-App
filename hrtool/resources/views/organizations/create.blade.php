@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Create New Organization | HRTool
+@endsection
+
 <div class="page-content">
     <div class="container-fluid">
 
@@ -9,13 +13,18 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('organizations.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW ORGANIZATION</h4>
                     </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                            <li class="breadcrumb-item">
+                                @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                <a href="{{ route('admin.index') }}">HRTool</a>
+                                @else
+                                <a href="/homepage">HRTool</a>
+                                @endif
+                            </li>
                             <li class="breadcrumb-item"><a href="{{ route('organizations.index') }}">Organizations</a>
                             <li class="breadcrumb-item active">Create New Organization</li>
                         </ol>
@@ -40,7 +49,7 @@
                             </div>
 
                         </div>
- <!--
+                        <!--
                         <div class="form-group row">
                             <label for="manager_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Manager:</label>
                             <div class="col-md-6">
@@ -52,20 +61,20 @@
                             </select>
                             </div>
                         </div>
-
+                    -->
 
                         <div class="form-group row">
                             <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization:</label>
                             <div class="col-md-6">
-                            <select class="form-control" id="parent_id" name="parent_id">
-                                <option value="">-- Select parent organization --</option>
-                                @foreach ($organizations as $org)
-                                <option value="{{ $org->id }}">{{ $org->name }}</option>
-                                @endforeach
-                            </select>
+                                <select class="form-control" id="parent_id" name="parent_id">
+                                    <option value="">-- Select parent organization --</option>
+                                    @foreach ($organizations as $org)
+                                    <option value="{{ $org->id }}">{{ $org->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
--->
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
@@ -78,8 +87,7 @@
                 </div>
             </div>
         </div>
-
-
     </div>
-    <!-- End Page-content -->
-    @endsection
+</div>
+<!-- End Page-content -->
+@endsection

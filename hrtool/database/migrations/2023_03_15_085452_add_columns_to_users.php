@@ -14,25 +14,27 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('manager');
-            $table->string('name_of_one_parent');
+            $table->string('name_of_one_parent')->nullable();
             $table->date('birth_date')->nullable();
-            $table->string('address_in_ID');
-            $table->string('current_address');
-            $table->string('slava');
-            $table->string('private_email');
-            $table->string('mobile');
-            $table->string('bank_account_number');
-            $table->string('emergency_contact_name');
-            $table->string('emergency_contact_number');
+            $table->string('address_in_ID')->nullable();
+            $table->string('current_address')->nullable();
+            $table->string('slava')->nullable();
+            $table->string('private_email')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('bank_account_number')->nullable();
+            $table->string('emergency_contact_name')->nullable();
+            $table->string('emergency_contact_number')->nullable();
             //$table->unsignedBigInteger('manager_id')->nullable();
             //$table->foreign('manager_id')->references('id')->on('users');
-            $table->bigInteger('employee_number')->unique();
-            $table->bigInteger('jmbg')->unique();
-            $table->bigInteger('ID_number')->unique();
-            $table->bigInteger('passport_number')->unique();
-            $table->string('professional_qualifications_level');
-            $table->string('profession');
+            $table->bigInteger('employee_number')->unique()->nullable();
+            $table->bigInteger('jmbg')->unique()->nullable();
+            $table->bigInteger('ID_number')->unique()->nullable();
+            $table->bigInteger('passport_number')->unique()->nullable();
+            $table->string('professional_qualifications_level')->nullable();
+            $table->string('profession')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->string('profile_picture')->nullable(); 
 
             /*
             DB::table('users')
@@ -73,6 +75,7 @@ return new class extends Migration
                 $table->dropColumn('jmbg');
                 $table->dropColumn('ID_number');
                 $table->dropColumn('passport_number');
+                $table->dropColumn('status');
             });
         }
     }

@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Contract Card | HRTool
+@endsection
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <head>
@@ -18,19 +22,14 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        @if(Auth::user()->id == $user_id)
-                        <a href="{{route('profile.show')}}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        @else
-                        <a href="{{route('users.profile-card', ['id' => $user_id])}}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
-                        @endif
-
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CONTRACTS</h4>
                     </div>
 
+                    @if(Auth::User()->can('contract.create'))
                     <div class="d-flex align-items-center">
                         <a href="{{route('contracts.create', ['id' => $user_id])}}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Create"></i> Create New Contract</a>
                     </div>
-
+                    @endif
                 </div>
             </div>
         </div>
@@ -52,7 +51,21 @@
                                 </div>
                                 <!-- Employee Details -->
                                 <div class="col">
-                                    <h2 class="font-size-14" style="margin-bottom: 3px; letter-spacing: 0.6px; color: black;"><strong><a href="{{ route('users.profile-card', $employee->id) }}" style="color: black;">{{$employee->first_name}} {{$employee->last_name}}</a></strong></h2>
+                                    <h2 class="font-size-14" style="margin-bottom: 3px; letter-spacing: 0.6px; color: black;">
+                                        <strong>
+                                            @if(Auth::user()->id == $employee->id)
+                                            <a href="/profile" style="color: black;">
+                                                {{$employee->first_name}} {{$employee->last_name}}
+                                            </a>
+                                            @elseif(Auth::user()->hasRole('admin_hr'))
+                                            <a href="{{ route('users.profile-card', $employee->id) }}" style="color: black;">
+                                                {{$employee->first_name}} {{$employee->last_name}}
+                                            </a>
+                                            @else
+                                            {{$employee->first_name}} {{$employee->last_name}}
+                                            @endif
+                                        </strong>
+                                    </h2>
                                     <p class="mb-0"><small>Professional Qualifications Level: {{$employee->professional_qualifications_level}} - {{$employee->profession}}</small></p>
                                 </div>
 
@@ -191,13 +204,19 @@
                                                             }
                                                             }
                                                             }
+                                                            if (Auth::user()->can('organization.profile')) {
                                                             echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
                                                             } else {
-                                                            echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
+                                                            echo $annexOrganization->name;
                                                             }
-
+                                                            } else {
+                                                            if (Auth::user()->can('organization.profile')) {
+                                                            echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
+                                                            } else {
+                                                            echo $currentOrganization->name;
+                                                            }
+                                                            }
                                                             @endphp
-
                                                         </td>
 
                                                         <td class="text-center">
@@ -212,10 +231,17 @@
                                                             }
 
                                                             if ($latestAnnexPos) {
-
-                                                            echo '<span title="Position Changed with Annex"><a href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                                            if (Auth::user()->can('position.profile')) {
+                                                            echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
                                                             } else {
-                                                            echo '<a href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                            echo $annexPosition->name;
+                                                            }
+                                                            } else {
+                                                            if (Auth::user()->can('position.profile')) {
+                                                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                                            } else {
+                                                            echo $currentPositionName;
+                                                            }
                                                             }
                                                             @endphp
                                                         </td>
@@ -259,6 +285,7 @@
                                                 </tbody>
                                             </table>
 
+                                            @if(Auth::User()->can('contract.doc1') || Auth::User()->can('contract.print-doc2') || Auth::User()->can('contract.print-doc3'))
                                             <!-- Documents button -->
                                             <div class="float-end">
                                                 <div class="btn-group dropup" role="group">
@@ -266,21 +293,28 @@
                                                         <i class="fas fa-file"></i> Documents
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                        @if(Auth::User()->can('contract.print-doc1'))
                                                         <li><a class="dropdown-item" href="{{ route('contracts.mob', $contract->id) }}" target="_blank">Obaveštenje o mobingu</a></li>
+                                                        @endif
+                                                        @if(Auth::User()->can('contract.print-doc2'))
                                                         <li><a class="dropdown-item" href="{{ route('contracts.uzb', $contract->id)}}" target="_blank">Obaveštenje o Zakonu o uzbunjivačima</a></li>
+                                                        @endif
+                                                        @if(Auth::User()->can('contract.print-doc3'))
                                                         <li><a class="dropdown-item" href="{{ route('contracts.nda', $contract->id)}}" target="_blank">Sporazum o poverljivosti</a></li>
-                                                        <!--<li><a class="dropdown-item" href="{{ route('contracts.odm', $contract->id)}}" target="_blank">Zahtev za korišćenje godišnjeg odmora</a></li>
-                                                     <li><a class="dropdown-item" href="{{ route('contracts.rev', $contract->id)}}">Revers</a></li> -->
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
 
+                                            @if(Auth::User()->can('contract.print'))
                                             <!-- Print button -->
                                             <div class="d-print-none">
                                                 <div class="float-end">
                                                     <a href="{{ route('contracts.pdf', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px" target="_blank"><i class="fa fa-print"></i> Print</a>
                                                 </div>
                                             </div>
+                                            @endif
 
                                             @if(count($contract->annexes->where('deleted', false)) > 0)
                                             <div class="d-print-none">
@@ -291,13 +325,16 @@
                                                 </div>
                                             </div>
                                             @else
+                                            @if(Auth::User()->can('annex.create'))
                                             <div class="d-print-none">
                                                 <div class="float-end">
                                                     <a href="{{ route('annexes.create', $contract->id) }}" class="btn btn-primary waves-effect waves-light" style="margin-right:10px"><i class="fas fa-file-alt"></i></i> Create New Annex</a>
                                                 </div>
                                             </div>
                                             @endif
+                                            @endif
 
+                                            @if(Auth::User()->can('contract.delete'))
                                             <!-- Delete Button -->
                                             <div class="d-print-none">
                                                 <div class="float-end">
@@ -309,19 +346,21 @@
                                                     </form>
                                                 </div>
                                             </div>
-
+                                            @endif
                                             <br>
 
                                             <div class="table-responsive annexes-table" id="annexes-table-{{ $contract->id }}" style="display: none; padding-top: 5vh; width: max-content;">
                                                 <table class="table mb-0">
 
 
+                                                    @if(Auth::User()->can('annex.create'))
                                                     <!-- Create New Annex button -->
                                                     <div class="d-print-none">
                                                         <div>
                                                             <a href="{{ route('annexes.create', $contract->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="margin-right:10px; margin-bottom:3vh; margin-top:1vh"><i class="fas fa-file-alt"></i></i> Create New Annex</a>
                                                         </div>
                                                     </div>
+                                                    @endif
 
                                                     <thead>
                                                         <tr>
@@ -331,8 +370,12 @@
                                                             <th>New Value</th>
                                                             <th>Created At</th>
                                                             <th>Start Date</th>
+                                                            @if(Auth::User()->can('annex.print') || Auth::User()->can('annex.print-notice'))
                                                             <th>Print</th>
+                                                            @endif
+                                                            @if(Auth::User()->can('annex.delete'))
                                                             <th>Delete</th>
+                                                            @endif
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -399,6 +442,7 @@
                                                             <td>{{ date('d.m.Y.', strtotime($annex->annex_created_date)) }}</td>
                                                             <td>{{ date('d.m.Y.', strtotime($annex->annex_date)) }}</td>
 
+                                                            @if(Auth::User()->can('annex.print') || Auth::User()->can('annex.print-notice'))
                                                             <td>
                                                                 <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
                                                                     <div class="btn-group" role="group">
@@ -407,12 +451,18 @@
                                                                         </button>
 
                                                                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                                            @if(Auth::User()->can('annex.print'))
                                                                             <a href="{{ route('annexes.annex-pdf', ['id' => $annex->id, 'annex_number' => $count]) }}" class="btn btn-primary waves-effect waves-light" style="margin-left:10px; margin-right:5px" target="_blank" id="printAnnexBtn"> Annex</a>
+                                                                            @endif
+                                                                            @if(Auth::User()->can('annex.print-notice'))
                                                                             <a href="{{ route('annexes.notice-pdf', $annex->id) }}" class="btn btn-primary waves-effect waves-light" target="_blank" id="printNoticeBtn">Notice</a>
+                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </td>
+                                                            @endif
+                                                            @if(Auth::User()->can('annex.delete'))
                                                             <td>
                                                                 <form action="{{ route('annexes.destroy', $annex->id) }}" method="POST">
                                                                     @csrf
@@ -420,6 +470,7 @@
                                                                     <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this annex?')"><i class="fa fa-trash" title="Delete"></i></button>
                                                                 </form>
                                                             </td>
+                                                            @endif
                                                         </tr>
                                                         @endif
                                                         @endforeach

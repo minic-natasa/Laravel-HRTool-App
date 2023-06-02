@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+My Profile | HRTool
+@endsection
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -150,11 +154,19 @@
                             }
                             }
                             }
+                            if (Auth::user()->can('position.profile')) {
                             echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
                             } else {
-                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                            echo $annexPosition->name;
                             }
-                            echo "<br>"; // Add line break after each position
+                            } else {
+                            if (Auth::user()->can('position.profile')) {
+                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                            } else {
+                            echo $currentPositionName;
+                            }
+                            echo "<br>";
+                            }
                             }
                             } else {
                             echo "No active contract found";
@@ -176,8 +188,11 @@
                         }
                     </style>
 
-
-                    <a href="{{ route('contracts.profile', Auth::User()->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;"><i class="fas fa-file-contract" title="Contract"></i> Contracts</a>
+                    @if(Auth::user()->contract()->where('status', 'active')->exists())
+                    <a href="{{ route('contracts.profile', Auth::user()->id) }}" class="btn btn-outline-primary waves-effect waves-light" style="padding: 7px 13px; font-size: 14px;">
+                        <i class="fas fa-file-contract" title="Contract"></i> Contracts
+                    </a>
+                    @endif
                 </div>
 
                 <div class="card card-body flex-item" style="flex: 1; height: 17vh; overflow-y: auto;">
@@ -202,8 +217,15 @@
                             <i class="fas fa-user-friends"></i> Family Members
                         </button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1" style="font-size: 12px;">
+
+                            @if(Auth::User()->can('fam-member.create'))
                             <li><a class="dropdown-item" onclick="openAddFamilyMembersPopup()" href="javascript:void(0)"><i class="fas fa-user-plus"></i> Add Family Members</a></li>
+                            @endif
+                            @if(Auth::User()->familyMembers()->exists())
+                            @if(Auth::User()->can('fam-member.profile'))
                             <li><a class="dropdown-item" onclick="openFamilyMembersPopup()" href="javascript:void(0)"><i class="fas fa-user-friends"></i> See Family Members</a></li>
+                            @endif
+                            @endif
                         </div>
                     </div>
 
@@ -241,9 +263,11 @@
                             </tbody>
 
                         </table>
+                        @if(Auth::User()->can('fam-member.create'))
                         <div class="text-right">
                             <button class="btn" style="background: #0a1832; border: 2px solid #0a1832; color: white; padding: 10px 20px; font-size: 14px; cursor: pointer" onclick="addNewMember()">Add New Member</button>
                         </div>
+                        @endif
                     </div>
                     <!--
                     <div class="modal-footer">

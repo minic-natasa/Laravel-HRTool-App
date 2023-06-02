@@ -53,7 +53,6 @@ class UserController extends Controller
             'slava' => 'string',
             'private_email' => 'email|unique:users,private_email',
             'mobile' => 'string|unique:users,mobile',
-            'bank_account_number' => 'string',
             'jmbg' => 'integer|unique:users,jmbg',
             'ID_number' => 'integer|unique:users,ID_number',
             'passport_number' => 'integer|unique:users,passport_number',
@@ -96,6 +95,10 @@ class UserController extends Controller
             $user['profile_picture'] = $filename;
         }
 
+        $user->role = 'user';
+        $user->assignRole('user');
+
+
         $user->save();
 
         $notification = array(
@@ -118,12 +121,9 @@ class UserController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $request->validate([
 
-            'first_name' => 'required',
-            'last_name' => 'required',
+        $request->validate([
             'name_of_one_parent' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
             'manager' => 'required',
             'bank_account_number' => 'required',
             'emergency_contact_name' => 'required',
@@ -140,17 +140,11 @@ class UserController extends Controller
             'passport_number' => 'required',
             'professional_qualifications_level'  => 'required',
             'profession'  => 'required',
-
-
         ]);
 
         $user = User::find($id);
-        $user->first_name = $request->input('first_name');
-        $user->last_name = $request->input('last_name');
         $user->name_of_one_parent = $request->input('name_of_one_parent');
-        $user->email = $request->input('email');
         $user->manager = $request->input('manager');
-        $user->password = bcrypt($request->input('password'));
         $user->bank_account_number = $request->input('bank_account_number');
         $user->emergency_contact_name = $request->input('emergency_contact_name');
         $user->emergency_contact_number = $request->input('emergency_contact_number');

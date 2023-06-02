@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Admin Dashboard | HRTool
+@endsection
+
 <div class="page-content">
     <div class="container-fluid">
 

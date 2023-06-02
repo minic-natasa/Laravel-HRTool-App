@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Position Card | HRTool
+@endsection
+
 <head>
 
     <style>
@@ -34,13 +38,23 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('positions.index') }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
-                        <h4 class="font-size-14" style="margin-left: 10px; margin-top:5px;">{{$position->name}}</h4>
+                        <h4 class="font-size-14" style="margin-left: 10px; margin-top:5px; margin-right:10px">{{$position->name}}</h4>
+                        @if(Auth::user()->can('position.edit'))
+                        <div class="d-flex align-items-center">
+                            <a href="{{route('positions.edit', $position->id)}}" class="btn btn-link" style="margin-right:5px"><i class="fas fa-pencil-alt" title="Edit"></i></a>
+                        </div>
+                        @endif
                     </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                            <li class="breadcrumb-item">
+                                @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                <a href="{{ route('admin.index') }}">HRTool</a>
+                                @else
+                                <a href="/homepage">HRTool</a>
+                                @endif
+                            </li>
                             <li class="breadcrumb-item"><a href="{{ route('positions.index') }}">Positions</a>
                             <li class="breadcrumb-item active">Position Card</li>
                         </ol>

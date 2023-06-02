@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Annex;
 use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Organization;
@@ -88,11 +89,46 @@ class OrganizationController extends Controller
         $managers = User::where('manager', 1)->get();
 
         // Get active managers for this organization
+        // Get active managers from contracts without annexes
+
+        $hasAnnex = Annex::whereIn('contract_id', function ($query) use ($organization) {
+            $query->select('id')
+                ->from('contracts')
+                ->where('organization_id', $organization->id)
+                ->where('status', 'active');
+        })
+            ->whereRaw("FIND_IN_SET('Promena pozicije', reason) > 0")
+            ->where('deleted', 0)
+            ->exists();
+
         $activeManagers = User::where('manager', 1)
             ->whereHas('contract', function ($query) use ($organization) {
                 $query->where('organization_id', $organization->id)
                     ->where('status', 'active');
             })->get();
+
+        // Get active managers from contracts with annexes
+        $annexActiveManagers = User::where('manager', 1)
+            ->whereIn('id', function ($query) use ($organization) {
+                $query->select('employee_number')
+                    ->from('contracts')
+                    ->where('organization_id', $organization->id)
+                    ->where('status', 'active')
+                    ->whereIn('id', function ($subQuery) {
+                        $subQuery->select('contract_id')
+                            ->from('annexes')
+                            ->whereRaw("FIND_IN_SET('Promena pozicije', reason) > 0")
+                            ->where('deleted', 0)
+                            ->orderByDesc('annex_date');
+                    });
+            })
+            ->get();
+
+        // Merge the active managers and annex active managers
+        $allActiveManagers = $activeManagers->concat($annexActiveManagers);
+
+        // Now you can use $allActiveManagers for your desired output
+
 
         // Retrieve all contracts from managers
         //$contracts = Contract::whereIn('user_id', $managers->pluck('id'))->get();
@@ -100,7 +136,7 @@ class OrganizationController extends Controller
         //Retrieve all contracts from DB
         $contracts = Contract::all();
 
-        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts', 'activeManagers'));
+        return view('organizations.edit', compact('organization', 'organizations', 'managers', 'contracts', 'allActiveManagers'));
     }
 
     /**

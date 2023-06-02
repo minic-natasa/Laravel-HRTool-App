@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Edit Position | HRTool
+@endsection
+
 <div class="page-content">
     <div class="container-fluid">
 
@@ -9,13 +13,18 @@
             <div class="col-12">
                 <div class="page-title-box d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('positions.index') }}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT POSITION</h4>
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                                <li class="breadcrumb-item">
+                                    @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                    <a href="{{ route('admin.index') }}">HRTool</a>
+                                    @else
+                                    <a href="/homepage">HRTool</a>
+                                    @endif
+                                </li>
                                 <li class="breadcrumb-item"><a href="{{ route('positions.index') }}">Positions</a>
                                 <li class="breadcrumb-item active">Edit Position</li>
                             </ol>
@@ -60,7 +69,7 @@
                             </div>
                         </div>
 
-        
+
                         <div class="form-group row">
                             <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
                             <div class="col-md-6">

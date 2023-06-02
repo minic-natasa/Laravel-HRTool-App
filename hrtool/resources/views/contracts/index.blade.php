@@ -1,10 +1,16 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Contracts | HRTool
+@endsection
+
 <head>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -21,7 +27,13 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                            <li class="breadcrumb-item">
+                                @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                <a href="{{ route('admin.index') }}">HRTool</a>
+                                @else
+                                <a href="/homepage">HRTool</a>
+                                @endif
+                            </li>
                             <li class="breadcrumb-item active">Contracts</li>
                         </ol>
                     </div>
@@ -31,180 +43,172 @@
         </div>
         <!-- end page title -->
 
-
         <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body" style="position: relative; overflow: auto; max-height: 59vh; width: 100%;">
+                        <div class="table-responsive">
+                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                <thead>
+                                    <tr style="text-align: center;">
+                                        <th>Contract Number</th>
+                                        <th>Profile Picture</th>
+                                        <th>Name</th>
+                                        <th>Organization</th>
+                                        <th>Position</th>
+                                        @if(Auth::user()->can('contract.delete'))
+                                        <th>Action</th>
+                                        @endif
+                                    </tr>
+                                </thead>
 
-            <div class="card">
-                <div class="card-body">
-                    <div id="scroll-vertical-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <tbody>
 
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6"></div>
-                            <div class="col-sm-12 col-md-6">
-                                <div id="scroll-vertical-datatable_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" style="margin-top: 10px;" placeholder="" aria-controls="scroll-vertical-datatable"></label></div>
-                            </div>
+                                    @foreach ($contracts as $contract)
+                                    @if ($contract->status == 'active')
+                                    <tr style="text-align: center;">
+                                        <th scope="row">{{ $contract->contract_number }}</th>
+                                        <td>
+                                            <img src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" alt="" class="avatar-sm rounded-circle">
+                                        </td>
+                                        <td>
+                                            @if(Auth::user()->can('employee.profile'))
+                                            <a href="{{ route('contracts.profile', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
+                                            @else
+                                            {{ $contract->employee->first_name}} {{ $contract->employee->last_name}}
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            @php
+                                            $reasonToSearch = 'Promena pozicije';
+                                            $latestAnnexPos = $contract->annexes()
+                                            ->where('deleted', 0)
+                                            ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
+                                            ->orderByDesc('annex_date')
+                                            ->first();
+
+                                            $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
+                                            $currentOrganization = $contract->organization;
+                                            $annexOrganization = '';
+                                            $annexPosition = '';
+                                            $currentPosition = '';
+
+                                            foreach ($contract->organization->position as $pos) {
+                                            if ($pos->id == $contract->position) {
+                                            $currentPosition = $pos;
+                                            $currentPositionName = $currentPosition->name;
+                                            }
+                                            }
+
+                                            if ($latestAnnexPos) {
+                                            foreach ($organizations as $org) {
+                                            foreach ($org->position as $pos) {
+                                            if ($pos->name == $annexPositionName) {
+                                            $annexOrganization = $pos->organization;
+                                            $annexPosition = $pos;
+                                            break;
+                                            }
+                                            }
+                                            }
+                                            if (Auth::user()->can('organization.profile')) {
+                                            echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
+                                            } else {
+                                            echo $annexOrganization->name;
+                                            }
+                                            } else {
+                                            if (Auth::user()->can('organization.profile')) {
+                                            echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
+                                            } else {
+                                            echo $currentOrganization->name;
+                                            }
+                                            }
+                                            @endphp
+                                        </td>
+
+                                        <td>
+                                            @php
+                                            if ($latestAnnexPos) {
+                                            if (Auth::user()->can('position.profile')) {
+                                            echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
+                                            } else {
+                                            echo $annexPosition->name;
+                                            }
+                                            } else {
+                                            if (Auth::user()->can('position.profile')) {
+                                            echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
+                                            } else {
+                                            echo $currentPositionName;
+                                            }
+                                            }
+                                            @endphp
+                                        </td>
+
+
+
+                                        <td>
+                                            @if(Auth::User()->can('contract.delete'))
+                                            <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
+                                                <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
+                                            </form>
+                                            @endif
+
+                                        </td>
+
+
+                                        <style>
+                                            a {
+                                                color: inherit;
+                                            }
+
+                                            a:hover {
+                                                color: #002EFF;
+                                            }
+                                        </style>
+
+                                    </tr>
+                                    @endif
+                                    @endforeach
+
+                                </tbody>
+                            </table>
                         </div>
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="dataTables_scroll">
-                                    <div class="dataTables_scrollHead" style="overflow: hidden; position: relative; border: 0px; width: 100%;">
-                                        <div class="dataTables_scrollHeadInner" style="box-sizing: content-box;">
-
-                                            <table class="table dt-responsive nowrap w-100 dataTable no-footer" role="grid">
-                                                <thead>
-                                                    <tr role="row">
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 15%;" aria-label="ContractID: activate to sort column ascending">Contract Number</th>
-                                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-sort="ascending" aria-label="Employee: activate to sort column descending">Employee</th>
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-label="OrganizationUnit: activate to sort column ascending">Organization Unit</th>
-                                                        <th class="sorting" tabindex="0" aria-controls="datatable-buttons" rowspan="1" colspan="1" style="width: 25%;" aria-label="Position: activate to sort column ascending">Position</th>
-                                                        <th style="width: 100px;"></th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="dataTables_scrollBody" style="position: relative; overflow: auto; max-height: 46vh; width: 100%;">
-                                        <table id="scroll-vertical-datatable" class="table dt-responsive nowrap w-100 dataTable no-footer dtr-inline" role="grid" aria-describedby="scroll-vertical-datatable_info" style="width: 100%;">
-                                            <thead>
-                                                <tr role="row" style="height: 0px;">
-                                                    <th class="sorting_asc" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 15%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">
-                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Employee</div>
-                                                    </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 25%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
-                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Organization Unit</div>
-                                                    </th>
-                                                    <th class="sorting" aria-controls="scroll-vertical-datatable" rowspan="1" colspan="1" style="width: 25%; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="Position: activate to sort column ascending">
-                                                        <div class="dataTables_sizing" style="height: 0px; overflow: hidden;">Position</div>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-
-
-
-                                            <tbody>
-
-                                                @foreach ($contracts as $contract)
-                                                @if ($contract->status == 'active')
-                                                <tr>
-                                                    <th scope="row">{{ $contract->contract_number }}</th>
-                                                    <td class="sorting_1 dtr-control">
-                                                        <a href="{{ route('contracts.profile', ['id' => $contract->employee->id]) }}">{{ $contract->employee->first_name}} {{ $contract->employee->last_name}}</a>
-                                                    </td>
-
-                                                    <td>
-                                                        @php
-
-                                                        $reasonToSearch = 'Promena pozicije';
-
-                                                        $latestAnnexPos = $contract->annexes()
-                                                        ->where('deleted', 0)
-                                                        ->whereRaw("FIND_IN_SET('$reasonToSearch', reason) > 0")
-                                                        ->orderByDesc('annex_date')
-                                                        ->first();
-
-                                                        $annexPositionName = $latestAnnexPos ? $latestAnnexPos->position : '';
-                                                        $currentOrganization = $contract->organization;
-                                                        $annexOrganization = '';
-                                                        $annexPosition = '';
-                                                        $currentPosition = '';
-
-                                                        foreach ($contract->organization->position as $pos) {
-                                                        if ($pos->id == $contract->position) {
-                                                        $currentPosition = $pos;
-                                                        $currentPositionName = $currentPosition->name;
-                                                        }
-                                                        }
-
-                                                        if ($latestAnnexPos) {
-                                                        foreach ($organizations as $org) {
-                                                        foreach ($org->position as $pos) {
-                                                        if ($pos->name == $annexPositionName) {
-                                                        $annexOrganization = $pos->organization;
-                                                        $annexPosition = $pos;
-                                                        break;
-                                                        }
-                                                        }
-                                                        }
-                                                        echo '<span title="Organization Changed with Annex"><a href="' . route('organizations.organization-card', $annexOrganization->id) . '">' . $annexOrganization->name . '</a></span>';
-                                                        } else {
-                                                        echo '<a href="' . route('organizations.organization-card', $currentOrganization->id) . '">' . $currentOrganization->name . '</a>';
-                                                        }
-                                                        @endphp
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                        if ($latestAnnexPos) {
-                                                        echo '<span class="changed" title="Position Changed with Annex"><a id="link" href="' . route('positions.position-card', $annexPosition->id) . '">' . $annexPosition->name . '</a></span>';
-                                                        } else {
-                                                        echo '<a id="link" href="' . route('positions.position-card', $currentPosition->id) . '">' . $currentPositionName . '</a>';
-                                                        }
-                                                        @endphp</td>
-
-
-                                                    <td>
-
-                                                        <form action="{{ route('contracts.destroy', $contract->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="hidden" class="annexes-data" value="{{ json_encode($contract->annexes ?? []) }}">
-                                                            <button type="submit" class="btn btn-link" onclick="event.preventDefault(); checkFunction(event, this.previousElementSibling);"><i class="fa fa-trash" title="Delete"></i></button>
-                                                        </form>
-
-                                                    </td>
-
-
-                                                    <style>
-                                                        a {
-                                                            color: inherit;
-                                                        }
-
-                                                        a:hover {
-                                                            color: #002EFF;
-                                                        }
-                                                    </style>
-
-                                                </tr>
-                                                @endif
-                                                @endforeach
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-
-                </div> <!-- end card body-->
-            </div> <!-- end card -->
+                </div>
+            </div>
 
         </div>
 
-        <script>
-            function checkFunction(event, annexesDataElement) {
-                var contractAnnexes = JSON.parse(annexesDataElement.value);
+    </div>
+</div>
 
-                // Check if there are any active annexes
-                var hasActiveAnnexes = false;
-                for (var i = 0; i < contractAnnexes.length; i++) {
-                    if (contractAnnexes[i].deleted == false) {
-                        hasActiveAnnexes = true;
-                        break;
-                    }
-                }
+</div>
 
-                if (hasActiveAnnexes) {
-                    toastr.error('You cannot delete a contract with annexes!');
-                } else {
-                    if (confirm('Are you sure you want to delete this contract?')) {
-                        // Submit the form to delete the contract
-                        event.target.parentElement.submit();
-                    }
-                }
+<script>
+    function checkFunction(event, annexesDataElement) {
+        var contractAnnexes = JSON.parse(annexesDataElement.value);
+
+        // Check if there are any active annexes
+        var hasActiveAnnexes = false;
+        for (var i = 0; i < contractAnnexes.length; i++) {
+            if (contractAnnexes[i].deleted == false) {
+                hasActiveAnnexes = true;
+                break;
             }
-        </script>
+        }
 
+        if (hasActiveAnnexes) {
+            toastr.error('You cannot delete a contract with annexes!');
+        } else {
+            if (confirm('Are you sure you want to delete this contract?')) {
+                // Submit the form to delete the contract
+                event.target.parentElement.submit();
+            }
+        }
+    }
+</script>
 
-        @endsection
+@endsection

@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Create New Annex | HRTool
+@endsection
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -12,13 +16,18 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{ route('contracts.profile', $contract->employee->id) }}" class="btn" style="margin-right:5px"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW ANNEX</h4>
                     </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
+                            <li class="breadcrumb-item">
+                                @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                <a href="{{ route('admin.index') }}">HRTool</a>
+                                @else
+                                <a href="/homepage">HRTool</a>
+                                @endif
+                            </li>
                             <li class="breadcrumb-item"><a href="{{ route('contracts.index') }}">Contracts</a>
                             <li class="breadcrumb-item active">Create New Annex</li>
                         </ol>
@@ -386,7 +395,7 @@
                             <label for="working_hours_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Working Hours:</label>
 
                             <div class="col-md-6">
-                            
+
                                 <input type="text" class="form-control" id="working_hours_value" name="working_hours" placeholder="">
                                 @error('working_hours_value')
                                 <span class="invalid-feedback" role="alert">

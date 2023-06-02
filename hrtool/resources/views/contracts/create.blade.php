@@ -1,6 +1,10 @@
 @extends('admin.master')
 @section('admin')
 
+@section('title')
+Create New Contract | HRTool
+@endsection
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <div class="page-content">
@@ -11,13 +15,18 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{route('contracts.profile', ['id' => $employee->id])}}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">CREATE NEW CONTRACT FOR {{$employee->first_name}} {{$employee->last_name}} </h4>
                     </div>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">HRTool</a></li>
+                            <li class="breadcrumb-item">
+                                @if(Auth::user()->hasRole(['admin_hr', 'admin_it']))
+                                <a href="{{ route('admin.index') }}">HRTool</a>
+                                @else
+                                <a href="/homepage">HRTool</a>
+                                @endif
+                            </li>
                             <li class="breadcrumb-item"><a href="{{ route('contracts.index') }}">Contracts</a>
                             <li class="breadcrumb-item active">Create New Contract</li>
                         </ol>
