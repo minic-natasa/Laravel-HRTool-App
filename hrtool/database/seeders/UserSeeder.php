@@ -13,17 +13,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'first_name' => 'user',
-            'last_name' => 'user',
-            'email' => 'user@user.com',
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'role' => 'user',
-        ]);
-        $user->assignRole('user');
 
-        $testUser = User::create([
+        $user = User::create([
             'first_name' => 'Marko',
             'last_name' => 'Marković',
             'email' => 'user@test.com',
@@ -51,6 +42,6 @@ class UserSeeder extends Seeder
             'profession' => 'Dipl. ekonomista',
 
         ]);
-        $testUser->assignRole('user');
+        $user->assignRole('user');
     }
 }

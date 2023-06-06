@@ -36,6 +36,17 @@ Edit Permissions for Role | HRTool
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+
+                    <style>
+                        .form-group {
+                            margin-left: 1vw;
+                        }
+
+                        #perm{
+                            margin-left: 3px !important;
+                        }
+                    </style>
+
                     <form action="{{ route('roles.permissions.update', $role->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -48,13 +59,12 @@ Edit Permissions for Role | HRTool
 
 
                         <div class="form-group row" style="padding-top: 6px;">
-                            <label for="permission_id" class="col-md-3 col-form-label text-md-right">{{ __('Permissions:') }}</label>
-
+                            <label for="permission_id" class="col-md-2 col-form-label text-md-right">{{ __('Permissions:') }}</label>
 
                             <div class="col-md-8" style="padding-top: 1vh;">
 
                                 @if(!($permission_groups->isEmpty()))
-                                <div class="form-check" style="padding-bottom: 2vh;">
+                                <div class="form-check" style="padding-bottom: 2vh; margin-left:1vw;">
                                     <input class="form-check-input" type="checkbox" name="" id="all" value="">
                                     <label class="form-check-label" for="all">
                                         All
@@ -69,7 +79,7 @@ Edit Permissions for Role | HRTool
                                 @endif
 
                                 @foreach($permission_groups as $group)
-                                <div class="form-group row" style="margin-bottom: 2vh;">
+                                <div class="form-group row" id="perm" style="margin-bottom: 2vh;">
                                     <div class="col-md-4"> <!-- column for permission groups -->
 
                                         @php
@@ -85,7 +95,7 @@ Edit Permissions for Role | HRTool
                                         </div>
                                     </div>
 
-                                    <div class="col-md-5"> <!-- column for permissions -->
+                                    <div class="col-md-4"> <!-- column for permissions -->
 
                                         @foreach($permissions_for_group as $permission)
                                         <div class="form-check">

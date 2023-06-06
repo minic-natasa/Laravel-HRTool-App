@@ -43,6 +43,12 @@ Create New Contract | HRTool
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 text-gray-900 dark:text-gray-100">
 
+                <style>
+                    .form-group {
+                        margin-left: 1vw;
+                    }
+                </style>
+
                 <form method="POST" action="{{ route('contracts.store') }}">
                     @csrf
 
@@ -50,9 +56,40 @@ Create New Contract | HRTool
                     <input type="hidden" name="employee_number" value="{{ $employee->id }}">
 
                     <div class="form-group row">
-                        <label for="start_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date') }}</label>
+                        <label for="contract_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Number:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <input id="contract_number" type="text" class="form-control @error('contract_number') is-invalid @enderror" name="contract_number" value="{{ old('contract_number') }}" required autocomplete="contract_number">
+
+                            @error('contract_number')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="type_of_contract" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Type of Contract:') }}</label>
+                        <div class="col-md-3">
+                            <select id="type_of_contract" class="form-control @error('type_of_contract') is-invalid @enderror" name="type_of_contract" required>
+                                <option value=""> -- Select contract type -- </option>
+                                <option value="Ugovor o radu" {{ old('type_of_contract') == 'Ugovor o radu' ? 'selected' : '' }}>Ugovor o radu</option>
+                                <option value="Ugovor o poslovno-tehničkoj saradnji" {{ old('type_of_contract') == 'Ugovor o poslovno-tehničkoj saradnji' ? 'selected' : '' }}>Ugovor o poslovno-tehničkoj saradnji</option>
+                            </select>
+                            @error('type_of_contract')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="start_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date:') }}</label>
+
+                        <div class="col-md-3">
                             <input id="start_date" type="date" class="form-control @error('start_date') is-invalid @enderror" name="start_date" value="{{ old('start_date') }}" required autocomplete="start_date">
 
                             @error('start_date')
@@ -64,9 +101,9 @@ Create New Contract | HRTool
                     </div>
 
                     <div class="form-group row">
-                        <label for="first_day_on_job" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('First Day On Job') }}</label>
+                        <label for="first_day_on_job" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('First Day On Job:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input id="first_day_on_job" type="date" class="form-control @error('first_day_on_job') is-invalid @enderror" name="first_day_on_job" value="{{ old('first_day_on_job') }}" required autocomplete="first_day_on_job">
 
                             @error('first_day_on_job')
@@ -78,8 +115,8 @@ Create New Contract | HRTool
                     </div>
 
                     <div class="form-group row">
-                        <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Organization Unit') }}</label>
-                        <div class="col-md-6">
+                        <label for="organization_id" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Organization Unit:') }}</label>
+                        <div class="col-md-4">
                             <select class="form-control" id="organization_id" name="organization_id" data-placeholder="-- Select organization unit --">
                                 <option value="">-- Select organization unit -- </option>
                                 @foreach ($organizations as $organization)
@@ -96,8 +133,8 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row">
-                        <label for="position" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Position') }}</label>
-                        <div class="col-md-6">
+                        <label for="position" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Position:') }}</label>
+                        <div class="col-md-4">
                             <select name="position" id="position" class="form-control" disabled>
                                 <option value="">-- Select organization unit first -- </option>
                             </select>
@@ -142,38 +179,8 @@ Create New Contract | HRTool
                     </script>
 
                     <div class="form-group row">
-                        <label for="type_of_contract" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Type of Contract') }}</label>
-                        <div class="col-md-6">
-                            <select id="type_of_contract" class="form-control @error('type_of_contract') is-invalid @enderror" name="type_of_contract" required>
-                                <option value=""> -- Select contract type -- </option>
-                                <option value="Ugovor o radu" {{ old('type_of_contract') == 'Ugovor o radu' ? 'selected' : '' }}>Ugovor o radu</option>
-                                <option value="Ugovor o poslovno-tehničkoj saradnji" {{ old('type_of_contract') == 'Ugovor o poslovno-tehničkoj saradnji' ? 'selected' : '' }}>Ugovor o poslovno-tehničkoj saradnji</option>
-                            </select>
-                            @error('type_of_contract')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="contract_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Number') }}</label>
-
-                        <div class="col-md-6">
-                            <input id="contract_number" type="text" class="form-control @error('contract_number') is-invalid @enderror" name="contract_number" value="{{ old('contract_number') }}" required autocomplete="contract_number">
-
-                            @error('contract_number')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="contract_duration" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Duration') }}</label>
-                        <div class="col-md-6">
+                        <label for="contract_duration" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Contract Duration:') }}</label>
+                        <div class="col-md-4">
                             <input id="contract_duration" type="text" class="form-control @error('contract_duration') is-invalid @enderror" name="contract_duration" value="{{ old('contract_duration') }}" placeholder="-- Enter unlimited or number of months --" required autocomplete="contract_duration">
                             @error('contract_duration')
                             <span class="invalid-feedback" role="alert">
@@ -185,9 +192,9 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row" id="probationary_period_container">
-                        <label for="probationary_period" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Probationary Period') }}</label>
-                        <div class="col-md-6">
-                            <input id="probationary_period" type="text" class="form-control @error('probationary_period') is-invalid @enderror" name="probationary_period" placeholder="-- Select contract duration as unlimited in order to enable this field --" disabled>
+                        <label for="probationary_period" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Probationary Period:') }}</label>
+                        <div class="col-md-4">
+                            <input id="probationary_period" type="text" class="form-control @error('probationary_period') is-invalid @enderror" name="probationary_period" placeholder="-- Select contract duration as unlimited to enable field --" disabled>
 
                             @error('probationary_period')
                             <span class="invalid-feedback" role="alert">
@@ -207,7 +214,7 @@ Create New Contract | HRTool
                             if (contractDuration.value !== 'unlimited') {
                                 // set the value of the probationary period input field to 0 and disable it
                                 probationaryPeriod.disabled = true;
-                                probationaryPeriod.placeholder = '-- Select contract duration as unlimited in order to enable this field-- ';
+                                probationaryPeriod.placeholder = '-- Select contract duration as unlimited to enable field -- ';
                             } else {
                                 // enable the probationary period input field
                                 probationaryPeriod.disabled = false;
@@ -218,9 +225,9 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row">
-                        <label for="net_salary" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Net Salary') }}</label>
+                        <label for="net_salary" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Net Salary:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="net_salary" type="text" class="form-control @error('net_salary') is-invalid @enderror" name="net_salary" value="{{ old('net_salary') }}" required autocomplete="net_salary" autofocus>
 
                             @error('net_salary')
@@ -233,9 +240,9 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row">
-                        <label for="gross_salary_1" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 1') }}</label>
+                        <label for="gross_salary_1" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 1:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="gross_salary_1" type="text" class="form-control" name="gross_salary_1" value="" readonly>
                         </div>
                     </div>
@@ -254,9 +261,9 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row">
-                        <label for="gross_salary_2" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 2') }}</label>
+                        <label for="gross_salary_2" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Gross Salary 2:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="gross_salary_2" type="text" class="form-control @error('gross_salary_2') is-invalid @enderror" name="gross_salary_2" value="{{ old('gross_salary_2') }}" required autocomplete="gross_salary_2">
 
                             @error('gross_salary_2')
@@ -269,9 +276,9 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row">
-                        <label for="location_of_work" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Location of Work') }}</label>
+                        <label for="location_of_work" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Location of Work:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <select id="location_of_work" class="form-control @error('location_of_work') is-invalid @enderror" name="location_of_work" required>
                                 <option value=""> -- Select location of work -- </option>
                                 <option value="Hybrid" {{ old('location_of_work') == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
@@ -286,8 +293,8 @@ Create New Contract | HRTool
                     </div>
 
                     <div class="form-group row">
-                        <label for="transportation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Transportation') }}</label>
-                        <div class="col-md-6">
+                        <label for="transportation" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Transportation:') }}</label>
+                        <div class="col-md-4">
                             <select id="transportation" class="form-control @error('transportation') is-invalid @enderror" name="transportation" required>
                                 <option value=""> -- Select transportation type -- </option>
                                 <option value="Public Transportation" {{ old('transportation') == 'Public Transportation' ? 'selected' : '' }}>Public Transportation</option>
@@ -334,7 +341,7 @@ Create New Contract | HRTool
 
 
                     <div class="form-group row mb-0">
-                        <div class="col-md-6 offset-md-4">
+                        <div class="col-md-4 offset-md-3">
                             <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:2px">
                                 {{ __('Create') }}
                             </button>

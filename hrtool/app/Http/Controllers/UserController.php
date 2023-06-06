@@ -38,7 +38,7 @@ class UserController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
+            'password' => 'min:8',
             'bank_account_number' => 'string',
             'emergency_contact_name' => 'string',
             'emergency_contact_number' => 'string',

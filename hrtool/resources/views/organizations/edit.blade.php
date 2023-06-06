@@ -39,6 +39,12 @@ Edit Organization | HRTool
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
+                    <style>
+                        .form-group {
+                            margin-left: 1vw;
+                        }
+                    </style>
+
                     <form action="{{ route('organizations.update', $organization->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -65,7 +71,7 @@ Edit Organization | HRTool
                         </div>
                         -->
                         <div class="form-group row">
-                            <label for="manager" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px; padding-left:4vw;">Manager:</label>
+                            <label for="manager" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Manager:</label>
                             <div class="col-md-4">
                                 <select class="form-control" id="manager_id" name="manager_id">
                                     <option value="">-- Select Manager -- </option>
@@ -79,7 +85,7 @@ Edit Organization | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="parent_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px; padding-left:4vw;">Parent Organization:</label>
+                            <label for="parent_id" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Parent Organization:</label>
                             <div class="col-md-4">
                                 <select class="form-control" id="parent_id" name="parent_id">
                                     <option value="">-- Select Parent Organization -- </option>
@@ -91,7 +97,7 @@ Edit Organization | HRTool
                         </div>
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-6 offset-md-3">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">{{ __('Save') }}</button>
                             </div>
                         </div>

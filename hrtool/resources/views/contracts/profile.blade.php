@@ -79,23 +79,23 @@ Contract Card | HRTool
                             <!-- Contract information -->
                             <div class="col-6">
                                 <address style="font-size: 13px; padding-left:3px;">
-                                    <strong>Start Date:</strong>
+                                    <strong>Start Date</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime($contract->start_date)) }}</span>
-                                    <strong>First Day On Job:</strong>
+                                    <strong>First Day On Job</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime($contract->first_day_on_job)) }}</span>
-                                    <strong>Contract Duration:</strong>
+                                    <strong>Contract Duration</strong>
                                     @if($contract->contract_duration == 'unlimited')
                                     <span style="display: block; margin-bottom: 8px;">Unlimited</span>
                                     @else
                                     <span style="display: block; margin-bottom: 8px;">{{ $contract->contract_duration }} {{ $contract->contract_duration == 1 ? 'month' : 'months' }}</span>
-                                    <strong>End Date:</strong>
+                                    <strong>End Date</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime('+' . $contract->contract_duration . ' months', strtotime($contract->start_date))) }}</span>
                                     @endif
 
                                     @if($contract->contract_duration === 'unlimited' && $contract->probationary_period !== null && $contract->probationary_period !== 0)
-                                    <strong>Probationary Period:</strong>
+                                    <strong>Probationary Period</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{ $contract->probationary_period }} {{ $contract->probationary_period == 1 ? 'month' : 'months' }}</span>
-                                    <strong>End Date For Probationary Period:</strong>
+                                    <strong>End Date For Probationary Period</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{ date('d.m.Y.', strtotime('+' . $contract->probationary_period . ' months', strtotime($contract->start_date))) }}</span>
                                     @endif
                                 </address>
@@ -105,9 +105,9 @@ Contract Card | HRTool
                             <!-- Employee information -->
                             <div class="col-6 text-end">
                                 <address style="font-size: 13px; padding-right:3px;">
-                                    <strong>Type of Contract:</strong>
+                                    <strong>Type of Contract</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->type_of_contract}}</span>
-                                    <strong>Location of Work:</strong>
+                                    <strong>Location of Work</strong>
                                     <span style="display: block; margin-bottom: 8px;">
                                         @php
                                         $reasonToSearch = 'Promena adrese obavljanja posla';
@@ -141,7 +141,7 @@ Contract Card | HRTool
                                         @endphp
                                     </span>
 
-                                    <strong>Address of Work:</strong>
+                                    <strong>Address of Work</strong>
                                     <span style="display: block; margin-bottom: 8px;">
                                         @php
 
@@ -155,7 +155,7 @@ Contract Card | HRTool
                                     </span>
 
 
-                                    <strong>Transportation:</strong>
+                                    <strong>Transportation</strong>
                                     <span style="display: block; margin-bottom: 8px;">{{$contract->transportation}}</span>
                                 </address>
                             </div>

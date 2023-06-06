@@ -38,21 +38,27 @@ Create New Position | HRTool
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
+                    <style>
+                        .form-group {
+                            margin-left: 1vw;
+                        }
+                    </style>
+
                     <form action="{{ route('positions.store') }}" method="POST">
                         @csrf
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Name:</label>
+                            <label for="name" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Name:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
 
                         </div>
 
                         <div class="form-group row">
-                            <label for="organization_id" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Organization:</label>
-                            <div class="col-md-6">
+                            <label for="organization_id" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 1vh;">Organization:</label>
+                            <div class="col-md-4">
                                 <select class="form-control" id="organization_id" name="organization_id">
                                     <option value="">-- Select organization --</option>
                                     @foreach ($organizations as $org)
@@ -63,23 +69,23 @@ Create New Position | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="description" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Description:</label>
+                            <label for="description" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Description:</label>
 
                             <div class="col-md-6">
-                                <textarea class="form-control" id="description" name="description" rows="4" style="margin-bottom: 4px;"></textarea>
+                                <textarea class="form-control" id="description" name="description" rows="8" style="margin-bottom: 1vh;"></textarea>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="professional_requirements_per_job_systematisation" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Professional Requirements per Job Systematisation:</label>
+                            <label for="professional_requirements_per_job_systematisation" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px; padding-right:7vw">Professional Requirements per Job Systematisation:</label>
 
                             <div class="col-md-6">
-                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="3" style="margin-bottom: 4px;"></textarea>
+                                <textarea class="form-control" id="professional_requirements_per_job_systematisation" name="professional_requirements_per_job_systematisation" rows="7" style="margin-bottom: 4px;"></textarea>
                             </div>
                         </div>
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-4 offset-md-3">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
                                     {{ __('Create') }}
                                 </button>

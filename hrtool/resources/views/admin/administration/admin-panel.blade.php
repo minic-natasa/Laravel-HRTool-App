@@ -20,7 +20,7 @@ Admin Panel | HRTool
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">HRTool</a></li>
-                            <li class="breadcrumb-item active">Admin Panel</a>
+                            <li class="breadcrumb-item active">Admin Panel</a></li>
                         </ol>
                     </div>
                 </div>
@@ -28,7 +28,15 @@ Admin Panel | HRTool
         </div>
         <!-- end page title -->
 
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <a href="{{ route('admin.create') }}" class="btn btn-primary mb-3">Add new Admin</a>
+                </div>
+
+            </div>
+        </div>
 
 
         <div class="row">
@@ -85,10 +93,12 @@ Admin Panel | HRTool
                                         <td>
                                             <div>
                                                 <a href="#" class="btn btn-link"><i class="fas fa-pencil-alt" title="Edit"></i></a>
-                                                <form action="#" method="POST" style="display: inline-block; width: auto;">
+                                                <form action="{{ route('admin.destroy', ['id' => $admin->id]) }}" method="POST" style="display: inline-block; width: auto;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete admin role for this user?')"><i class="fas fa-times" title="Delete"></i></button>
+                                                    <button type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to change the role to user for this admin?')">
+                                                        <i class="fas fa-times" title="Delete"></i>
+                                                    </button>
                                                 </form>
                                             </div>
                                         </td>
@@ -104,10 +114,6 @@ Admin Panel | HRTool
                         </div> <!-- end card body-->
                     </div> <!-- end card -->
                 </div><!-- end col-->
-                Delete - Change admin to user?<br>
-                Edit - Change status to Inactive?<br><br>
-                Add New Admin: From Employees (change role from user to admin) or open Create form with role:admin (in employees, role:user)<br>
-                Status needs to be Active in order to display user - Add Status in List of all users
             </div>
             <!-- end row-->
 

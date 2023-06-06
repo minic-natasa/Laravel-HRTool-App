@@ -13,7 +13,6 @@ Edit Role | HRTool
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <a href="{{route('roles.index')}}" class="btn" style="margin-right:5px;"><i class="fa fa-caret-left" title="Back"></i></a>
                         <h4 class="font-size-16" style="margin-left: 10px; margin-top:5px;">EDIT ROLE </h4>
                     </div>
 
@@ -34,6 +33,12 @@ Edit Role | HRTool
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
+                    <style>
+                        .form-group {
+                            margin-left: 1vw;
+                        }
+                    </style>
+
                     <form action="{{ route('roles.update', $role->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -41,14 +46,14 @@ Edit Role | HRTool
                         <input type="hidden" name='id' value="{{$role->id}}">
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px; padding-left:4vw;">Role Name:</label>
-                            <div class="col-md-6">
+                            <label for="name" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Role Name:</label>
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="name" name="name" value="{{ $role->name }}" required>
                             </div>
                         </div>
 
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-4 offset-md-3">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">{{ __('Save') }}</button>
                             </div>
                         </div>

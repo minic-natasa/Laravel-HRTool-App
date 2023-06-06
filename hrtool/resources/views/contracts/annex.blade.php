@@ -41,7 +41,13 @@ Create New Annex | HRTool
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="p-6 text-gray-900 dark:text-gray-100" style="padding-left: 4vw;">
+            <div class="p-6 text-gray-900 dark:text-gray-100">
+
+                <style>
+                    .form-group {
+                        margin-left: 1vw;
+                    }
+                </style>
 
                 <form method="POST" action="{{ route('annexes.store') }}">
                     @csrf
@@ -50,9 +56,9 @@ Create New Annex | HRTool
                     <input type="hidden" name="deleted" value="0">
 
                     <div class="form-group row" id="reason_div">
-                        <label class="col-md-4 col-form-label text-md-right">{{ __('Reason:') }}</label>
+                        <label class="col-md-3 col-form-label text-md-right">{{ __('Reason:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="reason[]" id="reason1" value="Povećanje bruto 1 zarade" onclick="toggleDiv('salary_div', this.checked)" {{ old('reason.0') == 'Povećanje bruto 1 zarade' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="reason1">
@@ -94,8 +100,8 @@ Create New Annex | HRTool
 
                     <div class="parent-div" id="salary_div" style="display: none;">
                         <div class="form-group row" id="old_gross_salary_div">
-                            <label for="old_gross_salary_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Gross 1 Salary:') }}</label>
-                            <div class="col-md-6">
+                            <label for="old_gross_salary_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Gross 1 Salary:') }}</label>
+                            <div class="col-md-4">
                                 @php
                                 $reasonToSearch = 'Povećanje bruto 1 zarade';
                                 $latestAnnexGross = $contract->annexes()
@@ -120,17 +126,17 @@ Create New Annex | HRTool
 
 
                         <div class="form-group row" id="net_salary_div">
-                            <label for="net_salary_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>
+                            <label for="net_salary_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Net Salary:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="net_salary_value" name="net_salary_value" placeholder="-- Enter net salary --">
                             </div>
                         </div>
 
                         <div class="form-group row" id="gross_salary_div">
-                            <label for="gross_salary_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Gross 1 Salary:</label>
+                            <label for="gross_salary_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Gross 1 Salary:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="gross_salary_value" name="gross_salary" placeholder="-- Enter net salary first --" readonly>
                             </div>
                         </div>
@@ -156,8 +162,8 @@ Create New Annex | HRTool
 
                     <div class="parent-div" id="position_div" style="display: none;">
                         <div class="form-group row" id="old_position_div">
-                            <label for="old_position_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Position:') }}</label>
-                            <div class="col-md-6">
+                            <label for="old_position_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Position:') }}</label>
+                            <div class="col-md-4">
 
                                 @php
                                 $reasonToSearch = 'Promena pozicije';
@@ -180,8 +186,8 @@ Create New Annex | HRTool
 
 
                         <div class="form-group row" id="organization_div">
-                            <label for="organization_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Organization Unit:') }}</label>
-                            <div class="col-md-6">
+                            <label for="organization_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Organization Unit:') }}</label>
+                            <div class="col-md-4">
                                 <select class="form-control" id="organization_value" name="organization_value" data-placeholder="-- Select organization unit --">
                                     <option value="">-- Select organization unit -- </option>
                                     @foreach ($organizations as $organization)
@@ -198,8 +204,8 @@ Create New Annex | HRTool
 
 
                         <div class="form-group row" id="position_div">
-                            <label for="position_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Position:') }}</label>
-                            <div class="col-md-6">
+                            <label for="position_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Position:') }}</label>
+                            <div class="col-md-4">
                                 <select name="position" id="position_value" class="form-control" disabled>
                                     <option value="">-- Select organization unit first -- </option>
                                 </select>
@@ -248,8 +254,8 @@ Create New Annex | HRTool
 
                     <div class="parent-div" id="address_div" style="display: none;">
                         <div class="form-group row" id="old_address_of_work_div">
-                            <label for="old_address_of_work_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address of Work:') }}</label>
-                            <div class="col-md-6">
+                            <label for="old_address_of_work_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address of Work:') }}</label>
+                            <div class="col-md-4">
 
                                 @php
                                 $reasonToSearch = 'Promena adrese obavljanja posla';
@@ -283,8 +289,8 @@ Create New Annex | HRTool
                         </div>
 
                         <div class="form-group row" id="location_div">
-                            <label for="location_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Location of Work:</label>
-                            <div class="col-md-6">
+                            <label for="location_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Location of Work:</label>
+                            <div class="col-md-4">
                                 <select id="location_value" class="form-control @error('location_value') is-invalid @enderror" name="location_value">
                                     <option value=""> -- Select location of work -- </option>
                                     <option value="Hybrid" {{ old('location_value') == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
@@ -299,8 +305,8 @@ Create New Annex | HRTool
                         </div>
 
                         <div class="form-group row" id="address_of_work_div">
-                            <label for="address_of_work_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Address of Work:</label>
-                            <div class="col-md-6">
+                            <label for="address_of_work_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Address of Work:</label>
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="address_of_work_value" name="address_of_work" placeholder="" readonly>
                                 @error('address_of_work')
                                 <span class="invalid-feedback" role="alert">
@@ -332,8 +338,8 @@ Create New Annex | HRTool
 
                     <div class="parent-div" id="employer_address_div" style="display: none;">
                         <div class="form-group row" id="old_address_of_employer_div">
-                            <label for="old_address_of_employer_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address of Employer:') }}</label>
-                            <div class="col-md-6">
+                            <label for="old_address_of_employer_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address of Employer:') }}</label>
+                            <div class="col-md-4">
                                 @php
                                 $reasonToSearch = 'Promena adrese poslodavca';
                                 $latestAnnexEmpl = $contract->annexes()
@@ -354,9 +360,9 @@ Create New Annex | HRTool
                         </div>
 
                         <div class="form-group row" id="address_of_employer_div">
-                            <label for="address_of_employer_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Address of Employer:</label>
+                            <label for="address_of_employer_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Address of Employer:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input type="text" class="form-control" id="address_of_employer_value" name="address_of_employer" placeholder="">
                                 @error('address_of_employer_value')
                                 <span class="invalid-feedback" role="alert">
@@ -369,8 +375,8 @@ Create New Annex | HRTool
 
                     <div class="parent-div" id="working_hours_div" style="display: none;">
                         <div class="form-group row" id="old_working_hours_div">
-                            <label for="old_working_hours_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Working Hours:') }}</label>
-                            <div class="col-md-6">
+                            <label for="old_working_hours_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Working Hours:') }}</label>
+                            <div class="col-md-4">
                                 @php
                                 $reasonToSearch = 'Promena radnih sati';
                                 $latestAnnexWH = $contract->annexes()
@@ -392,9 +398,9 @@ Create New Annex | HRTool
                         </div>
 
                         <div class="form-group row" id="working_hours_div">
-                            <label for="working_hours_value" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">Working Hours:</label>
+                            <label for="working_hours_value" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">Working Hours:</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
 
                                 <input type="text" class="form-control" id="working_hours_value" name="working_hours" placeholder="">
                                 @error('working_hours_value')
@@ -408,9 +414,9 @@ Create New Annex | HRTool
 
 
                     <div class="form-group row">
-                        <label for="annex_created_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Created Date:') }}</label>
+                        <label for="annex_created_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Created Date:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="annex_created_date" type="date" class="form-control @error('annex_created_date') is-invalid @enderror" name="annex_created_date" value="{{ old('annex_created_date') }}" required autocomplete="annex_created_date">
 
                             @error('annex_created_date')
@@ -422,9 +428,9 @@ Create New Annex | HRTool
                     </div>
 
                     <div class="form-group row">
-                        <label for="annex_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date:') }}</label>
+                        <label for="annex_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Start Date:') }}</label>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="annex_date" type="date" class="form-control @error('annex_date') is-invalid @enderror" name="annex_date" value="{{ old('annex_date') }}" required autocomplete="annex_date">
 
                             @error('annex_date')
@@ -436,7 +442,7 @@ Create New Annex | HRTool
                     </div>
 
                     <div class="form-group row mb-0">
-                        <div class="col-md-6 offset-md-4">
+                        <div class="col-md-4 offset-md-3">
                             <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:2px">
                                 {{ __('Create') }}
                             </button>

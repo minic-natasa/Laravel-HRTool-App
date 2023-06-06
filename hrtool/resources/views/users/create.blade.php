@@ -37,6 +37,12 @@ Create New Employee | HRTool
         </div>
         <!-- end page title -->
 
+        <style>
+            .form-group {
+                margin-left: 1vw;
+            }
+        </style>
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
@@ -44,10 +50,11 @@ Create New Employee | HRTool
                     <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                         @csrf
 
+                        <input type="hidden" name="password" id="password" value="">
                         <div class="form-group row">
-                            <label for="employee_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Employee Number') }}</label>
+                            <label for="employee_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 1vh;">{{ __('Employee Number:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-2">
                                 <input id="employee_number" type="text" class="form-control @error('employee_number') is-invalid @enderror" name="employee_number" value="{{ old('employee_number') }}" required autocomplete="employee_number">
 
                                 @error('employee_number')
@@ -58,11 +65,20 @@ Create New Employee | HRTool
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="profile_picture" class="col-md-3 col-form-label" style="margin-bottom: 4px;">Profile Image:</label>
+
+                            <input id="picture-input" name="profile_picture" type="file" class="col-md-4" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" autocomplete="profile_picture" />
+
+                            <div style="display: block; text-align: left; margin-left:21vw; margin-bottom:1vh">
+                                <img id="showImage" src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 135px;" alt="Profile Picture">
+                            </div>
+                        </div>
 
                         <div class="form-group row">
-                            <label for="first_name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('First Name') }}</label>
+                            <label for="first_name" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('First Name:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="first_name" type="text" class="form-control @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}" required autocomplete="first_name" autofocus>
 
                                 @error('first_name')
@@ -74,51 +90,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="last_name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Last Name') }}</label>
+                            <label for="name_of_one_parent" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Name of One Parent:') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name">
-
-                                @error('last_name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Email') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="name_of_one_parent" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Name of One Parent') }}</label>
-
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="name_of_one_parent" type="text" class="form-control @error('name_of_one_parent') is-invalid @enderror" name="name_of_one_parent" value="{{ old('name_of_one_parent') }}" required autocomplete="name_of_one_parent">
 
                                 @error('name_of_one_parent')
@@ -130,9 +104,52 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="birth_date" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Birth Date') }}</label>
+                            <label for="last_name" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Last Name:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <input id="last_name" type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" value="{{ old('last_name') }}" required autocomplete="last_name">
+
+                                @error('last_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Email:') }}</label>
+
+                            <div class="col-md-4">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+
+                                @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!--
+                        <div class="form-group row">
+                            <label for="password" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Password') }}</label>
+                            <div class="col-md-4">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password" readonly>
+                                @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div> -->
+
+
+
+                        <div class="form-group row">
+                            <label for="birth_date" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Birth Date:') }}</label>
+
+                            <div class="col-md-4">
                                 <input id="birth_date" type="date" class="form-control @error('birth_date') is-invalid @enderror" name="birth_date" value="{{ old('birth_date') }}" required>
 
                                 @error('birth_date')
@@ -144,9 +161,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="jmbg" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('JMBG') }}</label>
+                            <label for="jmbg" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('JMBG:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="jmbg" type="text" class="form-control @error('jmbg') is-invalid @enderror" name="jmbg" value="{{ old('jmbg') }}" required autocomplete="jmbg" autofocus>
 
                                 @error('jmbg')
@@ -159,9 +176,9 @@ Create New Employee | HRTool
 
 
                         <div class="form-group row">
-                            <label for="ID_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('ID Number') }}</label>
+                            <label for="ID_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('ID Number:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="ID_number" type="text" class="form-control @error('ID_number') is-invalid @enderror" name="ID_number" value="{{ old('ID_number') }}" required autocomplete="ID_number">
 
                                 @error('ID_number')
@@ -173,9 +190,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="passport_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Passport Number') }}</label>
+                            <label for="passport_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Passport Number:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="passport_number" type="text" class="form-control @error('passport_number') is-invalid @enderror" name="passport_number" value="{{ old('passport_number') }}" required autocomplete="passport_number">
 
                                 @error('passport_number')
@@ -187,9 +204,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="address_in_ID" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Address in ID') }}</label>
+                            <label for="address_in_ID" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Address in ID:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="address_in_ID" type="text" class="form-control @error('address_in_ID') is-invalid @enderror" name="address_in_ID" value="{{ old('address_in_ID') }}" required autocomplete="address_in_ID">
 
                                 @error('address_in_ID')
@@ -201,9 +218,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="current_address" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address') }}</label>
+                            <label for="current_address" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Current Address:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="current_address" type="text" class="form-control @error('current_address') is-invalid @enderror" name="current_address" value="{{ old('current_address') }}" required autocomplete="current_address" autofocus>
 
                                 @error('current_address')
@@ -215,12 +232,12 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="slava" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Slava') }}</label>
+                            <label for="mobile" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Mobile:') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="slava" type="text" class="form-control @error('slava') is-invalid @enderror" name="slava" value="{{ old('slava') }}" required autocomplete="slava">
+                            <div class="col-md-4">
+                                <input id="mobile" type="tel" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}" required autocomplete="mobile">
 
-                                @error('slava')
+                                @error('mobile')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -229,9 +246,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="private_email" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Private Email') }}</label>
+                            <label for="private_email" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Private Email:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="private_email" type="email" class="form-control @error('private_email') is-invalid @enderror" name="private_email" value="{{ old('private_email') }}" required autocomplete="private_email">
 
                                 @error('private_email')
@@ -243,24 +260,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="mobile" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Mobile') }}</label>
+                            <label for="bank_account_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Bank Account Number:') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="mobile" type="tel" class="form-control @error('mobile') is-invalid @enderror" name="mobile" value="{{ old('mobile') }}" required autocomplete="mobile">
-
-                                @error('mobile')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                            <label for="bank_account_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Bank Account Number') }}</label>
-
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="bank_account_number" type="text" class="form-control @error('bank_account_number') is-invalid @enderror" name="bank_account_number" value="{{ old('bank_account_number') }}" required autocomplete="bank_account_number" autofocus>
 
                                 @error('bank_account_number')
@@ -272,26 +274,12 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="emergency_contact_name" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Emergency Contact Name') }}</label>
+                            <label for="slava" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Slava:') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="emergency_contact_name" type="text" class="form-control @error('emergency_contact_name') is-invalid @enderror" name="emergency_contact_name" value="{{ old('emergency_contact_name') }}" required autocomplete="emergency_contact_name">
+                            <div class="col-md-4">
+                                <input id="slava" type="text" class="form-control @error('slava') is-invalid @enderror" name="slava" value="{{ old('slava') }}" required autocomplete="slava">
 
-                                @error('emergency_contact_name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="emergency_contact_number" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Emergency Contact Number') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="emergency_contact_number" type="text" class="form-control @error('emergency_contact_number') is-invalid @enderror" name="emergency_contact_number" value="{{ old('emergency_contact_number') }}" required autocomplete="emergency_contact_number">
-
-                                @error('emergency_contact_number')
+                                @error('slava')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -301,9 +289,9 @@ Create New Employee | HRTool
 
 
                         <div class="form-group row">
-                            <label for="professional_qualifications_level" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Professional Qualifications Level') }}</label>
+                            <label for="professional_qualifications_level" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Professional Qualifications Level:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <select id="professional_qualifications_level" class="form-control @error('professional_qualifications_level') is-invalid @enderror" name="professional_qualifications_level" required>
                                     <option value=""> -- Select professional qualifications level -- </option>
                                     <option value="I" {{ old('professional_qualifications_level') == 'I' ? 'selected' : '' }}>I</option>
@@ -323,9 +311,9 @@ Create New Employee | HRTool
                         </div>
 
                         <div class="form-group row">
-                            <label for="profession" class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Profession') }}</label>
+                            <label for="profession" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Profession:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <input id="profession" type="text" class="form-control @error('profession') is-invalid @enderror" name="profession" value="{{ old('profession') }}" required autocomplete="profession" autofocus>
 
                                 @error('profession')
@@ -336,11 +324,38 @@ Create New Employee | HRTool
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="emergency_contact_name" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Emergency Contact Name:') }}</label>
+
+                            <div class="col-md-4">
+                                <input id="emergency_contact_name" type="text" class="form-control @error('emergency_contact_name') is-invalid @enderror" name="emergency_contact_name" value="{{ old('emergency_contact_name') }}" required autocomplete="emergency_contact_name">
+
+                                @error('emergency_contact_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="form-group row">
-                            <label class="col-md-4 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Manager') }}</label>
+                            <label for="emergency_contact_number" class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Emergency Contact Number:') }}</label>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <input id="emergency_contact_number" type="text" class="form-control @error('emergency_contact_number') is-invalid @enderror" name="emergency_contact_number" value="{{ old('emergency_contact_number') }}" required autocomplete="emergency_contact_number">
+
+                                @error('emergency_contact_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label text-md-right" style="margin-bottom: 4px;">{{ __('Manager:') }}</label>
+
+                            <div class="col-md-4">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="manager" id="manager_yes" value="1" required>
                                     <label class="form-check-label" for="manager_yes">{{ __('Yes') }}</label>
@@ -358,18 +373,8 @@ Create New Employee | HRTool
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="profile_picture" class="col-md-2 col-form-label" style="margin-bottom: 4px;">Profile Image</label>
-
-                            <input id="picture-input" name="profile_picture" type="file" class="col-md-6" style="margin-bottom:10px;" :value="old('profile_picture', $user->profile_picture)" autocomplete="profile_picture" />
-
-                            <div style="display: block; text-align: left; margin-left:12vw;">
-                                <img id="showImage" src="{{ (!empty($user->profile_picture) ? url('upload/admin_images/'.$user->profile_picture) : url('upload/default_image.png')) }}" class="img-fluid rounded mx-auto" style="max-width: 100%; height: auto; width: 135px;" alt="Profile Picture">
-                            </div>
-                        </div>
-
                         <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
+                            <div class="col-md-4 offset-md-3">
                                 <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px">
                                     {{ __('Create') }}
                                 </button>
@@ -423,5 +428,13 @@ Create New Employee | HRTool
                 }
                 reader.readAsDataURL(e.target.files['0']);
             });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            var generatedPassword = 'password';
+            $('#password').val(generatedPassword); // Set the generated password as the value of the password field
         });
     </script>

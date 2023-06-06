@@ -72,6 +72,9 @@ Route::middleware('auth')->group(function () {
 
         Route::controller(AdminController::class)->group(function () {
             Route::get('/admin-panel', 'admin_index')->name('admin-panel.index');
+            Route::delete('/admin-panel/{id}', 'admin_destroy')->name('admin.destroy');
+            Route::get('/admin-panel/create', 'admin_create')->name('admin.create');
+            Route::post('/admin-panel', 'admin_store')->name('admin.store');
         });
     });
 
@@ -136,7 +139,7 @@ Route::middleware('auth')->group(function () {
 
     //Positions
     Route::controller(PositionController::class)->group(function () {
-        Route::get('/positions', 'index')->name('positions.index')->middleware('role:admin_hr');
+        Route::get('/positions', 'index')->name('positions.index')->middleware('role:admin_hr|admin_it');
         Route::get('/positions/create', 'create')->name('positions.create')->middleware('role:admin_hr');
         Route::post('/positions', 'store')->name('positions.store')->middleware('role:admin_hr');
         Route::get('/positions/{id}/edit', 'edit')->name('positions.edit')->middleware('role:admin_hr');
