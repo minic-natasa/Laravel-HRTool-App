@@ -2,9 +2,13 @@
 
 **Technologies Used**
 Programming Languages: The application is built with JavaScript for dynamic front-end behavior, PHP for backend functionality, HTML for page structure, and CSS for styling and layout. Together, these languages provide a seamless, responsive, and engaging user experience.
+
 Blade Templating Engine: Laravel’s Blade templating engine is used to render the front-end views efficiently. Blade allows for easy integration of PHP code within HTML, promoting modular, reusable components and enabling the development of dynamic, interactive interfaces with minimal code duplication.
+
 Laravel Framework: This application is developed using the Laravel framework, which provides robust backend capabilities, handles server-side logic, and offers a secure, efficient foundation for building and maintaining complex web applications. Laravel's extensive libraries, routing capabilities, and MVC architecture streamline development and ensure maintainable code.
+
 Database Management: Data is managed through Laravel’s migration system, which simplifies database version control, schema management, and data seeding. This approach allows for seamless database modifications and keeps database changes consistent across development environments, enhancing collaboration and stability throughout the development lifecycle.
+
 
 **Key Features**
 Admin Panel: Enables management of various aspects of the application, including data and user roles.
